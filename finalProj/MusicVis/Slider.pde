@@ -92,12 +92,12 @@ class Bracket {
         l    = map(val - 1, 0, 93, l_bound, r_bound);
         r    = map(val + 1, 0, 93, l_bound, r_bound);
                 
-          if (abs(mouseX - l) < abs(mouseX - curr)) {
+          if ((abs(mouseX - l) < abs(mouseX - curr)) && (val != 0)) {
              val--;
              x = l;
              int_l = x - w/2;
              int_r = x + w/2;
-          } else if (abs(mouseX - r) < abs(mouseX - curr)) {
+          } else if ((abs(mouseX - r) < abs(mouseX - curr)) && (val != 93)) {
              val++;
              x = r;
              int_l = x - w/2;
