@@ -5,7 +5,7 @@ Button button;
 
 void setup () {
     size (screenWidth, screenHeight);
-    button = new Button(screenHeight, screenWidth, screenWidth/4, screenHeight/4);
+    button = new Button(screenHeight, screenWidth);
     
 }
 
