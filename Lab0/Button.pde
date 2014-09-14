@@ -79,6 +79,7 @@ class Button {
    float getWidth () { return curr_w; }
    float getPosX () { return curr_posx; }
    float getPosY () { return curr_posy; }
+   float getColor() { return curr_color; }
    
 }
    
