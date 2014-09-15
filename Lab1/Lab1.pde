@@ -22,6 +22,10 @@ void setup() {
     button = new Button();
     button.add_state("Line Graph", 100, 20, screenWidth-110, 10, color(200, 50, 200));
     button.add_state("Bar Chart", 100, 20, screenWidth-110, 10, color(150, 150, 150));
+    
+    //Set up graphs;
+    bar = new Bar_Graph(data);
+    line = new Line_Graph(data);
 }
 
 void draw() {
@@ -30,13 +34,9 @@ void draw() {
   int curr_state = button.getState();
   
   if (curr_state == 0) {
-    fill(0,0,0);
-    textAlign(CENTER, CENTER);
-    text("totally a line graph. yeah!", 150, 150);
+      line.draw_graph();
   } else if (curr_state == 1) {
-    fill(0,0,0);
-    textAlign(CENTER, CENTER);
-    text("totally a bar chart. yeah!", 150, 150);
+      bar.draw_graph();
   }
 }
 
