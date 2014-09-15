@@ -10,9 +10,15 @@ Line_Graph line;
 
 void setup() {
     size(screenWidth, screenHeight);
-    frame.setResizable(true);
+    if (frame != null) {
+      frame.setResizable(true);
+    }
+    
+    //Parse data
     data = new Data();
     data.parse("lab1-data.csv");
+    
+    //Set up button
     button = new Button();
     button.add_state("Line Graph", 100, 20, screenWidth-110, 10, color(200, 50, 200));
     button.add_state("Bar Chart", 100, 20, screenWidth-110, 10, color(150, 150, 150));

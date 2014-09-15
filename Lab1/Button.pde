@@ -10,6 +10,9 @@ class Button {
   }
   
   void draw_button() {
+     states[curr_state].pos_x = width - 10 - states[curr_state].w;
+     states[curr_state].pos_y = 10;
+    
      int pos_x = states[curr_state].pos_x;
      int pos_y = states[curr_state].pos_y;
      int w = states[curr_state].w;
