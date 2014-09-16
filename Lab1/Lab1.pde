@@ -7,6 +7,8 @@ Button button;
 Data data;
 Bar_Graph bar;
 Line_Graph line;
+int line_state;
+int bar_state;
 
 void setup() {
     size(screenWidth, screenHeight);
@@ -20,7 +22,9 @@ void setup() {
     
     //Set up button
     button = new Button();
+    line_state = 0;
     button.add_state("Line Graph", 100, 20, screenWidth-110, 10, color(200, 50, 200));
+    bar_state = 1;
     button.add_state("Bar Chart", 100, 20, screenWidth-110, 10, color(150, 150, 150));
     
     //Set up graphs;
@@ -42,4 +46,15 @@ void draw() {
 
 void mouseClicked() {
     button.intersect(mouseX, mouseY);
+}
+
+void mouseMoved() {
+   int curr_state = button.getState();
+   
+   if (curr_state == bar_state) {
+     bar.bar_intersect(mouseX, mouseY);
+   } else {
+     line.point_intersect(mouseX, mouseY);  
+   }
+     
 }

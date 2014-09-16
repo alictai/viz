@@ -20,11 +20,11 @@ class Data {
         
       }
       
-      print("Names:\n");
+      /*print("Names:\n");
       printArray(name);
       print('\n');
       print("Values:\n");
-      printArray(value);
+      printArray(value);*/
    }
    
    void readHeader(String line1) {
