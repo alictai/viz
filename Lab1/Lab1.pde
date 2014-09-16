@@ -1,7 +1,5 @@
-/* TEST - how can we unfix screen dims though? */
 int screenWidth = 800;
 int screenHeight = 800;
-/* END TEST */
 
 Button button;
 Data data;
@@ -23,9 +21,9 @@ void setup() {
     //Set up button
     button = new Button();
     line_state = 0;
-    button.add_state("Line Graph", 100, 20, screenWidth-110, 10, color(200, 50, 200));
+    button.add_state("Line Graph", 100, 20, width-110, 10, color(200, 50, 200));
     bar_state = 1;
-    button.add_state("Bar Chart", 100, 20, screenWidth-110, 10, color(150, 150, 150));
+    button.add_state("Bar Chart", 100, 20, width-110, 10, color(150, 150, 150));
     
     //Set up graphs;
     bar = new Bar_Graph(data);
