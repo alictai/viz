@@ -1,4 +1,4 @@
-int screenWidth = 800;
+int screenWidth = 600;
 int screenHeight = 800;
 
 Button button;

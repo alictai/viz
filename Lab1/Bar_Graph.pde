@@ -35,7 +35,7 @@ class Bar_Graph {
     canvas_y1 = 40;
     canvas_y2 = height - 90;
     canvas_x1 = 60;
-    canvas_x2 = width - 10;
+    canvas_x2 = width - 60;
     
     canvas_w = canvas_x2 - canvas_x1;
     canvas_h = canvas_y2 - canvas_y1;
@@ -100,8 +100,11 @@ class Bar_Graph {
   
   void draw_bars() {
         y_coords = new float[0];
+        float max_height = num_intervals*interval;
+        
         for (int i = 0; i < data.name.length; i++) {
-            y_coords = append(y_coords, canvas_y2 - ((canvas_h/(num_intervals*interval))*data.value[i]));
+            float ratio = data.value[i]/max_height;
+            y_coords = append(y_coords, (float(canvas_h)-(float(canvas_h)*ratio))+canvas_y1);
             if (i == isect) {
               fill(0, 0, 255);
               rect(x_coords[i]-(x_spacing/4), y_coords[i], x_spacing/2, canvas_y2 - y_coords[i]);

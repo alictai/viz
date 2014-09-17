@@ -37,7 +37,7 @@ class Line_Graph {
     canvas_y1 = 40;
     canvas_y2 = height - 90;
     canvas_x1 = 60;
-    canvas_x2 = width - 10;
+    canvas_x2 = width - 60;
     
     canvas_w = canvas_x2 - canvas_x1;
     canvas_h = canvas_y2 - canvas_y1;
@@ -48,18 +48,20 @@ class Line_Graph {
     line(canvas_x1, canvas_y2, canvas_x2, canvas_y2);
     line(canvas_x1, canvas_y1, canvas_x1, canvas_y2);
     
-    //Draw y axis
+    //Draw y axis labels
     num_intervals = (y_max / y_interval) + 1;
     for (int i = 0; i <= num_intervals; i += 1) {
         float pos_y = canvas_y2 - (i * (canvas_h/num_intervals));
         float pos_x = canvas_x1 - 15;
-        fill(0,0,0);
-        textSize(10);
-        text(i*y_interval, pos_x, pos_y);
+        
+        //if ((i % (y_max/10)) == 0) {
+          fill(0,0,0);
+          textSize(10);
+          text(i*y_interval, pos_x, pos_y);
+        //}
     }    
     
-    
-    //Draw x axis
+    //Draw x axis labels
     x_coords = new float[0];
     float spacing = canvas_w/num_points;
     
@@ -103,8 +105,12 @@ class Line_Graph {
   
   void draw_points() {
         y_coords = new float[0];
+        float max_height = num_intervals*y_interval;
+        
         for (int i = 0; i < data.name.length; i++) {
-            y_coords = append(y_coords, canvas_y2 - ((canvas_h/(num_intervals*y_interval))*data.value[i]));
+            float ratio = data.value[i]/max_height;
+            y_coords = append(y_coords, (float(canvas_h)-(float(canvas_h)*ratio))+canvas_y1);
+            //y_coords = append(y_coords, canvas_y2 - ((canvas_h/(num_intervals*y_interval))*data.value[i]));
             if (i == isect) {
               fill(255, 0, 0);
               ellipse(x_coords[i], y_coords[i], 10, 10);
