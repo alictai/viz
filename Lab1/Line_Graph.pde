@@ -15,6 +15,7 @@ class Line_Graph {
   int y_interval;
   int num_intervals;
   int isect;
+  int shown_intervals;
 
   Line_Graph(Data parsed) {
     data = parsed;
@@ -50,15 +51,23 @@ class Line_Graph {
     
     //Draw y axis labels
     num_intervals = (y_max / y_interval) + 1;
+    shown_intervals = num_intervals/10;
     for (int i = 0; i <= num_intervals; i += 1) {
-        float pos_y = canvas_y2 - (i * (canvas_h/num_intervals));
+        float pos_y = canvas_y2 - (i * (float(canvas_h)/float(num_intervals)));
         float pos_x = canvas_x1 - 15;
+
+        /*fill(0,0,0);
+        textSize(10);
+        text(i*y_interval, pos_x, pos_y);*/
         
-        //if ((i % (y_max/10)) == 0) {
+        if (shown_intervals == 0) {
           fill(0,0,0);
           textSize(10);
           text(i*y_interval, pos_x, pos_y);
-        //}
+          shown_intervals = num_intervals/10;
+        } else {
+           shown_intervals--;
+        }
     }    
     
     //Draw x axis labels

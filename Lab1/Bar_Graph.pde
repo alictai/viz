@@ -14,6 +14,7 @@ class Bar_Graph {
   float x_spacing;
   int num_intervals;
   int isect;
+  int shown_intervals;
 
   Bar_Graph(Data parsed) {
     data = parsed;
@@ -48,12 +49,22 @@ class Bar_Graph {
     
     //Draw y axis
     num_intervals = (y_max / interval) + 1;
+    shown_intervals = num_intervals/10;
     for (int i = 0; i <= num_intervals; i += 1) {
-        float pos_y = canvas_y2 - (i * (canvas_h/num_intervals));
+        float pos_y = canvas_y2 - (i * (float(canvas_h)/float(num_intervals)));
         float pos_x = canvas_x1 - 15;
-        fill(0,0,0);
+        
+        if (shown_intervals == 0) {
+          fill(0,0,0);
+          textSize(10);
+          text(i*interval, pos_x, pos_y);
+          shown_intervals = num_intervals/10;
+        } else {
+           shown_intervals--;
+        }
+        /*fill(0,0,0);
         textSize(10);
-        text(i*interval, pos_x, pos_y);
+        text(i*interval, pos_x, pos_y);*/
     }    
     
     
