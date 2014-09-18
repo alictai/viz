@@ -6,6 +6,13 @@ class Canvas {
    int total_value = -1;
    Canvas[] children;
    
+   Canvas create(int id) {
+       Canvas temp = new Canvas;
+       temp.id = id;
+       temp.children = new Canvas[0];
+   }
+   
+   
    /*
    void parse(String file) {
        int i = 0;
@@ -18,3 +25,5 @@ class Canvas {
    }
    */
 }
+
+
