@@ -1,5 +1,5 @@
 
-
+/*
 - find ultimate root
   - starting with first relation, check if parent is child of any other rel
     - if yes, set this as new root, starting back at beginning of array, check array for this id
@@ -28,4 +28,4 @@ set_links(ult_root);
       
 set_links
       
-
+*/

@@ -1,6 +1,8 @@
 class Parser {
   Leaf[] leaves;
   Rels[] relations;
+  int f_place;
+  int ult_root;
   
   void parse(String file) {
        //int i = 0;
@@ -8,12 +10,13 @@ class Parser {
        String[] split_line;
        
        leaves = find_leaves(lines);
-       relations = find_rels(lines, leaves.length + 1);
+       relations = find_rels(lines);
        
-       
-      
-
        printall();
+       print("\n");
+       find_root();
+       Canvas root = set_links(ult_root);
+       print_tree(root);
        //Canvas to_return = new Canvas();
   }
   
@@ -21,22 +24,23 @@ class Parser {
     Leaf[] find_leaves(String[] lines) {
       String[] split_line;
       Leaf[] leaves = new Leaf[int(lines[0])];
-     
-      for(int i = 1; i <= int(lines[0]); i++) {
-           leaves[i-1] = new Leaf();
-           split_line = splitTokens(lines[i], " ");
-           leaves[i-1].id = int(split_line[0]);
-           leaves[i-1].value = int(split_line[1]);
+
+      for(f_place = 1; f_place <= int(lines[0]); f_place++) {
+           leaves[f_place-1] = new Leaf();
+           split_line = splitTokens(lines[f_place], " ");
+           leaves[f_place-1].id = int(split_line[0]);
+           leaves[f_place-1].value = int(split_line[1]);
        }
-       
+      
        return leaves;
     }
     
-    Rels[] find_rels(String[] lines, int f_place) {       
+    Rels[] find_rels(String[] lines) {       
       String[] split_line;
       int j = 0;  
       Rels[] relations = new Rels[int(lines[f_place++])];
-        
+
+
       for(; f_place < lines.length; f_place++) {
          relations[j] = new Rels();
          split_line = splitTokens(lines[f_place], " ");
@@ -48,45 +52,60 @@ class Parser {
        
        return relations;
     }
-   
-   void assign_rels () {
-      for (int i = 0; i < relations.length; i++) {
-         if (!relations[i].is_linked) {
-            set_links(relations[i].child) 
-         }
-      } 
-   }
-   
-   //setlinks() - recursive function that takes in the child's id, and returns the newly created child
-   // with all its children in place
-   //  base case: either goes through rel array and doesn't find anything
-   //             or finds id in leaf array
-   
-   Canvas set_links(int id) {
-     //base case == isleaf
-     if (rval.children.length == 0) {
-         // search through leaf array, assign value to leaf 
-      }
-      //recursive case == has child
-      else {
-        
-      }
-     
-      Canvas rval = Canvas.create(id);
-      for (int i = 0; i < rels.length; i++) {
-         if (rels[i].parent == id) {
-            rval.children = append(rval.children, set_links(rels[i].child));
-         }
-      }
-      
-      //checking if it is leaf
-      
-      
-      
-      return rval;
+  
+    void find_root() {
+      ult_root = relations[0].parent;
 
-   }
+      for ( int i = 0; i < relations.length; i++) {
+         if (relations[i].child == ult_root) {
+            ult_root = relations[i].parent;
+            i = -1;
+         } 
+      }
+
+    }
     
+    Canvas set_links(int id) {
+        Canvas to_return;
+        
+        //check to see if ID is leaf
+        for(int i = 0; i < leaves.length; i++) {
+          if(leaves[i].id == id) {
+            to_return = new Canvas(id, leaves[i].value, true);
+            return to_return;
+          }
+        }
+        
+        //didn't find leaf, therefore have to build tree
+        to_return = new Canvas(id, 0, false);
+        
+        for(int i = 0; i < relations.length; i++) {
+          if (relations[i].parent == id) {
+            to_return.children = (Canvas[])append(to_return.children, set_links(relations[i].child));
+            int child_place = to_return.children.length - 1;
+            to_return.total_value += to_return.children[child_place].total_value;
+          }
+        }
+        
+        return to_return;
+    }
+   
+  void print_tree(Canvas parent) {
+     print("parent = ");
+     print(parent.id, "\n");
+     print("total value: ");
+     print(parent.total_value, "\n");
+     print("children: \n");
+     for(int i = 0; i < parent.children.length; i++) {
+        print(parent.children[i].id, "\n"); 
+     }
+     
+     for(int i = 0; i < parent.children.length; i++) {
+        print_tree(parent.children[i]); 
+     }
+
+  }
+  
   void printall() {
        print("Leaves:\n");
        for (int j = 0; j < leaves.length; j++) {

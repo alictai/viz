@@ -6,10 +6,11 @@ class Canvas {
    int total_value = -1;
    Canvas[] children;
    
-   Canvas create(int id) {
-       Canvas temp = new Canvas;
-       temp.id = id;
-       temp.children = new Canvas[0];
+   Canvas(int id_num, int val, boolean leaf) {
+       id = id_num;
+       total_value = val;
+       is_leaf = leaf;
+       children = new Canvas[0];
    }
    
    
