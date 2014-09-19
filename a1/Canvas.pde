@@ -13,7 +13,24 @@ class Canvas {
        children = new Canvas[0];
    }
    
-   
+   void sort_children() {
+       Canvas temp;
+       for(int cur_pos = 1; cur_pos < children.length; cur_pos++) {
+         for(int i = cur_pos; i >= 0; i--) {
+          if(children[cur_pos].total_value > children[cur_pos - 1].total_value) {
+           //swap
+           temp = children[i];
+           children[i] = children[i-1];
+           children[i-1] = temp;
+          }
+          else {
+            break; 
+          }
+         } 
+       }
+       
+   }
+ 
    /*
    void parse(String file) {
        int i = 0;

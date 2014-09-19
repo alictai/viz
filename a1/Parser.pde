@@ -87,6 +87,8 @@ class Parser {
           }
         }
         
+        to_return.sort_children();
+        
         return to_return;
     }
    
