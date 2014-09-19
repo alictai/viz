@@ -4,19 +4,19 @@ class Parser {
   int f_place;
   int ult_root;
   
-  void parse(String file) {
-       //int i = 0;
+  Canvas parse(String file) {
        String[] lines = loadStrings(file);
        String[] split_line;
        
        leaves = find_leaves(lines);
        relations = find_rels(lines);
        
-       printall();
-       print("\n");
+       //printall();
        find_root();
        Canvas root = set_links(ult_root);
        print_tree(root);
+       
+       return root;
        //Canvas to_return = new Canvas();
   }
   
