@@ -1,14 +1,17 @@
 class Canvas {
    boolean is_leaf = true;
    int id;
-   int wid, hgt;
-   int xl, xr, yt, yb;   //x-left, x-right, y-top, y-bottom
-   int total_value = -1;
+   float wid, hgt;
    Canvas[] children;
+   float total_value;
+   float area;
+   float aspect_ratio;
+   float x, y;
+   //int xl, xr, yt, yb;   //x-left, x-right, y-top, y-bottomint total_value = -1;
    
    Canvas(int id_num, int val, boolean leaf) {
        id = id_num;
-       total_value = val;
+       total_value = float(val);
        is_leaf = leaf;
        children = new Canvas[0];
    }
@@ -30,18 +33,6 @@ class Canvas {
        }
        
    }
- 
-   /*
-   void parse(String file) {
-       int i = 0;
-       String[] lines = loadStrings(file);
-       String[] split_line;
-       //Leaf[] leaves;
-       
-       for(i = 1; i < int(lines[0]); i++) {
-           leaves = splitTokens(lines[i], " ");
-   }
-   */
 }
 
 
