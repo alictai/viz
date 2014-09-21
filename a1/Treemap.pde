@@ -13,8 +13,8 @@ class Treemap {
       float VA_ratio = canvas_area/total_value;
       rows = new Row[0];
       calculate_areas(root, VA_ratio);
-      squarify(root, 0, 0, width, height);
-      draw_rows();
+      squarify(root, 0, 0, width, height, 0);
+      //draw_rows();
   }
   
   float calculate_areas(Canvas node, float ratio) {
@@ -34,8 +34,7 @@ class Treemap {
       }
   }
   
-  void squarify(Canvas root, float x, float y, float wid, float hgt) {
-     //Need to implement passing of x, y, wid, hgt first
+ void squarify(Canvas root, float x, float y, float wid, float hgt, int level) {
       if(root.is_leaf == true) {
           return;
       }
@@ -45,15 +44,15 @@ class Treemap {
          add_new_node(root.children[i]);
       }
       
-      for(int i = 0; i < root.children.length; i++) {
-          squarify(root.children[i], root.children[i].x, root.children[i].y, root.children[i].wid, root.children[i].hgt);
-      }
+      draw_rows(level);
       
-      /* same as above
       for(int i = 0; i < root.children.length; i++) {
-        squarify(root.children[i]);
+          float w = root.children[i].wid;
+          float h = root.children[i].hgt;
+          if (w < 0) { w = 0; }
+          if (h < 0) { h = 0; }
+          squarify(root.children[i], root.children[i].x, root.children[i].y, w, h, level + 1);
       }
-      */
   }
   
   //x, y, wid, and hgt represent the blank area being drawn on
@@ -179,7 +178,7 @@ class Treemap {
        }
   }
   
-  void draw_rows() {
+  void draw_rows(int level) {
       float curr_x, curr_y;
       
       for(int i = 0; i < rows.length; i++) {
@@ -189,7 +188,6 @@ class Treemap {
           curr_x = rows[i].x;
           curr_y = rows[i].y;
           for(int k = 0; k < rows[i].values.length; k++) {
-              fill(0,255,0);
               /*print("x: ");
               print(curr_x);
               print(" y: ");
@@ -201,7 +199,16 @@ class Treemap {
               print(rows[i].values[k].hgt);
               print("\n");
               print("===========================\n");*/
-              rect(curr_x, curr_y, rows[i].values[k].wid, rows[i].values[k].hgt);
+              fill(0,255,0);
+              //rect(curr_x, curr_y, rows[i].values[k].wid, rows[i].values[k].hgt);
+              //fill(0,255,0);
+              int cushion = 3*(level+1);
+              float w = rows[i].values[k].wid - (2*cushion);
+              float h = rows[i].values[k].hgt - (2*cushion);
+              if (w < 0) { w = 0; }
+              if (h < 0) { h = 0; }
+              rect(curr_x + cushion, curr_y + cushion, w, h);
+              
               fill(0,0,0);
               textSize(10);
               textAlign(CENTER, CENTER);
