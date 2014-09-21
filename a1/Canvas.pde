@@ -7,7 +7,7 @@ class Canvas {
    float area;
    float aspect_ratio;
    float x, y;
-   //int xl, xr, yt, yb;   //x-left, x-right, y-top, y-bottomint total_value = -1;
+   boolean intersection;
    
    Canvas(int id_num, int val, boolean leaf) {
        id = id_num;
@@ -32,6 +32,27 @@ class Canvas {
          } 
        }
        
+   }
+   
+   void intersect(int mousex, int mousey) {
+       if (is_leaf == true) {
+           float x1 = x + wid;
+           float y1 = y + hgt;
+           if (mousex < x1 && mousex > x) {
+               if (mousey < y1 && mousey > y) {
+                   print("yes");
+                   intersection = true;
+               } else {
+                   intersection = false;
+               }
+           } else {
+               intersection = false;
+           }
+       } else {
+           for(int i = 0; i < children.length; i++) {
+                 children[i].intersect(mousex, mousey);
+           }
+       }
    }
 }
 

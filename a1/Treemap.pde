@@ -14,7 +14,6 @@ class Treemap {
       rows = new Row[0];
       calculate_areas(root, VA_ratio);
       squarify(root, 0, 0, width, height, 0);
-      //draw_rows();
   }
   
   float calculate_areas(Canvas node, float ratio) {
@@ -91,19 +90,8 @@ class Treemap {
       float hgt, wid;
       
       if(rows[curr].horizontal == false) {
-           /*print("node tv: ");
-           print(node.total_value);
-           print("\nrow curr val: ");
-           print(rows[curr].total_value);
-           print("\nrow curr hgt: ");
-           print(rows[curr].hgt, "\n");*/
            hgt = (node.total_value/(rows[curr].total_value+node.total_value)) * rows[curr].hgt;
            wid = node.area/hgt;
-           /*print("hgt wid");
-           print(hgt);
-           print(" " );
-           print(wid);
-           print("\n");*/
            aspect = wid/hgt;
            
            if (dist_to_one(aspect) < dist_to_one(rows[curr].worst_aspect)) {
@@ -182,33 +170,24 @@ class Treemap {
       float curr_x, curr_y;
       
       for(int i = 0; i < rows.length; i++) {
-          /*print("row: ");
-          print(i);
-          print("\n");*/
           curr_x = rows[i].x;
           curr_y = rows[i].y;
           for(int k = 0; k < rows[i].values.length; k++) {
-              /*print("x: ");
-              print(curr_x);
-              print(" y: ");
-              print(curr_y);
-              print("\n");
-              print("wid: ");
-              print(rows[i].values[k].wid);
-              print(" hgt: ");
-              print(rows[i].values[k].hgt);
-              print("\n");
-              print("===========================\n");*/
-              fill(0,255,0);
-              //rect(curr_x, curr_y, rows[i].values[k].wid, rows[i].values[k].hgt);
-              //fill(0,255,0);
               int cushion = 3*(level+1);
               float w = rows[i].values[k].wid - (2*cushion);
               float h = rows[i].values[k].hgt - (2*cushion);
               if (w < 0) { w = 0; }
               if (h < 0) { h = 0; }
-              rect(curr_x + cushion, curr_y + cushion, w, h);
               
+              if(rows[i].values[k].intersection == true && rows[i].values[k].is_leaf == true) {
+                  fill(255, 0, 0);
+                  print("intersecting with: ");
+                  print(rows[i].values[k].id);
+                  print("/n");
+              } else {
+                  fill(200, 200, 200); 
+              }
+              rect(curr_x + cushion, curr_y + cushion, w, h);
               fill(0,0,0);
               textSize(10);
               textAlign(CENTER, CENTER);

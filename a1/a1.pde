@@ -1,5 +1,5 @@
-int screenWidth = 600;
-int screenHeight = 400;
+int screenWidth = 1200;
+int screenHeight = 800;
 
 Parser parser;
 Canvas root;
@@ -20,3 +20,10 @@ void draw() {
     treemap.draw_treemap();
 }
 
+void mouseClicked() {
+   //use for zoom in and zoom out 
+}
+
+void mouseMoved() {
+   root.intersect(mouseX, mouseY);
+}
