@@ -20,10 +20,6 @@ class Treemap {
       node.area = 0;
       if (node.is_leaf == true) {
           node.area = node.total_value * ratio;
-          /*print(node.id);
-          print(" area is ");
-          print(node.area);
-          print("\n");*/
           return node.area;
       } else {
           for (int i=0; i < node.children.length; i++) {
@@ -181,9 +177,6 @@ class Treemap {
               
               if(rows[i].values[k].intersection == true && rows[i].values[k].is_leaf == true) {
                   fill(255, 0, 0);
-                  print("intersecting with: ");
-                  print(rows[i].values[k].id);
-                  print("/n");
               } else {
                   fill(200, 200, 200); 
               }

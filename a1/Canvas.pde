@@ -40,7 +40,6 @@ class Canvas {
            float y1 = y + hgt;
            if (mousex < x1 && mousex > x) {
                if (mousey < y1 && mousey > y) {
-                   print("yes");
                    intersection = true;
                } else {
                    intersection = false;
