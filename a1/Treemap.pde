@@ -14,6 +14,7 @@ class Treemap {
       rows = new Row[0];
       calculate_areas(root, VA_ratio);
       squarify(root, 0, 0, width, height, 0);
+      draw_rows();
   }
   
   float calculate_areas(Canvas node, float ratio) {
@@ -34,14 +35,13 @@ class Treemap {
           return;
       }
     
-      new_row(root.children[0], x, y, wid, hgt);  
+      new_row(root.children[0], x, y, wid, hgt, level);  
       for(int i = 1; i < root.children.length; i++) {
          add_new_node(root.children[i]);
       }
       
-      draw_rows(level);
-      
       for(int i = 0; i < root.children.length; i++) {
+          float cushion = 3*(level+1);
           float w = root.children[i].wid;
           float h = root.children[i].hgt;
           if (w < 0) { w = 0; }
@@ -51,11 +51,12 @@ class Treemap {
   }
   
   //x, y, wid, and hgt represent the blank area being drawn on
-  void new_row(Canvas node, float x, float y, float wid, float hgt) {
+  void new_row(Canvas node, float x, float y, float wid, float hgt, int level) {
       Row temp = new Row(x, y);
       rows = (Row[])append(rows, temp);
       int curr = rows.length - 1;
       
+      rows[curr].level = level;
       rows[curr].values = (Canvas[])append(rows[curr].values, node);
       
       if (wid > hgt) {
@@ -73,6 +74,9 @@ class Treemap {
           rows[curr].wid = wid;
           rows[curr].hgt = node.hgt;
       }
+      
+      node.x = x;
+      node.y = y;
       
       rows[curr].worst_aspect = node.aspect_ratio;
       rows[curr].total_value = node.total_value;
@@ -100,7 +104,7 @@ class Treemap {
                float h = rows[curr].hgt;
                float x = rows[curr].x + rows[curr].wid;
                float y = rows[curr].y;
-               new_row(node, x, y, w, h);
+               new_row(node, x, y, w, h, rows[curr].level);
            }
       } else {
            wid = node.total_value/(rows[curr].total_value+node.total_value) * rows[curr].wid;
@@ -117,7 +121,7 @@ class Treemap {
                float h = rows[curr].ctxt_h - rows[curr].hgt;
                float x = rows[curr].x;
                float y = rows[curr].y + rows[curr].hgt;
-               new_row(node, x, y, w, h);
+               new_row(node, x, y, w, h, rows[curr].level);
            }
       }
   }
@@ -125,29 +129,43 @@ class Treemap {
   void insert_node(Canvas node) {
       int curr = rows.length - 1;
       float worst_ratio = node.aspect_ratio;
+      float curr_x = rows[curr].x;
+      float curr_y = rows[curr].y;
       
+      //shifting canvases in row
       for(int i = 0; i < rows[curr].values.length; i++) {
+         //move location
+         rows[curr].values[i].x = curr_x;
+         rows[curr].values[i].y = curr_y;
+         
+         //adjusting canvas sizes
          if (rows[curr].horizontal == false) {
              rows[curr].values[i].wid = node.wid;
              rows[curr].values[i].hgt = rows[curr].values[i].area/node.wid;
              rows[curr].values[i].aspect_ratio = rows[curr].values[i].wid/rows[curr].values[i].hgt;
+             curr_y += rows[curr].values[i].hgt;
          } else {
              rows[curr].values[i].hgt = node.hgt;
              rows[curr].values[i].wid = rows[curr].values[i].area/node.hgt;
              rows[curr].values[i].aspect_ratio = rows[curr].values[i].wid/rows[curr].values[i].hgt;
+             curr_x += rows[curr].values[i].wid;
          }
          
+         //looking for worst aspect ratio
          if (dist_to_one(rows[curr].values[i].aspect_ratio) > dist_to_one(worst_ratio)) {
              worst_ratio = rows[curr].values[i].aspect_ratio;
          }
       } 
       
+      node.x = curr_x;
+      node.y = curr_y;
+
+      //updating row attributes      
       if (rows[curr].horizontal == false) {
           rows[curr].wid = node.wid;
       } else {
           rows[curr].hgt = node.hgt;
       }
-      
       rows[curr].worst_aspect = worst_ratio;
       rows[curr].values = (Canvas[])append(rows[curr].values, node);
       rows[curr].total_value = rows[curr].total_value + node.total_value;
@@ -162,38 +180,31 @@ class Treemap {
        }
   }
   
-  void draw_rows(int level) {
-      float curr_x, curr_y;
-      
+  void draw_rows() {
       for(int i = 0; i < rows.length; i++) {
-          curr_x = rows[i].x;
-          curr_y = rows[i].y;
           for(int k = 0; k < rows[i].values.length; k++) {
-              int cushion = 3*(level+1);
+              //calculating cushion
+              int cushion = 2*(rows[i].level+1);
+              float x = rows[i].values[k].x + cushion;
+              float y = rows[i].values[k].y + cushion;
               float w = rows[i].values[k].wid - (2*cushion);
               float h = rows[i].values[k].hgt - (2*cushion);
               if (w < 0) { w = 0; }
               if (h < 0) { h = 0; }
               
+              //fill rectangle if mouse is over it
               if(rows[i].values[k].intersection == true && rows[i].values[k].is_leaf == true) {
                   fill(255, 0, 0);
               } else {
                   fill(200, 200, 200); 
               }
-              rect(curr_x + cushion, curr_y + cushion, w, h);
+              
+              //draw rectangle
+              rect(x, y, w, h);
               fill(0,0,0);
               textSize(10);
               textAlign(CENTER, CENTER);
-              text(rows[i].values[k].id, curr_x+(rows[i].values[k].wid/2), curr_y+(rows[i].values[k].hgt/2));
-              if (rows[i].horizontal == false) {
-                  rows[i].values[k].x = curr_x;
-                  rows[i].values[k].y = curr_y;
-                  curr_y = curr_y + rows[i].values[k].hgt;
-              } else {
-                  rows[i].values[k].x = curr_x;
-                  rows[i].values[k].y = curr_y;
-                  curr_x = curr_x + rows[i].values[k].wid;
-              }
+              text(rows[i].values[k].id, rows[i].values[k].x+(rows[i].values[k].wid/2), rows[i].values[k].y+(rows[i].values[k].hgt/2));
           }
       }
   }

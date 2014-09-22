@@ -6,6 +6,7 @@ class Row {
      float wid, hgt;
      float ctxt_w, ctxt_h;
      float total_value;
+     int level;
      
      Row(float xA, float yA) {
        x = xA;

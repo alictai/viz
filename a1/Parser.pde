@@ -14,7 +14,7 @@ class Parser {
        //printall();
        find_root();
        Canvas root = set_links(ult_root);
-       print_tree(root);
+       //print_tree(root);
        
        return root;
        //Canvas to_return = new Canvas();
