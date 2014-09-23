@@ -3,6 +3,7 @@ class Canvas {
    int id;
    float wid, hgt;
    Canvas[] children;
+   Canvas parent;
    float total_value;
    float area;
    float aspect_ratio;
@@ -34,13 +35,16 @@ class Canvas {
        
    }
    
-   void intersect(int mousex, int mousey) {
+   int intersect(int mousex, int mousey) {
+       int intersected_node = -1;
+       
        if (is_leaf == true) {
            float x1 = x + wid;
            float y1 = y + hgt;
            if (mousex < x1 && mousex > x) {
                if (mousey < y1 && mousey > y) {
                    intersection = true;
+                   intersected_node = id;
                } else {
                    intersection = false;
                }
@@ -49,9 +53,14 @@ class Canvas {
            }
        } else {
            for(int i = 0; i < children.length; i++) {
-                 children[i].intersect(mousex, mousey);
+                 int temp = children[i].intersect(mousex, mousey);
+                 if (intersected_node == -1) {
+                     intersected_node = temp;
+                 }
            }
        }
+       
+       return intersected_node;
    }
 }
 

@@ -83,6 +83,7 @@ class Parser {
           if (relations[i].parent == id) {
             to_return.children = (Canvas[])append(to_return.children, set_links(relations[i].child));
             int child_place = to_return.children.length - 1;
+            to_return.children[child_place].parent = to_return;
             to_return.total_value += to_return.children[child_place].total_value;
           }
         }

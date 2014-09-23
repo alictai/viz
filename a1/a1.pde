@@ -1,5 +1,5 @@
-int screenWidth = 1200;
-int screenHeight = 800;
+int screenWidth = 600;
+int screenHeight = 400;
 
 Parser parser;
 Canvas root;
@@ -21,9 +21,21 @@ void draw() {
 }
 
 void mouseClicked() {
-   //use for zoom in and zoom out 
+    int clicked_node = root.intersect(mouseX, mouseY);
+    
+    if (mouseButton == LEFT) {
+        print("left clicked ");
+        print(clicked_node);
+        print("!\n");
+        treemap.zoom_in(clicked_node);
+    } else {
+        print("right clicked ");
+        print(clicked_node);
+        print("!\n");
+        treemap.zoom_out(clicked_node);
+    }
 }
 
 void mouseMoved() {
-   root.intersect(mouseX, mouseY);
+    root.intersect(mouseX, mouseY);
 }

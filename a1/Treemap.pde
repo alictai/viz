@@ -1,19 +1,30 @@
 class Treemap {
   Canvas root;
+  Canvas active_node;
+  int active_level;
   Row[] rows;
-  
+
   Treemap(Canvas node) {
     root = node;
+    active_node = node;
     rows = new Row[0];
+    active_level = 0;
   }
   
   void draw_treemap() {
       float canvas_area = width*height;
-      float total_value = root.total_value;
+      float total_value = active_node.total_value;
       float VA_ratio = canvas_area/total_value;
       rows = new Row[0];
-      calculate_areas(root, VA_ratio);
-      squarify(root, 0, 0, width, height, 0);
+      
+      //calculate proportional area of canvas
+      calculate_areas(active_node, VA_ratio);
+      
+      //draw active_node
+      new_row(active_node, 0, 0, width, height, 0);
+      
+      //recursively draw all children
+      squarify(active_node, 0, 0, width, height, 0);
       draw_rows();
   }
   
@@ -30,23 +41,23 @@ class Treemap {
       }
   }
   
- void squarify(Canvas root, float x, float y, float wid, float hgt, int level) {
-      if(root.is_leaf == true) {
+ void squarify(Canvas node, float x, float y, float wid, float hgt, int level) {
+      if(node.is_leaf == true) {
           return;
       }
     
-      new_row(root.children[0], x, y, wid, hgt, level);  
-      for(int i = 1; i < root.children.length; i++) {
-         add_new_node(root.children[i]);
+      new_row(node.children[0], x, y, wid, hgt, level);  
+      for(int i = 1; i < node.children.length; i++) {
+         add_new_node(node.children[i]);
       }
       
-      for(int i = 0; i < root.children.length; i++) {
+      for(int i = 0; i < node.children.length; i++) {
           float cushion = 3*(level+1);
-          float w = root.children[i].wid;
-          float h = root.children[i].hgt;
+          float w = node.children[i].wid;
+          float h = node.children[i].hgt;
           if (w < 0) { w = 0; }
           if (h < 0) { h = 0; }
-          squarify(root.children[i], root.children[i].x, root.children[i].y, w, h, level + 1);
+          squarify(node.children[i], node.children[i].x, node.children[i].y, w, h, level + 1);
       }
   }
   
@@ -194,9 +205,9 @@ class Treemap {
               
               //fill rectangle if mouse is over it
               if(rows[i].values[k].intersection == true && rows[i].values[k].is_leaf == true) {
-                  fill(255, 0, 0);
+                  fill(204, 204, 255);
               } else {
-                  fill(200, 200, 200); 
+                  fill(250, 250, 250); 
               }
               
               //draw rectangle
@@ -206,6 +217,42 @@ class Treemap {
               textAlign(CENTER, CENTER);
               text(rows[i].values[k].id, rows[i].values[k].x+(rows[i].values[k].wid/2), rows[i].values[k].y+(rows[i].values[k].hgt/2));
           }
+      }
+  }
+  
+  void zoom_in(int node_id) {
+      if (active_node.is_leaf == false) {
+          Canvas temp_node = find_canvas(node_id, active_node);
+          while(temp_node.parent != active_node) {
+            temp_node = temp_node.parent;
+          }
+          active_node = temp_node;
+          active_level = active_level + 1;
+      }
+  }
+  
+  Canvas find_canvas(int node_id, Canvas curr_node) {
+      Canvas found_canvas = null;
+      
+      if (curr_node.id == node_id) {
+          found_canvas = curr_node;
+      } else {
+          for(int i = 0; i < curr_node.children.length; i++) {
+                 Canvas temp = find_canvas(node_id, curr_node.children[i]);
+                 if (temp != null) {
+                     found_canvas = temp;
+                 }
+           }
+      }
+      
+      return found_canvas;
+  }
+  
+  void zoom_out(int node_id) {
+      //just zooms all the way out
+      if(active_node != root) {
+          active_node = active_node.parent;
+          active_level = active_level - 1;
       }
   }
 }
