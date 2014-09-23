@@ -255,4 +255,8 @@ class Treemap {
           active_level = active_level - 1;
       }
   }
+  
+  int intersect(int mousex, int mousey) {
+     return active_node.intersect(mousex, mousey); 
+  }
 }

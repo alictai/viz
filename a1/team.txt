@@ -1,4 +1,6 @@
 Team Members: Kirk Jackson, Matt Long, Alison Tai
 
+
+
 Squarify Paper source: www.win.tue.nl/~vanwijk/stm.pdf
 
