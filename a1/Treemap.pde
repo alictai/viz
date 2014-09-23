@@ -205,7 +205,9 @@ class Treemap {
               
               //fill rectangle if mouse is over it
               if(rows[i].values[k].intersection == true && rows[i].values[k].is_leaf == true) {
-                  fill(204, 204, 255);
+                //highlight shade gets lighter the deeper you go
+                float shade = (float(active_level + 1) / float(active_level + 2)) * 255;
+                fill(int(shade), int(shade), 255);
               } else {
                   fill(250, 250, 250); 
               }

@@ -6,13 +6,16 @@ Canvas root;
 Treemap treemap;
 
 void setup() {
+    // PUT INPUT FILE NAME HERE
+    String file = "hierarchy2.shf";
+    
     size(screenWidth, screenHeight);
     if (frame != null) {
       frame.setResizable(true);
     }
   
     parser = new Parser();
-    root = parser.parse("hierarchy2.shf");
+    root = parser.parse(file);
     treemap = new Treemap(root);
 }
 
