@@ -10,9 +10,9 @@ int bar_state;
 
 void setup() {
     size(screenWidth, screenHeight);
-    if (frame != null) {
+    /* if (frame != null) {
       frame.setResizable(true);
-    }
+    }*/
     
     //Parse data
     data = new Data();

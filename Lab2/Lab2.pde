@@ -2,6 +2,7 @@ void setup() {
     size(800, 600);
 
     //Parse data
+    print("helloooooo\n");
     Data data = new Data();
     data.parse("spongebob.csv");
     
@@ -9,5 +10,5 @@ void setup() {
 }
 
 void draw() {
-  rect(10, 10, 10, 10);
+  rect(10, 10, 500, 500);
 }

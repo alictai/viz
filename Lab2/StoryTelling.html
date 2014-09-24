@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+canvas{
+   padding: 0 27% 2% 23%;
+}
+#intro{
+    line-height: 2;
+    text-align: left;
+}
+p,h2{
+    font-family: "Arial";
+    line-height: 0.3;
+    padding: 0 25% 0 25%;
+    text-align: center;
+}
+
+h2{
+    padding-top: 0%;
+}
+
+p{
+    font-size:0.9em;
+}
+
+button{
+    width: 80px;
+    height: 20px;
+}
+
+#buttons{
+   margin-left:44%;
+
+}
+
+footer{
+   font-size:10px;
+}
+
+img{
+    margin-left:42%;
+    text-align: center;
+}
+
+</style>
+
+</head>
+<body>
+<h2 id = "title"> Template </h2>
+<p id = "intro">  </p>
+<p id = "p1" >  </p>
+<p id = "p2" >  </p>
+<p id = "p3" >  </p>
+<canvas class = "canvas" id = "canvas1"></canvas>
+<div><img src = "dexter.jpeg" id = "poster"> </div>
+<div id = "buttons">
+   <button id = "pre" onclick = "decrease()"> Previous </button>
+   <button id = "next" onclick = "increase()"> Next </button>
+</div>
+<footer>
+   <p> comp 150-07(VIZ), Lab 2: Story telling </p>
+</footer>
+<script src = "http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src = "http://processingjs.org/js/processing.min.js"></script>
+<script type = "text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+
+<script>
+
+var result;
+var intColor = 0;
+var mode = 0;
+
+d3.csv("dexter.csv", function(d){
+	return {
+	    Season: +d.Season, 
+	    Episode: +d.Episode,
+	    Title: d.Title,
+	    Rating: +d.Rating, 
+	    Votes: +d.Votes,
+	  };		
+}, function(err, d){
+	if(err) return console.log('Oops! csv died.');
+	result = d;
+	run(result);
+});
+
+function run(result) {
+	var canvas = document.getElementById("canvas1");
+	var processingInstance = new Processing(canvas, sketchProc); 
+}
+	 
+function increase(){
+	mode += 1;
+	run(result);
+}
+
+function decrease(){
+	mode -= 1;
+	run(result);
+}
+
+function sketchProc(p) {	
+   var margin = 30, iWidth = 600, iHeight = 400;
+   
+   p.setup = function(){ 
+	   p.size(iWidth + 2 * margin, iHeight + 2 * margin, p.P2D);
+	   $("#canvas1").css("width","" + p.width);
+	   $("#canvas1").css("height","" + p.height);
+	   p.smooth();   	 
+	   p.rectMode(p.CORNER);
+	   p.ellipseMode(p.RADIUS);
+   }
+   
+   p.draw = function() {
+   p.background(p.color(250));
+ 
+   switch (mode) {
+
+   case 0:
+       step0();
+       break; 
+   case 1:
+       step1();
+       break;
+   case 2:
+       step2();
+       break;
+   };
+  };
+  
+   function step0(){
+	   // $()s are jQuery code. 
+	   $("#title").css("padding-top","10%");
+	   $("#pre").prop("disabled",true);
+	   $("#next").prop("disabled",false);
+	   
+	   $("#intro").css("padding-left", "40%");
+	   $("#intro").show();
+       $("#poster").show();
+       
+	   $("#intro").text("Step 0");
+       $("#canvas1").hide();
+       $("#p1").hide();
+       $("#p2").hide();
+       $("#p3").hide();
+   }
+   
+   function step1(){
+       $("#poster").hide();
+       $("#canvas1").show();
+	   $("p").show();
+	   
+	   $("#intro").hide();	   
+	   
+	   $("#pre").prop("disabled",false);
+	   $("#next").prop("disabled",false);
+	     
+	   // The example to write processing.js code in Javasript
+	   p.textAlign(p.CENTER);
+	   // The example to use teh "result dataset"
+	   p.text(result[0].Title, p.width / 2.0, p.height / 3.0);
+	   p.text("I'm dying!!!!!!!", p.width / 2.0, p.height / 3.0 - 20);
+	   // I'm calling local JavaScript function here
+	   cat(p.width / 2.0 + Math.random() * 50, p.height / 2.0 + Math.random() * 10, 30, Math.random());
+	   $("#p1").text("p1");
+	   $("#p2").text("p2");
+	   $("#p3").text("p3");		   
+   }
+   
+   function step2(){
+	   $("#pre").prop("disabled",false);
+	   $("#next").prop("disabled",true);
+	   
+	   cat(p.width / 2.0, p.height / 2.0, 50, Math.random() * 10);
+	   
+	   $("#p1").text("p1");
+	   $("#p2").text("p2");
+	   $("#p3").hide();   
+   }
+   
+   function cat(x, y, size, random){   
+	   var headSize = size * 2 / 3, earSize = size * 0.4, eyeSize = (size * 0.005 - 1 > 0)? (size * 0.005) : 1;
+	   p.noStroke();
+	   p.triangle(x - earSize * 2, y - size * 0.15, x - earSize , y - size * 0.45, x - 1.5 * earSize, y - size * 0.15 - p.sqrt(3) * earSize);
+       p.triangle(x + earSize * 2, y - size * 0.15, x + earSize , y - size * 0.45, x + 1.5 * earSize, y - size * 0.15 - p.sqrt(3) * earSize);
+	   p.ellipse(x, y + 1 / 4 * size, headSize / ( 3 / 4 ) , headSize); // head
+	   p.stroke(p.color(0));
+	   p.strokeWeight(size * 0.2);
+	   p.fill(p.color(0));
+	   if(!random){
+		   random = 0;
+	   }
+	   p.bezier(x - headSize , y + 1 / 2 * size,  
+			   x - 1 * headSize,  y + 2 /2 * size,
+			   x - 2 * headSize,  y + 1 /2 * size + random,
+			   x - 3 * headSize,  y + 2 /2* size + random); // head
+    }
+   }
+
+
+ </script>
+ 
+</body>
+</html>
