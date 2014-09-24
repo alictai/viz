@@ -1,11 +1,13 @@
 void setup() {
-  size(800, 800);
+    size(800, 600);
+
+    //Parse data
+    Data data = new Data();
+    data.parse("spongebob.csv");
+    
+    //line = new Line_Graph(data);
 }
 
 void draw() {
-  //color c = color(random(255), random(255), random(255));
-  color c = color(255, 255, 255);
-  fill(c);
-  rect(10, 10, 780, 780);
+  rect(10, 10, 10, 10);
 }
-
