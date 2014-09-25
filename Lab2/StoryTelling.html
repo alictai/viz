@@ -48,7 +48,7 @@ img{
 </head>
 <body>
 <h2 id = "title"> Template </h2>
-<p id = "intro">  </p>
+<p id = "intro"> This is part of the intro. </p>
 <p id = "p1" >  </p>
 <p id = "p2" >  </p>
 <p id = "p3" >  </p>
@@ -64,6 +64,7 @@ img{
 <script src = "http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src = "http://processingjs.org/js/processing.min.js"></script>
 <script type = "text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+<script src = "bar_graph.js"></script>
 
 <script>
 
@@ -71,7 +72,7 @@ var result;
 var intColor = 0;
 var mode = 0;
 
-d3.csv("dexter.csv", function(d){
+d3.csv("spongebob.csv", function(d){
 	return {
 	    Season: +d.Season, 
 	    Episode: +d.Episode,
@@ -86,6 +87,7 @@ d3.csv("dexter.csv", function(d){
 });
 
 function run(result) {
+	console.log(result[0].Title);
 	var canvas = document.getElementById("canvas1");
 	var processingInstance = new Processing(canvas, sketchProc); 
 }
@@ -130,23 +132,28 @@ function sketchProc(p) {
   };
   
    function step0(){
-	   // $()s are jQuery code. 
+   		console.log("STEP 0");
+	   // $()s are jQuery code.
 	   $("#title").css("padding-top","10%");
 	   $("#pre").prop("disabled",true);
 	   $("#next").prop("disabled",false);
 	   
 	   $("#intro").css("padding-left", "40%");
 	   $("#intro").show();
-       $("#poster").show();
+       $("#poster").hide();
        
 	   $("#intro").text("Step 0");
-       $("#canvas1").hide();
+       $("#canvas1").show();
        $("#p1").hide();
        $("#p2").hide();
        $("#p3").hide();
+
+       p.fill(255, 255, p.random(255)); 
+	   p.rect(0,0,500,500);
    }
    
    function step1(){
+   		console.log("STEP 1");
        $("#poster").hide();
        $("#canvas1").show();
 	   $("p").show();
@@ -158,7 +165,7 @@ function sketchProc(p) {
 	     
 	   // The example to write processing.js code in Javasript
 	   p.textAlign(p.CENTER);
-	   // The example to use teh "result dataset"
+	   // The example to use the "result dataset"
 	   p.text(result[0].Title, p.width / 2.0, p.height / 3.0);
 	   p.text("I'm dying!!!!!!!", p.width / 2.0, p.height / 3.0 - 20);
 	   // I'm calling local JavaScript function here
@@ -169,6 +176,7 @@ function sketchProc(p) {
    }
    
    function step2(){
+   		console.log("STEP 2");
 	   $("#pre").prop("disabled",false);
 	   $("#next").prop("disabled",true);
 	   
