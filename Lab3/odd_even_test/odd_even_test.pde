@@ -55,14 +55,18 @@ boolean isectTest() {
   int num_intersects = 0;
   Point a, b, c;
   c = new Point();
-  c.x = mouseX;
-  c.y = mouseY;
+  /* Subtract w/2 and h/2 because does_intersect thinks         */
+  /* the shape is centered in the top-left corner of the screen */
+  c.x = mouseX - width/2;
+  c.y = mouseY - height/2;
   
   for(int i = 0; i < shape.length; i++) {
     a = shape[i];
     b = shape[(i + 1) % shape.length];
-    fill(255, 0, 0);
-    line(a.x, a.y, b.x, b.y);
+    /* Debugging statements */
+    //fill(255, 0, 0);
+    //line(a.x, a.y, b.x, b.y);
+    /*                      */
     if(does_intersect(a, b, c, endP)) {
       num_intersects++;
     }
