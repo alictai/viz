@@ -32,9 +32,6 @@ class Data {
       
       //given CSV has header delimited by ',' & ' '
       header = splitTokens(line1, ", ");
-      print("Headers: \n");
-      printArray(header);
-      print('\n');
    }
   
 }
