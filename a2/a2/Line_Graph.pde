@@ -4,16 +4,16 @@ class Line_Graph {
   String x_axis;
   String y_axis;
   float y_max;
-  float num_points;
+  int num_points;
   int canvas_x1, canvas_x2;
   int canvas_y1, canvas_y2;
   int canvas_w, canvas_h;
   float[] x_coords;
   float[] y_coords;
   float y_interval;
-  float num_intervals;
-  float isect;
-  float shown_intervals;
+  int num_intervals;
+  int isect;
+  int shown_intervals;
 
   Line_Graph(Data parsed) {
     data = parsed;
@@ -48,7 +48,7 @@ class Line_Graph {
     line(canvas_x1, canvas_y1, canvas_x1, canvas_y2);
     
     //Draw y axis labels
-    num_intervals = (y_max / y_interval) + 1;
+    num_intervals = int((y_max / y_interval) + 1);
     shown_intervals = num_intervals/10;
     for (int i = 0; i <= num_intervals; i += 1) {
         float pos_y = canvas_y2 - (i * (canvas_h/num_intervals));

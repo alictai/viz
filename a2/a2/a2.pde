@@ -10,6 +10,7 @@ Line_Graph line;
 
 void setup() {
    size(screenWidth, screenHeight);
+   background(255, 255, 255);
    data = new Data();
    data.parse("Dataset2.csv");
    if (frame!=null) { frame.setResizable(true); }
@@ -44,6 +45,7 @@ void buttons_set() {
     line_button = new Button();
     line_button.add_state("Line Graph", 100, 20, width/4, height-30, color(100, 100, 100));
     line_button.add_state("Line Graph", 100, 20, width/4, height-30, color(200, 200, 255));
+    line_button.update();
     
     bar_button = new Button();
     bar_button.add_state("Bar Chart", 100, 20, width/2, height-30, color(100, 100, 100));
