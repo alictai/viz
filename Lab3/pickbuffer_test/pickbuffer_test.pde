@@ -45,7 +45,7 @@ void drawPickBuffer() {
   pickbuffer.beginDraw();
   
   for (int i=0; i<numCircles; i++) { 
-    circles[i].renderIsect(pickBuffer);
+    circles[i].renderIsect(pickbuffer);
   }
  
   pickbuffer.endDraw();  
@@ -55,7 +55,7 @@ void mouseMoved () {
   drawPickBuffer();
 
   for(int i = 0; i < numCircles; i++) {
-    if (circles[i].isect(pickBuffer) == true) {
+    if (circles[i].isect(pickbuffer, mouseX, mouseY) == true) {
       circles[i].setSelected(true);
     }
     else {
