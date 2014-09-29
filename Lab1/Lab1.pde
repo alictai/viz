@@ -5,14 +5,16 @@ Button button;
 Data data;
 Bar_Graph bar;
 Line_Graph line;
+Pie_Chart pie;
 int line_state;
 int bar_state;
+int pie_state;
 
 void setup() {
     size(screenWidth, screenHeight);
-    /* if (frame != null) {
+    if (frame != null) {
       frame.setResizable(true);
-    }*/
+    }
     
     //Parse data
     data = new Data();
@@ -24,10 +26,14 @@ void setup() {
     button.add_state("Line Graph", 100, 20, width-110, 10, color(200, 50, 200));
     bar_state = 1;
     button.add_state("Bar Chart", 100, 20, width-110, 10, color(150, 150, 150));
+    pie_state = 2;
+    button.add_state("Pie Chart", 100, 20, width-110, 10, color(100, 100, 255));
+    
     
     //Set up graphs;
     bar = new Bar_Graph(data);
-    line = new Line_Graph(data);
+    //line = new Line_Graph(data);
+    pie = new Pie_Chart(data);
 }
 
 void draw() {
@@ -36,9 +42,12 @@ void draw() {
   int curr_state = button.getState();
   
   if (curr_state == 0) {
-      line.draw_graph();
+    //CHANGE THIS BACK TO LINE
+      pie.draw_graph();
   } else if (curr_state == 1) {
       bar.draw_graph();
+  } else if (curr_state == 2) {
+      pie.draw_graph(); 
   }
 }
 
