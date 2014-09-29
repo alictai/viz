@@ -34,7 +34,7 @@ class Line_Graph {
     
   void make_canvas() {
     canvas_y1 = 40;
-    canvas_y2 = height - 150;
+    canvas_y2 = height - 120;
     canvas_x1 = 60;
     canvas_x2 = width - 60;
     
@@ -98,7 +98,7 @@ class Line_Graph {
     textAlign(CENTER, CENTER);
     
     //x axis header
-    text(data.header[0], width/2, height - 15);
+    text(data.header[0], width/2, height - 70);
     
     //y axis header
     translate(15, height/2);
