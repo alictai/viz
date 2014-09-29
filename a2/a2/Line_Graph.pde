@@ -1,25 +1,23 @@
-//based on headers?
-
 class Line_Graph {
   boolean visible;  
   Data data;
   String x_axis;
   String y_axis;
-  int y_max;
-  int num_points;
+  float y_max;
+  float num_points;
   int canvas_x1, canvas_x2;
   int canvas_y1, canvas_y2;
   int canvas_w, canvas_h;
   float[] x_coords;
   float[] y_coords;
-  int y_interval;
-  int num_intervals;
-  int isect;
-  int shown_intervals;
+  float y_interval;
+  float num_intervals;
+  float isect;
+  float shown_intervals;
 
   Line_Graph(Data parsed) {
     data = parsed;
-    y_max = max(data.value);
+    y_max = max(data.values[0]);
     num_points = data.name.length;
     y_interval = 5;
     num_intervals = 0;
@@ -53,7 +51,7 @@ class Line_Graph {
     num_intervals = (y_max / y_interval) + 1;
     shown_intervals = num_intervals/10;
     for (int i = 0; i <= num_intervals; i += 1) {
-        float pos_y = canvas_y2 - (i * (float(canvas_h)/float(num_intervals)));
+        float pos_y = canvas_y2 - (i * (canvas_h/num_intervals));
         float pos_x = canvas_x1 - 15;
 
         /*fill(0,0,0);
@@ -117,14 +115,14 @@ class Line_Graph {
         float max_height = num_intervals*y_interval;
         
         for (int i = 0; i < data.name.length; i++) {
-            float ratio = data.value[i]/max_height;
+            float ratio = data.values[0][i]/max_height;
             y_coords = append(y_coords, (float(canvas_h)-(float(canvas_h)*ratio))+canvas_y1);
             //y_coords = append(y_coords, canvas_y2 - ((canvas_h/(num_intervals*y_interval))*data.value[i]));
             if (i == isect) {
               fill(255, 0, 0);
               ellipse(x_coords[i], y_coords[i], 10, 10);
               textSize(10);
-              text("(" + data.name[i] + ", " + data.value[i] + ")", x_coords[i] + 8, y_coords[i] + 8);
+              text("(" + data.name[i] + ", " + data.values[0][i] + ")", x_coords[i] + 8, y_coords[i] + 8);
             } else {
               fill(0,0,0);
               ellipse(x_coords[i], y_coords[i], 6, 6);

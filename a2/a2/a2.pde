@@ -6,6 +6,7 @@ Data data;
 Button line_button;
 Button bar_button;
 Button pie_button;
+Line_Graph line;
 
 void setup() {
    size(screenWidth, screenHeight);
@@ -14,13 +15,14 @@ void setup() {
    if (frame!=null) { frame.setResizable(true); }
    buttons_set();
    curr_chart = "Line Graph";
+   line = new Line_Graph(data);
 }
 
 void draw() {
     draw_buttons();
     
     if (curr_chart == "Line Graph") {
-        //print("line graph!\n");
+        line.draw_graph();
     } else if (curr_chart == "Bar Chart") {
         print("bar chart!\n");
     } else if (curr_chart == "Pie Chart") {
