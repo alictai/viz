@@ -2,12 +2,15 @@ int screenWidth = 600;
 int screenHeight = 800;
 String curr_chart;
 
+Data data;
 Button line_button;
 Button bar_button;
 Button pie_button;
 
 void setup() {
    size(screenWidth, screenHeight);
+   data = new Data();
+   data.parse("Dataset2.csv");
    if (frame!=null) { frame.setResizable(true); }
    buttons_set();
    curr_chart = "Line Graph";
@@ -17,7 +20,7 @@ void draw() {
     draw_buttons();
     
     if (curr_chart == "Line Graph") {
-        print("line graph!\n");
+        //print("line graph!\n");
     } else if (curr_chart == "Bar Chart") {
         print("bar chart!\n");
     } else if (curr_chart == "Pie Chart") {
