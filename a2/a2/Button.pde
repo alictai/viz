@@ -34,7 +34,7 @@ class Button {
   }
   
   void update() {
-    curr_state = ++curr_state % states.length;
+    curr_state = 1;
   }
   
   void set_default() {

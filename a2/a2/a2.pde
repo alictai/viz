@@ -7,6 +7,8 @@ Button line_button;
 Button bar_button;
 Button pie_button;
 Line_Graph line;
+Bar_Graph bar;
+Pie_Chart pie;
 
 void setup() {
    size(screenWidth, screenHeight);
@@ -17,6 +19,8 @@ void setup() {
    buttons_set();
    curr_chart = "Line Graph";
    line = new Line_Graph(data);
+   bar = new Bar_Graph(data);
+   pie = new Pie_Chart(data);
 }
 
 void draw() {
@@ -26,9 +30,9 @@ void draw() {
     if (curr_chart == "Line Graph") {
         line.draw_graph();
     } else if (curr_chart == "Bar Chart") {
-        print("bar chart!\n");
+        bar.draw_graph();
     } else if (curr_chart == "Pie Chart") {
-        print("pie chart!\n");
+        pie.draw_chart();
     }
 }
 
