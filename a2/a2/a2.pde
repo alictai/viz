@@ -20,6 +20,7 @@ void setup() {
 }
 
 void draw() {
+    background(255, 255, 255);
     draw_buttons();
     
     if (curr_chart == "Line Graph") {

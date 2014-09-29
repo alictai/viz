@@ -34,7 +34,7 @@ class Line_Graph {
     
   void make_canvas() {
     canvas_y1 = 40;
-    canvas_y2 = height - 90;
+    canvas_y2 = height - 150;
     canvas_x1 = 60;
     canvas_x2 = width - 60;
     
@@ -61,7 +61,7 @@ class Line_Graph {
         if (shown_intervals == 0) {
           fill(0,0,0);
           textSize(10);
-          text(i*y_interval, pos_x, pos_y);
+          text(int(i*y_interval), pos_x, pos_y);
           shown_intervals = num_intervals/10;
         } else {
            shown_intervals--;
