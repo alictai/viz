@@ -44,8 +44,9 @@ class MyCircle {
     ellipse(posx, posy, radius*2, radius*2);      
   }
   
-  boolean isect () {
-
+  boolean isect (PGraphics pg) {
+    color c = pg.get(mousex, mousey);
+    if(c == 
     //TODO: Fill in this function
 
     return false;
