@@ -14,22 +14,31 @@ class Line_Graph {
   int num_intervals;
   int isect;
   int shown_intervals;
+  float radius;
+  
+  //variables for transition
+  int phase;
+  float[] dum_x;
+  float[] dum_y;
+  float dum_radius;
 
   Line_Graph(Data parsed) {
+    phase = 0;
     data = parsed;
     y_max = max(data.values[0]);
     num_points = data.name.length;
     y_interval = 5;
     num_intervals = 0;
     isect = -1;
+    radius = 10;
   }
   
   void draw_graph() {
     make_canvas(); 
     draw_axes();
     draw_axes_titles();
-    draw_points();
-    draw_line();
+    draw_points(radius);
+    draw_line(x_coords, y_coords, x_coords, y_coords);
   }
     
   void make_canvas() {
@@ -110,7 +119,7 @@ class Line_Graph {
     textAlign(BASELINE);
   }
   
-  void draw_points() {
+  void draw_points(float r) {
         y_coords = new float[0];
         float max_height = num_intervals*y_interval;
         
@@ -120,21 +129,87 @@ class Line_Graph {
             //y_coords = append(y_coords, canvas_y2 - ((canvas_h/(num_intervals*y_interval))*data.value[i]));
             if (i == isect) {
               fill(255, 0, 0);
-              ellipse(x_coords[i], y_coords[i], 10, 10);
+              ellipse(x_coords[i], y_coords[i], r, r);
               textSize(10);
               text("(" + data.name[i] + ", " + data.values[0][i] + ")", x_coords[i] + 8, y_coords[i] + 8);
             } else {
               fill(0,0,0);
-              ellipse(x_coords[i], y_coords[i], 6, 6);
+              ellipse(x_coords[i], y_coords[i], r, r);
             }
             
         }
   }
   
-  void draw_line() {
+  void draw_line(float[] x1, float[] y1, float[] x2, float[] y2) {
         for (int i = 0; i < (data.name.length - 1); i++) {
-            line(x_coords[i], y_coords[i], x_coords[i+1], y_coords[i+1]);
+            line(x1[i], y1[i], x2[i+1], y2[i+1]);
         }
+  }
+  
+  boolean line_to_bar() {
+    if (phase == 0) {
+        phase += set_dummy();
+    } else if (phase == 1) {
+        phase += shrink_lines();
+    } else if (phase == 2) {
+        phase += shrink_points();
+    } else {
+        phase = 0;
+        return true;
+    }
+        
+    make_canvas(); 
+    draw_axes();
+    draw_axes_titles();
+    draw_points(dum_radius);
+    draw_line(x_coords, y_coords, dum_x, dum_y);
+    
+    return false;
+  }
+  
+  int set_dummy() {
+      dum_y = new float[num_points];
+      dum_x = new float[num_points];
+      dum_radius = radius;
+    
+      for(int i = 0; i < num_points; i++) {
+          dum_y[i] = y_coords[i];
+          dum_x[i] = x_coords[i];
+      }
+      return 1;
+  }
+  
+  int shrink_lines() {
+     for(int i = 1; i < num_points; i++) {
+         dum_y[i] = lerp(dum_y[i], y_coords[i-1], .1);
+         dum_x[i] = lerp(dum_x[i], x_coords[i-1], .1);
+     }
+     
+     boolean all_same = true;
+     for(int i = 1; i < num_points; i++) {
+         if((int)dum_y[i] != (int)y_coords[i-1]) {
+             all_same = false;
+         } else if ((int)dum_x[i] != (int)x_coords[i-1]) {
+             all_same = false;
+         }
+     }
+     
+     if(all_same) {
+       return 1;
+     } else {
+       return 0;
+     }
+  }
+  
+  int shrink_points() {
+      dum_radius = lerp(dum_radius, 1, .05);
+      print(dum_radius, "\n");
+
+      if(dum_radius < 1.2) {
+        return 1;
+      } else {
+        return 0;
+      }
   }
   
   void point_intersect(int mousex, int mousey) {

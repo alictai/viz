@@ -15,6 +15,9 @@ class Bar_Graph {
   int num_intervals;
   int isect;
   int shown_intervals;
+  
+  //variables for transition
+  float[] dum_x;
 
   Bar_Graph(Data parsed) {
     data = parsed;
@@ -124,6 +127,7 @@ class Bar_Graph {
               text("(" + data.name[i] + ", " + data.values[0][i] + ")", x_coords[i], y_coords[i] - 10);
               textAlign(BASELINE);
             } else {
+              //strokeWeight(2);
               fill(200, 255, 200);
               rect(x_coords[i]-(x_spacing/4), y_coords[i], x_spacing/2, canvas_y2 - y_coords[i]);
             }

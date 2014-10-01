@@ -24,13 +24,13 @@ class Data {
         }   
       }
       
-      print("Names:\n");
+      /*print("Names:\n");
       printArray(name);
       print('\n');
       print("Values:\n");
       for(int j = 0; j < num_cols; j++) {
         printArray(values[j]);
-      }
+      }*/
    }
    
    void readHeader(String line1) {
@@ -38,9 +38,9 @@ class Data {
       
       //given CSV has header delimited by ',' & ' '
       header = splitTokens(line1, ",");
-      print("Headers: \n");
+      /*print("Headers: \n");
       printArray(header);
-      print('\n');
+      print('\n');*/
    }
   
 }
