@@ -37,7 +37,7 @@ class Bar_Graph {
     draw_axes_titles();
     get_y_coords();
     //draw_bars();
-    draw_bars(x_coords, y_coords, x_spacing/2);
+    draw_bars(x_spacing/2);
   }
     
   void make_canvas() {
@@ -128,12 +128,13 @@ class Bar_Graph {
     
   }
   
-  void draw_bars(float[] x, float[] y, float w) {
+  void draw_bars(float w) {
         float h = 0;
         //print("in draw bars, dum width: ", w, "\ngoal: ", x_spacing/2, "\n");
         for (int i = 0; i < data.name.length; i++) {
-              if (phase == 0) {
-                  h = canvas_y2 - y[i];
+              //phase 0 and phase 3 are between transition states
+              if (phase == 0 || phase == 3) {
+                  h = canvas_y2 - y_coords[i];
               } else if (phase == 1) {
                   h = 1;
               } else {
@@ -141,7 +142,7 @@ class Bar_Graph {
               }
               fill(200, 255, 200);
               // rect(x_coords[i]-(x_spacing/4), y_coords[i], x_spacing/2, canvas_y2 - y_coords[i]);
-              rect(x[i]-(w/4), y[i], w, h);   
+              rect(x_coords[i]-(w/4), y_coords[i], w, h);   
         }
   }
   
@@ -152,7 +153,7 @@ class Bar_Graph {
     get_y_coords();
     
     if (phase == 0) {
-        phase += set_dummy();
+        phase += set_ltob_dummy();
     } else if (phase == 1) {
         print("expanding points\n");
         phase += expand_point();
@@ -160,16 +161,16 @@ class Bar_Graph {
         print("filling bar\n");
         phase += fill_bar();
     } else {
-        phase = 0;
+        phase = 3;
         return false;
     }
-
-    draw_bars(x_coords, y_coords, dum_width);
+    
+    draw_bars(dum_width);
     
     return true;
   }
   
-  int set_dummy() {
+  int set_ltob_dummy() {
     dum_y = new float[num_points];
     
     for (int i = 0; i < num_points; i++) {
@@ -200,35 +201,71 @@ class Bar_Graph {
            all_same = false;
       }
     }
-     
-     if(all_same) {
-       return 1;
-     } else {
-       return 0;
-     }
+    
+    if(all_same) {
+      return 1;
+    } else {
+      return 0;
+    }
   }
   
-  
-  void bar_intersect(int mousex, int mousey) {
-        boolean intersection = false;
-        
-        for (int i = 0; i < data.name.length; i++) {
-            float x1 = x_coords[i]-(x_spacing/4);
-            float x2 = x1 + x_spacing/2;
-            float y1 = y_coords[i];
-            float y2 = canvas_y2;
-            
-            if (mousex < x2 && mousex > x1) {
-              if (mousey < y2 && mousey > y1) {
-                  isect = i;
-                  intersection = true;
-              }
-            }
-        }
-        
-        if (intersection == false) {
-          isect = -1;
-        }
+  boolean bar_to_line() {  
+    make_canvas(); 
+    draw_axes();
+    draw_axes_titles();
+    get_y_coords();
+    
+    if (phase == 3) {
+        phase -= set_btol_dummy();
+    } else if (phase == 2) {
+        print("shrinking bars\n");
+        phase -= shrink_bars();
+    } else if (phase == 1) {
+        print("expanding points\n");
+        phase -= expand_points();
+    } else {
+        phase = 0;
+        return true;
+    }
+    
+    draw_bars(dum_width);
+    
+    return false;
   }
-}
+  
+ int set_btol_dummy() {
+    dum_y = new float[num_points];
+    
+    for (int i = 0; i < num_points; i++) {
+      dum_y[i] = canvas_y2 - y_coords[i];
+    }
+   
+    dum_width = x_spacing/2;
+    return 1;
+ }
+  
+ int shrink_bars() {
+    for(int i = 0; i < num_points; i++) {
+      dum_y[i] = lerp(dum_y[i], 1, .1);
+    }
+    
+    boolean all_same = true;
+    for(int i = 0; i < num_points; i++) {
+      if(dum_y[i] > 1.1) {
+           all_same = false;
+      }
+    }
+    
+    if(all_same) {
+      return 1;
+    } else {
+      return 0;
+    }
+ }
+ 
+ int expand_points() {
+   return 1;
+ }
 
+}  
+  
