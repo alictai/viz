@@ -203,7 +203,7 @@ class Line_Graph {
   
   int shrink_points() {
       dum_radius = lerp(dum_radius, 1, .05);
-      print(dum_radius, "\n");
+      //print(dum_radius, "\n");
 
       if(dum_radius < 1.2) {
         return 1;
