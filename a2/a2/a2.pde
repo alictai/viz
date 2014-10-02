@@ -1,3 +1,7 @@
+//pie & line - Ali
+//pie & bar - Matt
+//bar & line - Kurt
+
 int screenWidth = 600;
 int screenHeight = 800;
 String curr_chart;
@@ -83,8 +87,7 @@ void line_to_bar() {
     if (half_complete == false) {
        half_complete = line.line_to_bar();
     } else {
-       half_complete = false;
-       // half_complete = bar.line_to_bar();
+       half_complete = bar.line_to_bar();
         if (half_complete == false) {
             curr_chart = next_chart;
         }

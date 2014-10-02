@@ -17,7 +17,10 @@ class Bar_Graph {
   int shown_intervals;
   
   //variables for transition
+  int phase;
   float[] dum_x;
+  float[] dum_y;
+  float dum_width, dum_height; //width correlates to xspacing/2, 
 
   Bar_Graph(Data parsed) {
     data = parsed;
@@ -26,13 +29,15 @@ class Bar_Graph {
     interval = 5;
     num_intervals = 0;
     isect = -1;
+    phase = 0;
   }
   
   void draw_graph() {
     make_canvas(); 
     draw_axes();
     draw_axes_titles();
-    draw_bars();
+    get_y_coords();
+    draw_bars(x_coords, y_coords, x_spacing/2, canvas_y2);
   }
     
   void make_canvas() {
@@ -112,16 +117,26 @@ class Bar_Graph {
     textAlign(BASELINE);
   }
   
-  void draw_bars() {
+  void get_y_coords() {
+      y_coords = new float[0];
+      float max_height = num_intervals*interval;
+        
+      for (int i = 0; i < data.name.length; i++) {
+          float ratio = data.values[0][i]/max_height;
+          y_coords = append(y_coords, (float(canvas_h)-(float(canvas_h)*ratio))+canvas_y1);
+      }
+    
+  }
+  
+  void draw_bars(float x[], float y[]) {
         y_coords = new float[0];
         float max_height = num_intervals*interval;
         
         for (int i = 0; i < data.name.length; i++) {
-            float ratio = data.values[0][i]/max_height;
-            y_coords = append(y_coords, (float(canvas_h)-(float(canvas_h)*ratio))+canvas_y1);
             if (i == isect) {
               fill(0, 0, 255);
-              rect(x_coords[i]-(x_spacing/4), y_coords[i], x_spacing/2, canvas_y2 - y_coords[i]);
+              //rect(x_coords[i]-(x_spacing/4), y_coords[i], x_spacing/2, canvas_y2 - y_coords[i]);
+              rect(x, y, w, h);
               textSize(10);
               textAlign(CENTER, CENTER);
               text("(" + data.name[i] + ", " + data.values[0][i] + ")", x_coords[i], y_coords[i] - 10);
@@ -129,11 +144,43 @@ class Bar_Graph {
             } else {
               //strokeWeight(2);
               fill(200, 255, 200);
-              rect(x_coords[i]-(x_spacing/4), y_coords[i], x_spacing/2, canvas_y2 - y_coords[i]);
+              //rect(x_coords[i]-(x_spacing/4), y_coords[i], x_spacing/2, canvas_y2 - y_coords[i]);
+              rect(x[i], y[i], w, canvas_y2 - y[i]);
             }
             
         }
   }
+  
+  boolean line_to_bar() {
+    if (phase == 0) {
+        phase += set_dummy();
+    } else if (phase == 1) {
+        phase += shrink_lines();
+    } else if (phase == 2) {
+        phase += shrink_points();
+    } else {
+        phase = 0;
+        return true;
+    }
+        
+    make_canvas(); 
+    draw_axes();
+    draw_axes_titles();
+    draw_points(dum_radius);
+    draw_line(x_coords, y_coords, dum_x, dum_y);
+    
+    return false;
+  }
+  
+  int set_dummy() {
+    for(int i = 0; i < num_points; i++) {
+      dum_x[i] = x_coords[i];
+      dum_y[i] = y_coords[i];
+    }
+    
+    dum_width = x_spacing/2;
+  
+  
   
   void bar_intersect(int mousex, int mousey) {
         boolean intersection = false;
