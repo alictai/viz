@@ -32,7 +32,7 @@ void setup() {
     
     //Set up graphs;
     bar = new Bar_Graph(data);
-    //line = new Line_Graph(data);
+    line = new Line_Graph(data);
     pie = new Pie_Chart(data);
 }
 
@@ -43,7 +43,7 @@ void draw() {
   
   if (curr_state == 0) {
     //CHANGE THIS BACK TO LINE
-      pie.draw_graph();
+      line.draw_graph();
   } else if (curr_state == 1) {
       bar.draw_graph();
   } else if (curr_state == 2) {
