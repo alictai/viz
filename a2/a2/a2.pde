@@ -89,6 +89,7 @@ void line_to_bar() {
     } else {
        half_complete = bar.line_to_bar();
         if (half_complete == false) {
+            print("transition complete\n");
             curr_chart = next_chart;
         }
     }

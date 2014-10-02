@@ -18,9 +18,8 @@ class Bar_Graph {
   
   //variables for transition
   int phase;
-  float[] dum_x;
   float[] dum_y;
-  float dum_width, dum_height; //width correlates to xspacing/2, 
+  float dum_width; //width correlates to xspacing/2, 
 
   Bar_Graph(Data parsed) {
     data = parsed;
@@ -37,7 +36,8 @@ class Bar_Graph {
     draw_axes();
     draw_axes_titles();
     get_y_coords();
-    draw_bars(x_coords, y_coords, x_spacing/2, canvas_y2);
+    //draw_bars();
+    draw_bars(x_coords, y_coords, x_spacing/2);
   }
     
   void make_canvas() {
@@ -128,58 +128,85 @@ class Bar_Graph {
     
   }
   
-  void draw_bars(float x[], float y[]) {
-        y_coords = new float[0];
-        float max_height = num_intervals*interval;
-        
+  void draw_bars(float[] x, float[] y, float w) {
+        float h = 0;
+        //print("in draw bars, dum width: ", w, "\ngoal: ", x_spacing/2, "\n");
         for (int i = 0; i < data.name.length; i++) {
-            if (i == isect) {
-              fill(0, 0, 255);
-              //rect(x_coords[i]-(x_spacing/4), y_coords[i], x_spacing/2, canvas_y2 - y_coords[i]);
-              rect(x, y, w, h);
-              textSize(10);
-              textAlign(CENTER, CENTER);
-              text("(" + data.name[i] + ", " + data.values[0][i] + ")", x_coords[i], y_coords[i] - 10);
-              textAlign(BASELINE);
-            } else {
-              //strokeWeight(2);
+              if (phase == 0) {
+                  h = canvas_y2 - y[i];
+              } else if (phase == 1) {
+                  h = 1;
+              } else {
+                  h = dum_y[i];
+              }
               fill(200, 255, 200);
-              //rect(x_coords[i]-(x_spacing/4), y_coords[i], x_spacing/2, canvas_y2 - y_coords[i]);
-              rect(x[i], y[i], w, canvas_y2 - y[i]);
-            }
-            
+              // rect(x_coords[i]-(x_spacing/4), y_coords[i], x_spacing/2, canvas_y2 - y_coords[i]);
+              rect(x[i]-(w/4), y[i], w, h);   
         }
   }
   
-  boolean line_to_bar() {
-    if (phase == 0) {
-        phase += set_dummy();
-    } else if (phase == 1) {
-        phase += shrink_lines();
-    } else if (phase == 2) {
-        phase += shrink_points();
-    } else {
-        phase = 0;
-        return true;
-    }
-        
+  boolean line_to_bar() {  
     make_canvas(); 
     draw_axes();
     draw_axes_titles();
-    draw_points(dum_radius);
-    draw_line(x_coords, y_coords, dum_x, dum_y);
+    get_y_coords();
     
-    return false;
+    if (phase == 0) {
+        phase += set_dummy();
+    } else if (phase == 1) {
+        print("expanding points\n");
+        phase += expand_point();
+    } else if (phase == 2) {
+        print("filling bar\n");
+        phase += fill_bar();
+    } else {
+        phase = 0;
+        return false;
+    }
+
+    draw_bars(x_coords, y_coords, dum_width);
+    
+    return true;
   }
   
   int set_dummy() {
-    for(int i = 0; i < num_points; i++) {
-      dum_x[i] = x_coords[i];
+    dum_y = new float[num_points];
+    
+    for (int i = 0; i < num_points; i++) {
       dum_y[i] = y_coords[i];
     }
-    
-    dum_width = x_spacing/2;
+   
+    dum_width = 0;
+    return 1;
+  }
   
+  int expand_point() {
+    dum_width = lerp(dum_width, (x_spacing/2), .05);
+    if(dum_width > x_spacing/2 - .1) {
+        return 1;
+    } else {
+        return 0;
+    }
+  }
+  
+  int fill_bar() {
+    for(int i = 0; i < num_points; i++) {
+      dum_y[i] = lerp(dum_y[i], canvas_y2 - y_coords[i], .1);
+    }
+    
+    boolean all_same = true;
+    for(int i = 0; i < num_points; i++) {
+      if((int)dum_y[i] != (int)(canvas_y2 - y_coords[i])) {
+           all_same = false;
+      }
+    }
+     
+     if(all_same) {
+       return 1;
+     } else {
+       return 0;
+     }
+  }
   
   
   void bar_intersect(int mousex, int mousey) {
