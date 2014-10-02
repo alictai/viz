@@ -1,6 +1,6 @@
 //pie & line - Ali
 //pie & bar - Matt
-//bar & line - Kurt
+//bar & line - Kirk
 
 int screenWidth = 600;
 int screenHeight = 800;
