@@ -155,6 +155,12 @@ class Line_Graph {
         phase += shrink_points();
     } else {
         phase = 0;
+        //Creates blank frame if draw functions still not called in here
+        make_canvas(); 
+        draw_axes();
+        draw_axes_titles();
+        draw_points(dum_radius);
+        draw_line(x_coords, y_coords, dum_x, dum_y);
         return true;
     }
         

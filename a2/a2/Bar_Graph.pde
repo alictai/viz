@@ -162,6 +162,7 @@ class Bar_Graph {
         phase += fill_bar();
     } else {
         phase = 3;
+        draw_bars(dum_width);
         return false;
     }
     
@@ -225,6 +226,7 @@ class Bar_Graph {
         phase -= expand_points();
     } else {
         phase = 0;
+        draw_bars(dum_width);
         return true;
     }
     
