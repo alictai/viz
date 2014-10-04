@@ -109,6 +109,11 @@ class Pie_Chart {
    
    boolean pie_to_bar() {
      //needs to return true
+     //plan:
+     //  move centers of wedges spread across canvas
+     //  rotate so all wedges face up
+     //  blockify wedges as they get to the proper height?
+     
        make_canvas(); 
        find_angles();
        draw_chart(width/2, height/2, angles);
