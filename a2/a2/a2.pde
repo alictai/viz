@@ -79,7 +79,8 @@ void draw_transition() {
              curr_chart = next_chart;
         } else if (next_chart == "Bar Chart") {
              print ("pie to bar\n");
-             curr_chart = next_chart;
+             pie_to_bar();
+             //curr_chart = next_chart;
         } 
     }
 }
@@ -100,9 +101,9 @@ void line_to_bar() {
 void bar_to_line() {
     if (half_complete == false) {
         print("half complete is false, calling bar to line\n");
-       half_complete = bar.bar_to_line();
+        half_complete = bar.bar_to_line();
     } else {
-      print("half complete is true, calling bar to line\n");
+       print("half complete is true, calling bar to line\n");
        //half_complete = line.bar_to_line();
        
        //REMOVE - for testing only
@@ -115,6 +116,21 @@ void bar_to_line() {
     }
     
 }
+
+void pie_to_bar() {
+  if (half_complete == false) {
+      print("Doing pie to bar\n");
+      half_complete = pie.pie_to_bar();
+  } else {
+      print("Doing bar to pie\n");
+      //half_complete = bar.pie_to_bar();
+      half_complete = false;
+      if (half_complete == false) {
+         curr_chart = next_chart;
+      }
+  }
+}
+
 
 void draw_buttons() {
     line_button.draw_button(width/4, height-30);

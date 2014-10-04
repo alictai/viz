@@ -10,8 +10,13 @@ class Pie_Chart {
   int canvas_w, canvas_h;
   int isect;
   float[] angles;
+  
+  //variables for transition
+  int phase;
+  float[] dum_angles;
 
   Pie_Chart(Data parsed) {
+    phase = 0;
     data = parsed;
     y_max = max(data.values[0]);
     num_points = data.name.length;
@@ -21,7 +26,7 @@ class Pie_Chart {
   void draw_graph() {
     make_canvas(); 
     find_angles();
-    draw_chart();
+    draw_chart(width/2, height/2, angles);
   }
 
   void make_canvas() {
@@ -46,7 +51,7 @@ class Pie_Chart {
     }
   }
 
-  void draw_chart() {
+  void draw_chart(int x, int y, float[] ang_to_draw) {
     float lastAngle = 0;
     float diameter;
     if (width > height) {
@@ -56,21 +61,25 @@ class Pie_Chart {
     }
 
     for (int i = 0; i < data.values[0].length; i++) {
+      //find gray colors, draw arcs
       float gray = map(i, 0, data.values[0].length, 0, 255);
       fill(gray);
-      arc(width/2, height/2, diameter, diameter, lastAngle, lastAngle+radians(angles[i]));
+      arc(x, y, diameter, diameter, lastAngle, lastAngle+radians(ang_to_draw[i]));
       lastAngle += radians(angles[i]);
 
+      //translate for words
       translate(width/2, height/2);
       rotate(lastAngle - radians(angles[i]/2));
       translate(diameter/2 + 10, 0);
 
+      //print words
       fill(200, 150, 200);
       textSize(15);
       textAlign(BASELINE);
       String label = data.name[i] + ", " + str(data.values[0][i]);
       text(label, 0, 0); 
 
+      //un-translate
       translate(-diameter/2 - 10, 0);
       rotate(-lastAngle + radians(angles[i]/2));
       translate(-width/2, -height/2);
@@ -97,5 +106,17 @@ class Pie_Chart {
    isect = -1;
    }
    }*/
+   
+   boolean pie_to_bar() {
+     //needs to return true
+       make_canvas(); 
+       find_angles();
+       draw_chart(width/2, height/2, angles);
+     
+       return true;
+     
+     
+   }
 }
+
 
