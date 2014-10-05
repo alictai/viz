@@ -148,13 +148,13 @@ class Line_Graph {
   
   boolean line_to_bar() {
     if (phase == 0) {
-        phase += set_dummy();
+        phase += set_ltob_dummy();
     } else if (phase == 1) {
         phase += shrink_lines();
     } else if (phase == 2) {
         phase += shrink_points();
     } else {
-        phase = 0;
+        phase = 3;
         //Creates blank frame if draw functions still not called in here
         make_canvas(); 
         draw_axes();
@@ -173,7 +173,7 @@ class Line_Graph {
     return false;
   }
   
-  int set_dummy() {
+  int set_ltob_dummy() {
       dum_y = new float[num_points];
       dum_x = new float[num_points];
       dum_radius = radius;
@@ -216,6 +216,50 @@ class Line_Graph {
       } else {
         return 0;
       }
+  }
+  
+   
+  boolean bar_to_line() {
+    if (phase == 3) {
+        phase -= set_btol_dummy();
+    } else if (phase == 2) {
+        phase -= expand_points();
+    } else if (phase == 1) {
+        phase -= expand_lines();
+    } else {
+        phase = 0;
+        return false;
+    }
+        
+    make_canvas(); 
+    draw_axes();
+    draw_axes_titles();
+    draw_points(dum_radius);
+    draw_line(x_coords, y_coords, dum_x, dum_y);
+    
+    return true;
+  }
+  
+  int set_btol_dummy() {
+      dum_y = new float[num_points];
+      dum_x = new float[num_points];
+      dum_radius = radius;
+    
+      for(int i = 0; i < num_points; i++) {
+          dum_y[i] = y_coords[i];
+          dum_x[i] = x_coords[i];
+      }
+      return 1;
+    
+  }
+  
+  int expand_points() {
+    
+    return 1;
+  }
+  
+  int expand_lines() {
+    return 1;
   }
   
   void point_intersect(int mousex, int mousey) {

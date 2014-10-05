@@ -220,13 +220,12 @@ class Bar_Graph {
         phase -= set_btol_dummy();
     } else if (phase == 2) {
         print("shrinking bars\n");
-        phase -= shrink_bars();
+        phase -= shrink_bar();
     } else if (phase == 1) {
-        print("expanding points\n");
-        phase -= expand_points();
+        print("shrinking points\n");
+        phase -= shrink_point();
     } else {
         phase = 0;
-        draw_bars(dum_width);
         return true;
     }
     
@@ -246,7 +245,7 @@ class Bar_Graph {
     return 1;
  }
   
- int shrink_bars() {
+ int shrink_bar() {
     for(int i = 0; i < num_points; i++) {
       dum_y[i] = lerp(dum_y[i], 1, .1);
     }
@@ -265,8 +264,13 @@ class Bar_Graph {
     }
  }
  
- int expand_points() {
-   return 1;
+ int shrink_point() {
+   dum_width = lerp(dum_width, 0, .05);
+    if(dum_width < .1) {
+        return 1;
+    } else {
+        return 0;
+    }
  }
 
 }  
