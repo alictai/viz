@@ -132,7 +132,7 @@ class Bar_Graph {
         float h = 0;
         //print("in draw bars, dum width: ", w, "\ngoal: ", x_spacing/2, "\n");
         for (int i = 0; i < data.name.length; i++) {
-              //phase 0 and phase 3 are between transition states
+              //phase 0 and phase 3 are resting states
               if (phase == 0 || phase == 3) {
                   h = canvas_y2 - y_coords[i];
               } else if (phase == 1) {
@@ -229,7 +229,9 @@ class Bar_Graph {
         return true;
     }
     
-    draw_bars(dum_width);
+    if (phase != 0) {
+      draw_bars(dum_width);
+    }
     
     return false;
   }

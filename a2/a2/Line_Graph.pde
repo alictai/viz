@@ -154,7 +154,7 @@ class Line_Graph {
     } else if (phase == 2) {
         phase += shrink_points();
     } else {
-        phase = 3;
+        phase = 0;
         //Creates blank frame if draw functions still not called in here
         make_canvas(); 
         draw_axes();
@@ -220,14 +220,19 @@ class Line_Graph {
   
    
   boolean bar_to_line() {
-    if (phase == 3) {
-        phase -= set_btol_dummy();
-    } else if (phase == 2) {
-        phase -= expand_points();
+    if (phase == 0) {
+        phase += set_btol_dummy();
     } else if (phase == 1) {
-        phase -= expand_lines();
+        phase += expand_points();
+    } else if (phase == 2) {
+        phase += expand_lines();
     } else {
         phase = 0;
+        make_canvas(); 
+        draw_axes();
+        draw_axes_titles();
+        draw_points(dum_radius);
+        draw_line(x_coords, y_coords, dum_x, dum_y);
         return false;
     }
         
@@ -243,23 +248,47 @@ class Line_Graph {
   int set_btol_dummy() {
       dum_y = new float[num_points];
       dum_x = new float[num_points];
-      dum_radius = radius;
+      dum_radius = 1;
     
-      for(int i = 0; i < num_points; i++) {
-          dum_y[i] = y_coords[i];
-          dum_x[i] = x_coords[i];
+      for(int i = 1; i < num_points; i++) {
+          dum_y[i] = y_coords[i-1];
+          dum_x[i] = x_coords[i-1];
       }
       return 1;
     
   }
   
   int expand_points() {
-    
-    return 1;
+     dum_radius = lerp(dum_radius, radius, .05);
+      //print(dum_radius, "\n");
+
+      if(dum_radius > radius - .1) {
+        return 1;
+      } else {
+        return 0;
+      }
   }
   
   int expand_lines() {
-    return 1;
+    for(int i = 0; i < num_points; i++) {
+         dum_y[i] = lerp(dum_y[i], y_coords[i], .1);
+         dum_x[i] = lerp(dum_x[i], x_coords[i], .1);
+     }
+     
+     boolean all_same = true;
+     for(int i = 0; i < num_points; i++) {
+         if(dum_y[i] < y_coords[i]-.2) {
+             all_same = false;
+         } else if (dum_x[i] < x_coords[i]-.2) {
+             all_same = false;
+         }
+     }
+     
+     if(all_same) {
+       return 1;
+     } else {
+       return 0;
+     }
   }
   
   void point_intersect(int mousex, int mousey) {

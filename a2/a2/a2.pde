@@ -104,11 +104,8 @@ void bar_to_line() {
         half_complete = bar.bar_to_line();
     } else {
        print("half complete is true, calling bar to line\n");
-       //half_complete = line.bar_to_line();
-       
-       //REMOVE - for testing only
-       half_complete = false; 
-       // ********
+       half_complete = line.bar_to_line();
+  
         if (half_complete == false) {
              print("transition complete\n");
             curr_chart = next_chart;
