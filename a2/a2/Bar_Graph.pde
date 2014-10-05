@@ -36,7 +36,6 @@ class Bar_Graph {
     draw_axes();
     draw_axes_titles();
     get_y_coords();
-    //draw_bars();
     draw_bars(x_spacing/2);
   }
     
