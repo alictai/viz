@@ -514,9 +514,8 @@ class Pie_Chart {
        return 1;
    }
    
-   boolean line_to_pie(float[] ys, float[] xs) {
-     print("PIE.line to pie\n");
-     return false;
+   boolean line_to_pie(float[] y_coords, float[] x_coords) {
+     return bar_to_pie(y_coords, x_coords);
    }
 }
 
