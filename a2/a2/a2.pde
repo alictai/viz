@@ -28,6 +28,7 @@ void setup() {
    line = new Line_Graph(data);
    bar = new Bar_Graph(data);
    pie = new Pie_Chart(data);
+   rose = new Rose_Chart(data);
    half_complete = false;
    line_to_bar = false;
 }
