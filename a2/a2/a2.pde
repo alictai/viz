@@ -2,7 +2,7 @@
 //pie & bar - Matt
 //bar & line - Kirk
 
-int screenWidth = 600;
+int screenWidth = 1000;
 int screenHeight = 800;
 String curr_chart;
 String next_chart;
@@ -20,7 +20,7 @@ void setup() {
    size(screenWidth, screenHeight);
    background(255, 255, 255);
    data = new Data();
-   data.parse("Dataset1.csv");
+   data.parse("dataset1.csv");
    if (frame!=null) { frame.setResizable(true); }
    buttons_set();
    curr_chart = "Line Graph";
@@ -61,25 +61,25 @@ void draw_transition() {
             line_to_bar();
             //curr_chart = next_chart;
         } else if (next_chart == "Pie Chart") {
-            print ("line to pie\n");
+            //print ("line to pie\n");
             curr_chart = next_chart;
         }
     } else if (curr_chart == "Bar Chart") {
         if (next_chart == "Line Graph") {
-            print("bar to line\n");
+            //print("bar to line\n");
             bar_to_line();
             //curr_chart = next_chart;
         } else if (next_chart == "Pie Chart") {
-            print("bar to pie\n");
+            //print("bar to pie\n");
             curr_chart = next_chart;
         }
     } else if (curr_chart == "Pie Chart") {
         if (next_chart == "Line Graph") {
-             print("pie to line\n");
+             //print("pie to line\n");
              pie_to_line();
              //curr_chart = next_chart;
         } else if (next_chart == "Bar Chart") {
-             print ("pie to bar\n");
+             //print ("pie to bar\n");
              pie_to_bar();
              //curr_chart = next_chart;
         } 
@@ -92,7 +92,7 @@ void line_to_bar() {
     } else {
        half_complete = bar.line_to_bar();
         if (half_complete == false) {
-            print("transition complete\n");
+            //print("transition complete\n");
             curr_chart = next_chart;
         }
     }
@@ -101,14 +101,12 @@ void line_to_bar() {
 //need to finish this transition
 void bar_to_line() {
     if (half_complete == false) {
-        print("half complete is false, calling bar to line\n");
+        //print("half complete is false, calling bar to line\n");
         half_complete = bar.bar_to_line();
     } else {
-       print("half complete is true, calling bar to line\n");
+       //print("half complete is true, calling bar to line\n");
        half_complete = line.bar_to_line();
-  
         if (half_complete == false) {
-             print("transition complete\n");
             curr_chart = next_chart;
         }
     }
@@ -117,12 +115,9 @@ void bar_to_line() {
 
 void pie_to_bar() {
   if (half_complete == false) {
-      print("Doing pie to bar\n");
-      half_complete = pie.pie_to_bar();
+      half_complete = pie.pie_to_bar(line.get_y(), line.get_x());
   } else {
-      print("Doing bar to pie\n");
-      //half_complete = bar.pie_to_bar();
-      half_complete = false;
+      half_complete = bar.pie_to_bar();
       if (half_complete == false) {
          curr_chart = next_chart;
       }

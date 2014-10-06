@@ -94,7 +94,7 @@ class Pie_Chart {
           } else if (shrink && !spread && !rotate) {
               arc(width/2, height/2, dum_dia, dum_dia, lastAngle, lastAngle + radians(angles[i]));
           } else if (shrink && spread && !rotate) {
-              arc(spread_loc[i], height/2, dum_dia, dum_dia, lastAngle, lastAngle + radians(angles[i]));
+              arc(spread_loc[i], dum_height[i], dum_dia, dum_dia, lastAngle, lastAngle + radians(angles[i]));
           } else {//(shrink && spread && rotate)
               arc(spread_loc[i], dum_height[i], dum_dia, dum_dia, dum_last_ang[i], dum_last_ang[i] + radians(angles[i]));
           }
@@ -104,8 +104,9 @@ class Pie_Chart {
   }
   
   void draw_words(color c, float lastAngle, int i) {
+      //translate
       translate(width/2, height/2);
-      rotate(lastAngle - radians(angles[i]/2));
+      rotate(lastAngle + radians(angles[i]/2));
       translate(diameter/2 + 10, 0);
 
       //print words
@@ -117,45 +118,9 @@ class Pie_Chart {
 
       //un-translate
       translate(-diameter/2 - 10, 0);
-      rotate(-lastAngle + radians(angles[i]/2));
+      rotate(-lastAngle - radians(angles[i]/2));
       translate(-width/2, -height/2);
   }
-    
-
-
-
-
-/*
-  void draw_chart() {
-    float lastAngle = 0;
-    find_diameter();
-
-    for (int i = 0; i < data.values[0].length; i++) {
-      //find gray colors, draw arcs
-      float gray = map(i, 0, data.values[0].length, 0, 255);
-      fill(gray);
-      arc(width/2, height/2, diameter, diameter, lastAngle, lastAngle+radians(angles[i]));
-      lastAngle += radians(angles[i]);
-
-      //translate for words
-      translate(width/2, height/2);
-      rotate(lastAngle - radians(angles[i]/2));
-      translate(diameter/2 + 10, 0);
-
-      //print words
-      fill(text_color);
-      textSize(15);
-      textAlign(BASELINE);
-      String label = data.name[i] + ", " + str(data.values[0][i]);
-      text(label, 0, 0); 
-
-      //un-translate
-      translate(-diameter/2 - 10, 0);
-      rotate(-lastAngle + radians(angles[i]/2));
-      translate(-width/2, -height/2);
-    }
-  }
-  */
   
   void find_diameter() {
     if (width > height) {
@@ -164,29 +129,8 @@ class Pie_Chart {
       diameter = width/2;
     }
   }
-
-  /*void point_intersect(int mousex, int mousey) {
-   boolean intersection = false;
    
-   for (int i = 0; i < data.name.length; i++) {
-   float posx = x_coords[i];
-   float posy = y_coords[i];
-   float radius = 5;
-   
-   float distance = sqrt((mousex - posx) * (mousex - posx) + 
-   (mousey - posy) * (mousey - posy));
-   if (distance < radius) {
-   isect = i;
-   intersection = true;
-   }
-   }
-   
-   if (intersection == false) {
-   isect = -1;
-   }
-   }*/
-   
-   boolean pie_to_bar() {
+   boolean pie_to_bar(float[] y_coords, float[] x_coords) {
      //needs to return true at end
      //  blockify wedges as they get to the proper height?
      
@@ -197,7 +141,7 @@ class Pie_Chart {
      } else if (phase == 2) {       //shrink graph
          phase += shrink_graph();
      } else if (phase == 3) {       //spread out wedges
-         phase += spread_wedges();  //put in a phase that blends 3 and 4? returns 1 when 3 returns 1
+         phase += spread_wedges(y_coords, x_coords);  //put in a phase that blends 3 and 4? returns 1 when 3 returns 1
      } else if (phase == 4) {       //rotate wedges
          phase += rotate_wedges();
      } else {
@@ -214,13 +158,13 @@ class Pie_Chart {
    
    boolean pie_to_line(float[] y_coords, float[] x_coords) {
      if (phase == 0) {              //initialize
-         phase += set_ptob_dummy();
+         phase += set_ptol_dummy();
      } else if (phase == 1) {       //white out words
          phase += change_text_col();
-     } else if (phase == 2) {       //shrink graph
-         phase += shrink_graph();
-     } else if (phase == 3) {       //spread out wedges
-         phase += spread_wedges();
+     } else if (phase == 2) {
+         phase += 1; //skip phase
+     } else if (phase == 3) {
+         phase += 1; //skip phase
      } else if (phase == 4) {
          phase += spread_to_line(y_coords, x_coords);
      } else {
@@ -233,6 +177,28 @@ class Pie_Chart {
      draw_chart();
      
      return false;
+   }
+   
+   int set_ptol_dummy() {
+       dum_text_color = text_color;
+       dum_dia = diameter;
+       dum_dia_target = 150;
+       dum_angles = new float[data.values[0].length];
+       dum_last_ang = new float[data.values[0].length];
+       spread_loc = new float[data.values[0].length];
+       dum_height = new float[data.values[0].length];
+       float ang_trak = 0;
+       
+       for(int i = 0; i < data.values[0].length; i++) {
+           dum_angles[i] = angles[i];
+           dum_last_ang[i] = ang_trak;
+           spread_loc[i] = width/2;
+           dum_height[i] = height/2;
+           
+           ang_trak += radians(dum_angles[i]);
+       }
+     
+       return 1;
    }
    
    int set_ptob_dummy() {
@@ -285,24 +251,26 @@ class Pie_Chart {
        }
    }
    
-   int spread_wedges() {
-     float dest;
+   int spread_wedges(float[] y_coords, float[] x_coords) {
+     //dum_dia = lerp(dum_dia, 1, .05);
      
      for (int i = 0; i < spread_loc.length; i++) {
-         dest = map(i, 0, spread_loc.length, canvas_x1 - 30, canvas_x2 + 30);
-         spread_loc[i] = lerp(spread_loc[i], dest, .05);
+         spread_loc[i] = lerp(spread_loc[i], x_coords[i], .05);
+         dum_height[i] = lerp(dum_height[i], y_coords[i], .05);
+         angles[i] = lerp(angles[i], 0, .05);
      }  
       
-     if (spread_loc[0] < canvas_x1 + .2) {
-       return 1;
-     } else {
-       return 0;
-     }
+     for (int k = 0; k < dum_height.length; k++) {
+         if (int(dum_height[k]) != int(y_coords[k])) {
+              return 0; 
+         }
+      }
+      return 1;
    }
    
    int spread_to_line(float[] y_coords, float[] x_coords) {
-      dum_dia = lerp(dum_dia, 1, .05);
-      
+     dum_dia = lerp(dum_dia, 1, .05); 
+     
       for (int i = 0; i < dum_height.length; i++) {
          dum_height[i] = lerp(dum_height[i], y_coords[i], .05);
          spread_loc[i] = lerp(spread_loc[i], x_coords[i], .05);
@@ -319,6 +287,7 @@ class Pie_Chart {
    
    //TODO: make it so the wedges are symmetrical on the y-axis - subtract arc length/2
    int rotate_wedges() {
+       dum_dia = lerp(dum_dia, 1, .02);
        int count = 0;
        for (int i = 0; i < dum_last_ang.length; i++) {
            dum_last_ang[i] = lerp(dum_last_ang[i], 3 * HALF_PI, .04);
