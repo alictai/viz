@@ -114,18 +114,18 @@ class Pie_Chart {
       for (int i = 0; i < data.values[0].length; i++) {
           float gray = map(i, 0, data.values[0].length, 0, 255);
           fill(150, gray, 150);
-    
+         
           if(!shrink && !spread && !rotate && !collapse) {
-              arc(width/2, height/2, diameter, diameter, lastAngle, lastAngle + radians(angles[i]));
+              arc(width/2, height/2, diameter, diameter, lastAngle, lastAngle + radians(angles[i]), PIE);
               draw_words(text_c, lastAngle, i);
           } else if (shrink && !spread && !rotate && !collapse) {
-              arc(width/2, height/2, dum_dia, dum_dia, lastAngle, lastAngle + radians(angles[i]));
+              arc(width/2, height/2, dum_dia, dum_dia, lastAngle, lastAngle + radians(angles[i]), PIE);
           } else if (shrink && spread && !rotate && !collapse) {
-              arc(spread_loc[i], dum_height[i], dum_dia, dum_dia, lastAngle, lastAngle + radians(angles[i]));
+              arc(spread_loc[i], dum_height[i], dum_dia, dum_dia, lastAngle, lastAngle + radians(angles[i]), PIE);
           } else if (shrink && spread && rotate && !collapse) {
-              arc(spread_loc[i], dum_height[i], dum_dia, dum_dia, dum_last_ang[i], dum_last_ang[i] + radians(angles[i]));
+              arc(spread_loc[i], dum_height[i], dum_dia, dum_dia, dum_last_ang[i], dum_last_ang[i] + radians(angles[i]), PIE);
           } else {//(shrink && spread && rotate && collapse)
-              arc(spread_loc[i], dum_height[i], dum_dia, dum_dia, dum_last_ang[i], radians(dum_angles[i]));
+              arc(spread_loc[i], dum_height[i], dum_dia, dum_dia, dum_last_ang[i], radians(dum_angles[i]), PIE);
               //print("This one, right?\n");
               //print(spread_loc[i], ", ", dum_height[i], ", ", dum_dia, ", ", dum_last_ang[i], ", ", dum_angles[i], "\n");
           }
