@@ -167,6 +167,7 @@ class Line_Graph {
       //Creates blank frame if draw functions still not called in here
       
       make_canvas(); 
+      calc_y_interval();
       draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
       draw_axes_labels(axes_color);
       draw_axes_titles();
@@ -240,6 +241,7 @@ class Line_Graph {
     } else {
       phase = 0;
       make_canvas(); 
+      calc_y_interval();
       draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
       draw_axes_labels(axes_color);
       draw_axes_titles();

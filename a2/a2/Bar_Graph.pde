@@ -153,10 +153,8 @@ class Bar_Graph {
     if (phase == 0) {
         phase += set_ltob_dummy();
     } else if (phase == 1) {
-        //print("expanding points\n");
         phase += expand_point();
     } else if (phase == 2) {
-        //print("filling bar\n");
         phase += fill_bar();
     } else {
         phase = 0;
@@ -258,11 +256,7 @@ class Bar_Graph {
         //print("shrinking bars\n");
         phase += shrink_bar();
     } else if (phase == 2) {
-        //print("shrinking points\n");
-        //phase += shrink_point();
-        //SHOULD BE
-        //phase += shrink_axes();
-        phase++;
+        phase += shrink_axes();
     } else {
         phase = 0;
         return true;
@@ -278,6 +272,10 @@ class Bar_Graph {
  int set_btol_dummy() {
     dum_y = new float[num_points];
     dum_heights = new float[num_points];
+    dum_y_x = canvas_x1;
+    dum_y_y = canvas_y2;
+    dum_x_x = canvas_x2;
+    dum_x_y = canvas_y2;
     
     for (int i = 0; i < num_points; i++) {
       dum_y[i] = canvas_y2 - y_coords[i];
@@ -350,8 +348,8 @@ class Bar_Graph {
      dum_y = new float[num_points];
      dum_heights = new float[num_points];
      dum_y_x = canvas_x1;
-     dum_y_y = canvas_y1;
-     dum_x_x = canvas_x1;
+     dum_y_y = canvas_y2;
+     dum_x_x = canvas_x2;
      dum_x_y = canvas_y2;
      dum_color = color(255, 255, 255);
      dum_width = get_w();
@@ -369,6 +367,17 @@ class Bar_Graph {
       dum_y_y = lerp(dum_y_y, canvas_y2, .05);
       
       if (int(dum_x_x) + 1 >= int(canvas_x2)) {
+          return 1;
+      } else {
+          return 0;
+      }
+  }
+  
+  int shrink_axes() {
+      dum_x_x = lerp(dum_x_x, canvas_x1, .05);
+      dum_y_y = lerp(dum_y_y, canvas_y1, .05);
+      
+      if (int(dum_x_x) + 1 <= int(canvas_x1)) {
           return 1;
       } else {
           return 0;
