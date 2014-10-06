@@ -131,18 +131,14 @@ class Bar_Graph {
           float ratio = data.values[0][i]/max_height;
           y_coords = append(y_coords, (float(canvas_h)-(float(canvas_h)*ratio))+canvas_y1);
           heights = append(heights, canvas_y2 - ((float(canvas_h)-(float(canvas_h)*ratio))+canvas_y1));
-          //println(heights);
       }
     
   }
   
   void draw_bars(float w, float[] hs) {
-        //print("in draw bars, dum width: ", w, "\ngoal: ", x_spacing/2, "\n");
         for (int i = 0; i < data.name.length; i++) {
-              //fill(200, 255, 200);
               float gray = map(i, 0, data.values[0].length, 0, 255);
               fill(150, gray, 150);
-              // rect(x_coords[i]-(x_spacing/4), y_coords[i], x_spacing/2, canvas_y2 - y_coords[i]);
               rect(x_coords[i]-(w/4), y_coords[i], w, hs[i]);   
         }
   }
@@ -221,7 +217,7 @@ class Bar_Graph {
   }
   
   boolean bar_to_line() {  
-    print("phase is ", phase, "\n");
+    //print("phase is ", phase, "\n");
     make_canvas(); 
     draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
     draw_axes_labels(axes_color);
@@ -249,7 +245,7 @@ class Bar_Graph {
   }
   
   boolean bar_to_pie() {  
-    print("phase is ", phase, "\n");
+    //print("phase is ", phase, "\n");
     make_canvas(); 
     draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
     draw_axes_labels(axes_color);
@@ -323,18 +319,11 @@ class Bar_Graph {
  
  boolean pie_to_bar() {
     make_canvas(); 
-    draw_axes(dum_x_x, dum_x_y, dum_y_x, dum_y_y);
-    draw_axes_labels(dum_color);
-    draw_axes_titles();
     get_y_coords();
-
+        
     if (phase == 0) {
         phase += set_ptob_dummy();
-        dum_width = x_spacing/2;
     } else if (phase == 1) {
-        //print("expanding points\n");
-        //phase += expand_point();
-        //dum_width = x_spacing/2;
         phase += fill_bar();
     } else if (phase < 4) {
         //print("filling bar\n");
@@ -343,13 +332,16 @@ class Bar_Graph {
     } else {
         phase = 0;
         make_canvas(); 
-        draw_axes(dum_x_x, dum_x_y, dum_y_x, dum_y_y);
+        get_y_coords();
+        draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
         draw_axes_labels(axes_color);
         draw_axes_titles();
-        get_y_coords();
+        draw_bars(x_spacing/2, heights);
         return false;
     }
-    
+
+    draw_axes(dum_x_x, dum_x_y, dum_y_x, dum_y_y);
+    draw_axes_labels(dum_color);
     draw_bars(dum_width, dum_heights);
     return true;
  }
@@ -362,13 +354,13 @@ class Bar_Graph {
      dum_x_x = canvas_x1;
      dum_x_y = canvas_y2;
      dum_color = color(255, 255, 255);
+     dum_width = get_w();
     
     for (int i = 0; i < num_points; i++) {
       dum_y[i] = 0;
       dum_heights[i] = canvas_y2 - y_coords[i];
     }
-   
-    dum_width = 0;
+
     return 1;
  }
  

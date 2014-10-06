@@ -89,16 +89,16 @@ class Pie_Chart {
         //make_chart(text color,     wedge locations, wedge rotation)
         //make_chart(color text_c,   bool spreading,  bool rotating)
       if((phase == 0) || (phase == 1)) { //just coming out of bar & initialize
-          print("Phase is zero, calling make\n");
+          //print("Phase is zero, calling make\n");
           make_chart(255, true, true, true, true);
       } else if (phase == 2) {  //expand wedges
-          print("Phase is one, calling make\n");
+          //print("Phase is one, calling make\n");
           make_chart(255, true, true, true, true);
       } else if (phase == 3) {  //wedges rotate back home
-          print("Phase is two, calling make\n");
+          //print("Phase is two, calling make\n");
           make_chart(255, true, true, true, false);
       } else if (phase == 4) {  //wedges reconvene
-          print("Phase is three, calling make\n");
+          //print("Phase is three, calling make\n");
           make_chart(255, true, true, false, false);
       } else if (phase == 5) {  //graph expands
           make_chart(255, true, false, false, false);
@@ -488,7 +488,7 @@ class Pie_Chart {
          }
       }
       
-      print(count, "\n");
+      //print(count, "\n");
      
       if(count > 0) {
         return 1;
@@ -498,7 +498,7 @@ class Pie_Chart {
    }
    
    int shrink_wedges(float bar_w) {
-       print("BAR WIDTH: ", bar_w, "\n");
+       //print("BAR WIDTH: ", bar_w, "\n");
        dum_dia = lerp(dum_dia, -4, .02);
        
        if(dum_dia < bar_w*2) {
