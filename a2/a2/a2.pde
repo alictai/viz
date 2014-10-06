@@ -20,7 +20,7 @@ void setup() {
    size(screenWidth, screenHeight);
    background(255, 255, 255);
    data = new Data();
-   data.parse("Dataset2.csv");
+   data.parse("Dataset1.csv");
    if (frame!=null) { frame.setResizable(true); }
    buttons_set();
    curr_chart = "Line Graph";
