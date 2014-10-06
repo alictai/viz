@@ -145,7 +145,7 @@ class Pie_Chart {
      } else if (phase == 4) {       //rotate wedges
          phase += rotate_wedges();
      } else {
-       phase = 0;
+       phase = 4;
        return true;
      }
 
@@ -168,7 +168,7 @@ class Pie_Chart {
      } else if (phase == 4) {
          phase += spread_to_line(y_coords, x_coords);
      } else {
-       phase = 0;
+       phase = 4;
        return true;
      }
 
@@ -228,9 +228,9 @@ class Pie_Chart {
      float tempG = green(dum_text_color);
      float tempB = blue(dum_text_color);
      
-     if(tempR < 255) {tempR++;}
-     if(tempG < 255) {tempG++;}
-     if(tempB < 255) {tempB++;}
+     if(tempR < 255) {tempR += 5;}
+     if(tempG < 255) {tempG += 5;}
+     if(tempB < 255) {tempB += 5;}
      
      dum_text_color = color(tempR, tempG, tempB);
      
@@ -302,6 +302,11 @@ class Pie_Chart {
        } else {
          return 1;
        }
+   }
+   
+   boolean line_to_pie(float[] ys, float[] xs) {
+     print("PIE.line to pie\n");
+     return false;
    }
 }
 

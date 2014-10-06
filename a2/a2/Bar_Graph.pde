@@ -17,12 +17,14 @@ class Bar_Graph {
   int shown_intervals;
   float dum_x_x, dum_x_y, dum_y_x, dum_y_y;
   float[] heights;
+  color axes_color;
   
   //variables for transition
   int phase;
   float[] dum_y;
   float dum_width; //width correlates to xspacing/2, 
   float[] dum_heights;
+  color dum_color;
 
   Bar_Graph(Data parsed) {
     data = parsed;
@@ -33,11 +35,13 @@ class Bar_Graph {
     isect = -1;
     phase = 0;
     heights = new float[0];
+    axes_color = color(0, 0, 0);
   }
   
   void draw_graph() {
     make_canvas(); 
     draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+    draw_axes_labels(axes_color);
     draw_axes_titles();
     get_y_coords();
     draw_bars(x_spacing/2, heights);
@@ -53,11 +57,14 @@ class Bar_Graph {
     canvas_h = canvas_y2 - canvas_y1;
   }
   
-  void draw_axes(float x_x, float x_y, float y_x, float y_y) {    
-    //Draw y axis
+  void draw_axes(float x_x, float x_y, float y_x, float y_y){
     fill(255, 255, 255);
-    line(canvas_x1, canvas_y1, y_x, y_y);
-    
+    line(canvas_x1, canvas_y1, y_x, y_y);  //y axis
+    line(canvas_x1, canvas_y2, x_x, x_y);  //x axis
+  }
+  
+  void draw_axes_labels(color c) {    
+    //Draw y axis
     num_intervals = int((y_max / interval) + 1);
     shown_intervals = num_intervals/10;
     for (int i = 0; i <= num_intervals; i += 1) {
@@ -65,7 +72,7 @@ class Bar_Graph {
         float pos_x = canvas_x1 - 15;
         
         if (shown_intervals == 0) {
-          fill(0,0,0);
+          fill(c);
           textSize(10);
           text(int(i*interval), pos_x, pos_y);
           shown_intervals = num_intervals/10;
@@ -76,8 +83,6 @@ class Bar_Graph {
     
     
     //Draw x axis
-    fill(255, 255, 255);
-    line(canvas_x1, canvas_y2, x_x, x_y);
     x_coords = new float[0];
     x_spacing = canvas_w/num_points;
     for (int i = 0; i < num_points; i += 1) {
@@ -89,7 +94,7 @@ class Bar_Graph {
         translate(pos_x + 10, pos_y);
         rotate(PI/2);
         
-        fill(0,0,0);
+        fill(c);
         textAlign(LEFT, CENTER);
         textSize(10);
         text(data.name[i], 0, 0);        
@@ -144,6 +149,7 @@ class Bar_Graph {
   boolean line_to_bar() {  
     make_canvas(); 
     draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+    draw_axes_labels(axes_color);
     draw_axes_titles();
     get_y_coords();
     
@@ -217,6 +223,7 @@ class Bar_Graph {
     print("phase is ", phase, "\n");
     make_canvas(); 
     draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+    draw_axes_labels(axes_color);
     draw_axes_titles();
     get_y_coords();
     
@@ -285,6 +292,7 @@ class Bar_Graph {
  boolean pie_to_bar() {
     make_canvas(); 
     draw_axes(dum_x_x, dum_x_y, dum_y_x, dum_y_y);
+    draw_axes_labels(dum_color);
     draw_axes_titles();
     get_y_coords();
 
@@ -292,14 +300,20 @@ class Bar_Graph {
         phase += set_ptob_dummy();
     } else if (phase == 1) {
         //print("expanding points\n");
-        phase += expand_point();
-    } else if (phase < 4) {
+        //phase += expand_point();
+        phase += 1;
+    } else if (phase < 5) {
         //print("filling bar\n");
         phase += expand_axes();
         phase += fill_bar();
+        phase += fade_in_labels();
     } else {
         phase = 0;
-        draw_bars(dum_width, y_coords);
+        make_canvas(); 
+        draw_axes(dum_x_x, dum_x_y, dum_y_x, dum_y_y);
+        draw_axes_labels(axes_color);
+        draw_axes_titles();
+        get_y_coords();
         return false;
     }
     
@@ -314,6 +328,7 @@ class Bar_Graph {
      dum_y_y = canvas_y1;
      dum_x_x = canvas_x1;
      dum_x_y = canvas_y2;
+     dum_color = color(255, 255, 255);
     
     for (int i = 0; i < num_points; i++) {
       dum_y[i] = 0;
@@ -333,6 +348,24 @@ class Bar_Graph {
       } else {
           return 0;
       }
+  }
+  
+  int fade_in_labels() {
+     float tempR = red(dum_color);
+     float tempG = green(dum_color);
+     float tempB = blue(dum_color);
+     
+     if(tempR > 0) {tempR = tempR - 5;}
+     if(tempG > 0) {tempG = tempG - 5;}
+     if(tempB > 0) {tempB = tempB - 5;}
+     
+     dum_color = color(tempR, tempG, tempB);
+     
+     if(tempR == 0 && tempG == 0 && tempB == 0) {
+       return 1;
+     } else {
+       return 0;
+     }
   }
 }  
   

@@ -16,6 +16,7 @@ class Line_Graph {
   int shown_intervals;
   float radius;
   int display_x, display_y;
+  color axes_color;
 
   //variables for transition
   int phase;
@@ -24,6 +25,7 @@ class Line_Graph {
   float dum_radius;
   float dum_y_x, dum_y_y;
   float dum_x_x, dum_x_y;
+  color dum_color;
 
   Line_Graph(Data parsed) {
     phase = 0;
@@ -34,12 +36,14 @@ class Line_Graph {
     num_intervals = 0;
     isect = -1;
     radius = 10;
+    axes_color = color(0, 0, 0);
   }
 
   void draw_graph() {
     make_canvas(); 
     calc_y_interval();
     draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+    draw_axes_labels(axes_color);
     draw_axes_titles();
     draw_points(radius);
     draw_line(x_coords, y_coords, x_coords, y_coords);
@@ -60,17 +64,20 @@ class Line_Graph {
     shown_intervals = num_intervals/10;
   }
 
-  void draw_axes(float x_x, float x_y, float y_x, float y_y) {    
-    //Draw y axis
+  void draw_axes(float x_x, float x_y, float y_x, float y_y) {
     fill(255, 255, 255);
-    line(canvas_x1, canvas_y1, y_x, y_y);
+    line(canvas_x1, canvas_y1, y_x, y_y); // y axis
+    line(canvas_x1, canvas_y2, x_x, x_y); // x axis
+  }
 
+  void draw_axes_labels(color c) {    
+    //Draw y axis
     for (int i = 0; i <= num_intervals; i += 1) {
       float pos_y = canvas_y2 - (i * (canvas_h/num_intervals));
       float pos_x = canvas_x1 - 15;
 
       if (shown_intervals == 0) {
-        fill(0, 0, 0);
+        fill(c);
         textSize(10);
         text(int(i*y_interval), pos_x, pos_y);
         shown_intervals = num_intervals/10;
@@ -80,8 +87,7 @@ class Line_Graph {
     }    
 
     //Draw x axis labels
-    fill(255, 255, 255);
-    line(canvas_x1, canvas_y2, x_x, x_y);
+
     x_coords = new float[0];
     float spacing = canvas_w/num_points;
 
@@ -96,7 +102,7 @@ class Line_Graph {
       translate(pos_x + 10, pos_y);
       rotate(PI/2);
 
-      fill(0, 0, 0);
+      fill(c);
       textAlign(LEFT, CENTER);
       textSize(10);
       text(data.name[i], 0, 0);        
@@ -161,6 +167,7 @@ class Line_Graph {
       //Creates blank frame if draw functions still not called in here
       make_canvas(); 
       draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+      draw_axes_labels(axes_color);
       draw_axes_titles();
       draw_points(dum_radius);
       draw_line(x_coords, y_coords, dum_x, dum_y);
@@ -170,6 +177,7 @@ class Line_Graph {
     make_canvas(); 
     calc_y_interval();
     draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+    draw_axes_labels(axes_color);
     draw_axes_titles();
     draw_points(dum_radius);
     draw_line(x_coords, y_coords, dum_x, dum_y);
@@ -231,6 +239,7 @@ class Line_Graph {
       phase = 0;
       make_canvas(); 
       draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+      draw_axes_labels(axes_color);
       draw_axes_titles();
       draw_points(dum_radius);
       draw_line(x_coords, y_coords, dum_x, dum_y);
@@ -240,6 +249,7 @@ class Line_Graph {
     make_canvas(); 
     calc_y_interval();
     draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+    draw_axes_labels(axes_color);
     draw_axes_titles();
     draw_points(dum_radius);
     draw_line(x_coords, y_coords, dum_x, dum_y);
@@ -267,6 +277,7 @@ class Line_Graph {
     dum_y_y = canvas_y1;
     dum_x_x = canvas_x1;
     dum_x_y = canvas_y2;
+    dum_color = color(255, 255, 255);
 
     for (int i = 1; i < num_points; i++) {
       dum_y[i] = y_coords[i-1];
@@ -334,12 +345,14 @@ class Line_Graph {
     } else if (phase == 1) {
       expand_points();
       phase += expand_axes();
-    } else if (phase == 2) {
+    } else if (phase < 4) {
       phase += expand_lines();
+      phase += fade_in_labels();
     } else {
       phase = 0;
       make_canvas(); 
       draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+      draw_axes_labels(axes_color);
       draw_axes_titles();
       draw_points(dum_radius);
       draw_line(x_coords, y_coords, dum_x, dum_y);
@@ -349,11 +362,48 @@ class Line_Graph {
     make_canvas(); 
     calc_y_interval();
     draw_axes(dum_x_x, dum_x_y, dum_y_x, dum_y_y); 
+    draw_axes_labels(dum_color);
     draw_axes_titles();
     draw_points(dum_radius);
     draw_line(x_coords, y_coords, dum_x, dum_y);
 
     return true;
+  }
+  
+  int fade_in_labels() {
+     float tempR = red(dum_color);
+     float tempG = green(dum_color);
+     float tempB = blue(dum_color);
+     
+     if(tempR > 0) {tempR = tempR - 5;}
+     if(tempG > 0) {tempG = tempG - 5;}
+     if(tempB > 0) {tempB = tempB - 5;}
+     
+     dum_color = color(tempR, tempG, tempB);
+     
+     if(tempR == 0 && tempG == 0 && tempB == 0) {
+       return 1;
+     } else {
+       return 0;
+     }
+  }
+  
+  int fade_out_labels() {
+     float tempR = red(dum_color);
+     float tempG = green(dum_color);
+     float tempB = blue(dum_color);
+     
+     if(tempR < 255) {tempR = tempR + 5;}
+     if(tempG < 255) {tempG = tempG + 5;}
+     if(tempB < 255) {tempB = tempB + 5;}
+     
+     dum_color = color(tempR, tempG, tempB);
+     
+     if(tempR == 255 && tempG == 255 && tempB == 255) {
+       return 1;
+     } else {
+       return 0;
+     }
   }
   
   int expand_axes() {
@@ -366,12 +416,68 @@ class Line_Graph {
           return 0;
       }
   }
+  
+  int shrink_axes() {
+      dum_x_x = lerp(dum_x_x, canvas_x1, .05);
+      dum_y_y = lerp(dum_y_y, canvas_y1, .05);
+      
+      if (int(dum_x_x) + 1 >= int(canvas_x2)) {
+          return 1;
+      } else {
+          return 0;
+      }
+  }
+  
+  boolean line_to_pie() {
+    if (phase == 0) {
+      phase += set_ltop_dummy();
+    } else if (phase == 1) {
+      phase += shrink_lines();
+    } else if (phase < 5) {
+      phase += shrink_points();
+      phase += fade_out_labels();
+      phase += shrink_axes();
+    } else {
+      phase = 0;
+      //Creates blank frame if draw functions still not called in here
+      make_canvas(); 
+      draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+      draw_axes_labels(axes_color);
+      draw_axes_titles();
+      draw_points(dum_radius);
+      draw_line(x_coords, y_coords, dum_x, dum_y);
+      return true;
+    }
 
-  float[] get_y() { 
-    return y_coords;
+    make_canvas(); 
+    calc_y_interval();
+    draw_axes(dum_x_x, dum_x_y, dum_y_x, dum_y_y);
+    draw_axes_labels(dum_color);
+    draw_axes_titles();
+    draw_points(dum_radius);
+    draw_line(x_coords, y_coords, dum_x, dum_y);
+
+    return false;
   }
-  float[] get_x() { 
-    return x_coords;
+  
+  int set_ltop_dummy() {
+    dum_y = new float[num_points];
+    dum_x = new float[num_points];
+    dum_radius = radius;
+    dum_color = color(0, 0, 0);
+    dum_y_x = canvas_x1;
+    dum_y_y = canvas_y1;
+    dum_x_x = canvas_x1;
+    dum_x_y = canvas_y2;
+
+    for (int i = 0; i < num_points; i++) {
+      dum_y[i] = y_coords[i];
+      dum_x[i] = x_coords[i];
+    }
+    return 1;
   }
+
+  float[] get_y() { return y_coords; }
+  float[] get_x() { return x_coords; }
 }
 

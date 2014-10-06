@@ -59,16 +59,14 @@ void draw_transition() {
         if (next_chart == "Bar Chart") {
             //print("line to bar\n");
             line_to_bar();
-            //curr_chart = next_chart;
         } else if (next_chart == "Pie Chart") {
             //print ("line to pie\n");
-            curr_chart = next_chart;
+            line_to_pie();
         }
     } else if (curr_chart == "Bar Chart") {
         if (next_chart == "Line Graph") {
             //print("bar to line\n");
             bar_to_line();
-            //curr_chart = next_chart;
         } else if (next_chart == "Pie Chart") {
             //print("bar to pie\n");
             curr_chart = next_chart;
@@ -77,11 +75,9 @@ void draw_transition() {
         if (next_chart == "Line Graph") {
              //print("pie to line\n");
              pie_to_line();
-             //curr_chart = next_chart;
         } else if (next_chart == "Bar Chart") {
              //print ("pie to bar\n");
              pie_to_bar();
-             //curr_chart = next_chart;
         } 
     }
 }
@@ -129,6 +125,17 @@ void pie_to_line() {
       half_complete = pie.pie_to_line(line.get_y(), line.get_x());
   } else {
       half_complete = line.pie_to_line();
+      if (half_complete == false) {
+          curr_chart = next_chart;
+      }
+  }
+}
+
+void line_to_pie() {
+  if (half_complete == false) {
+      half_complete = line.line_to_pie();
+  } else {
+      half_complete = pie.line_to_pie(line.get_y(), line.get_x());
       if (half_complete == false) {
           curr_chart = next_chart;
       }
