@@ -76,7 +76,8 @@ void draw_transition() {
     } else if (curr_chart == "Pie Chart") {
         if (next_chart == "Line Graph") {
              print("pie to line\n");
-             curr_chart = next_chart;
+             pie_to_line();
+             //curr_chart = next_chart;
         } else if (next_chart == "Bar Chart") {
              print ("pie to bar\n");
              pie_to_bar();
@@ -128,6 +129,16 @@ void pie_to_bar() {
   }
 }
 
+void pie_to_line() {
+  if (half_complete == false) {
+      half_complete = pie.pie_to_line(line.get_y(), line.get_x());
+  } else {
+      half_complete = line.pie_to_line();
+      if (half_complete == false) {
+          curr_chart = next_chart;
+      }
+  }
+}
 
 void draw_buttons() {
     line_button.draw_button(width/4, height-30);

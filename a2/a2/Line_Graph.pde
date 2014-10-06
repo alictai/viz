@@ -311,4 +311,36 @@ class Line_Graph {
           isect = -1;
         }
   }
+  
+  boolean pie_to_line() {
+      if (phase == 0) {
+        phase += set_btol_dummy();
+      } else if (phase == 1) {
+        phase += expand_points();
+      } else if (phase == 2) {
+        phase += expand_lines();
+      } else if (phase == 3) {
+        //NEED TO LERP AXES!!! :)
+        phase += 1;
+      } else {
+        phase = 0;
+        make_canvas(); 
+        draw_axes();
+        draw_axes_titles();
+        draw_points(dum_radius);
+        draw_line(x_coords, y_coords, dum_x, dum_y);
+        return false;
+      }
+        
+      make_canvas(); 
+      draw_axes(); 
+      draw_axes_titles();
+      draw_points(dum_radius);
+      draw_line(x_coords, y_coords, dum_x, dum_y);
+    
+      return true;
+  }
+  
+  float[] get_y() { return y_coords; }
+  float[] get_x() { return x_coords; }
 }
