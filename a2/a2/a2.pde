@@ -112,7 +112,7 @@ void bar_to_line() {
 
 void pie_to_bar() {
   if (half_complete == false) {
-      half_complete = pie.pie_to_bar(line.get_y(), line.get_x());
+      half_complete = pie.pie_to_bar(line.get_y(), line.get_x(), bar.get_w());
   } else {
       half_complete = bar.pie_to_bar();
       if (half_complete == false) {
@@ -125,7 +125,7 @@ void bar_to_pie() {
   if (half_complete == false) {
       half_complete = bar.bar_to_pie();
   } else {
-      half_complete = pie.bar_to_pie(line.get_y(), line.get_x());
+      half_complete = pie.bar_to_pie(line.get_y(), line.get_x(), bar.get_w());
       if (half_complete == false) {
          curr_chart = next_chart;
       }
@@ -147,7 +147,7 @@ void line_to_pie() {
   if (half_complete == false) {
       half_complete = line.line_to_pie();
   } else {
-      half_complete = pie.line_to_pie(line.get_y(), line.get_x());
+      half_complete = pie.line_to_pie(line.get_y(), line.get_x(), bar.get_w());
       if (half_complete == false) {
           curr_chart = next_chart;
       }

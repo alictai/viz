@@ -126,8 +126,8 @@ class Pie_Chart {
               arc(spread_loc[i], dum_height[i], dum_dia, dum_dia, dum_last_ang[i], dum_last_ang[i] + radians(angles[i]));
           } else {//(shrink && spread && rotate && collapse)
               arc(spread_loc[i], dum_height[i], dum_dia, dum_dia, dum_last_ang[i], radians(dum_angles[i]));
-              print("This one, right?\n");
-              print(spread_loc[i], ", ", dum_height[i], ", ", dum_dia, ", ", dum_last_ang[i], ", ", dum_angles[i], "\n");
+              //print("This one, right?\n");
+              //print(spread_loc[i], ", ", dum_height[i], ", ", dum_dia, ", ", dum_last_ang[i], ", ", dum_angles[i], "\n");
           }
           
           lastAngle += radians(angles[i]);
@@ -161,7 +161,7 @@ class Pie_Chart {
     }
   }
    
-   boolean pie_to_bar(float[] y_coords, float[] x_coords) {
+   boolean pie_to_bar(float[] y_coords, float[] x_coords, float bar_w) {
      //needs to return true at end
      //  blockify wedges as they get to the proper height?
      
@@ -176,9 +176,10 @@ class Pie_Chart {
      } else if (phase == 4) {       //rotate wedges
          phase += rotate_wedges();
      } else if (phase == 5) {
-         phase += collapse_wedges();//fold them into lines
+         phase += shrink_wedges(bar_w); //make them skinnier
+         //phase += 1;
      } else if (phase == 6) {
-         phase += shrink_wedges();  //shrinks line
+         phase += collapse_wedges();  //fold them into lines
      } else {
        phase = 0;
        return true;
@@ -191,13 +192,13 @@ class Pie_Chart {
      return false;
    }
    
-   boolean bar_to_pie(float[] y_coords, float[] x_coords) {
+   boolean bar_to_pie(float[] y_coords, float[] x_coords, float bar_w) {
      
      if (phase == 0) {              //initialize
          phase += set_btop_dummy(y_coords, x_coords);
 
      } else if (phase == 1) {       //pull line out
-         phase += grow_wedges();
+         phase += grow_wedges(bar_w * 2);
      } else if (phase == 2) {       //expand into wedge
          phase += inflate_wedges();
      } else if (phase == 3) {       //rotate to orientation
@@ -375,8 +376,6 @@ class Pie_Chart {
    }
    
    int spread_wedges(float[] y_coords, float[] x_coords) {
-     //dum_dia = lerp(dum_dia, 1, .05);
-     
      for (int i = 0; i < spread_loc.length; i++) {
          spread_loc[i] = lerp(spread_loc[i], x_coords[i], .1);
          dum_height[i] = lerp(dum_height[i], y_coords[i], .05);
@@ -482,7 +481,7 @@ class Pie_Chart {
    int inflate_wedges() {
       int count = 0;
       for(int i = 0; i < dum_angles.length; i++) {
-         print("Dum angle: ", dum_angles[i], " angle: ", angles[i], "\n");
+         //print("Dum angle: ", dum_angles[i], " angle: ", angles[i], "\n");
          dum_angles[i] = lerp(dum_angles[i], angles[i], .05);
          if(dum_angles[i] > angles[i] - .1) {
             count++;
@@ -498,24 +497,24 @@ class Pie_Chart {
       } 
    }
    
-   int shrink_wedges() {
+   int shrink_wedges(float bar_w) {
+       print("BAR WIDTH: ", bar_w, "\n");
        dum_dia = lerp(dum_dia, -4, .02);
        
-       if(dum_dia < 1.1) {
+       if(dum_dia < bar_w*2) {
          return 1;
        } else {
          return 0;
        }
    }
    
-   int grow_wedges() {
-
-       dum_dia = 100;
+   int grow_wedges(float bar_w) {
+       dum_dia = bar_w;
        return 1;
    }
    
-   boolean line_to_pie(float[] y_coords, float[] x_coords) {
-     return bar_to_pie(y_coords, x_coords);
+   boolean line_to_pie(float[] y_coords, float[] x_coords, float bar_w) {
+     return bar_to_pie(y_coords, x_coords, bar_w);
    }
 }
 

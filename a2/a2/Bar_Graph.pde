@@ -15,7 +15,6 @@ class Bar_Graph {
   int num_intervals;
   int isect;
   int shown_intervals;
-  float dum_x_x, dum_x_y, dum_y_x, dum_y_y;
   float[] heights;
   color axes_color;
   
@@ -25,6 +24,7 @@ class Bar_Graph {
   float dum_width; //width correlates to xspacing/2, 
   float[] dum_heights;
   color dum_color;
+  float dum_x_x, dum_x_y, dum_y_x, dum_y_y;
 
   Bar_Graph(Data parsed) {
     data = parsed;
@@ -330,14 +330,15 @@ class Bar_Graph {
 
     if (phase == 0) {
         phase += set_ptob_dummy();
+        dum_width = x_spacing/2;
     } else if (phase == 1) {
         //print("expanding points\n");
-        phase += expand_point();
-        //phase += 1;
-    } else if (phase < 5) {
+        //phase += expand_point();
+        //dum_width = x_spacing/2;
+        phase += fill_bar();
+    } else if (phase < 4) {
         //print("filling bar\n");
         phase += expand_axes();
-        phase += fill_bar();
         phase += fade_in_labels();
     } else {
         phase = 0;
@@ -399,5 +400,7 @@ class Bar_Graph {
        return 0;
      }
   }
+  
+  float get_w() { return (((width - 120)/data.name.length)/2); }
 }  
   
