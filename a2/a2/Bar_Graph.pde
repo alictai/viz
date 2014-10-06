@@ -174,7 +174,7 @@ class Bar_Graph {
     dum_y = new float[num_points];
     
     for (int i = 0; i < num_points; i++) {
-      dum_y[i] = y_coords[i];
+      dum_y[i] = 0;
     }
    
     dum_width = 0;
