@@ -124,6 +124,7 @@ class Bar_Graph {
   
   void get_y_coords() {
       y_coords = new float[0];
+      heights = new float[0];
       float max_height = num_intervals*interval;
         
       for (int i = 0; i < data.name.length; i++) {
@@ -235,6 +236,37 @@ class Bar_Graph {
     } else if (phase == 2) {
         //print("shrinking points\n");
         phase += shrink_point();
+    } else {
+        phase = 0;
+        return true;
+    }
+    
+    if (phase != 0) {
+      draw_bars(dum_width, dum_heights);
+    }
+    
+    return false;
+  }
+  
+  boolean bar_to_pie() {  
+    print("phase is ", phase, "\n");
+    make_canvas(); 
+    draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+    draw_axes_labels(axes_color);
+    draw_axes_titles();
+    get_y_coords();
+    
+    if (phase == 0) {
+        phase += set_btol_dummy();
+    } else if (phase == 1) {
+        //print("shrinking bars\n");
+        phase += shrink_bar();
+    } else if (phase == 2) {
+        //print("shrinking points\n");
+        //phase += shrink_point();
+        //SHOULD BE
+        //phase += shrink_axes();
+        phase++;
     } else {
         phase = 0;
         return true;

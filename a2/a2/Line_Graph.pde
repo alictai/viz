@@ -155,7 +155,7 @@ class Line_Graph {
     }
   }
 
-  boolean line_to_bar() {
+  boolean line_to_bar() {    
     if (phase == 0) {
       phase += set_ltob_dummy();
     } else if (phase == 1) {
@@ -165,12 +165,14 @@ class Line_Graph {
     } else {
       phase = 0;
       //Creates blank frame if draw functions still not called in here
+      
       make_canvas(); 
       draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
       draw_axes_labels(axes_color);
       draw_axes_titles();
       draw_points(dum_radius);
       draw_line(x_coords, y_coords, dum_x, dum_y);
+      
       return true;
     }
 

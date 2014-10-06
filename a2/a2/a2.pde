@@ -69,7 +69,8 @@ void draw_transition() {
             bar_to_line();
         } else if (next_chart == "Pie Chart") {
             //print("bar to pie\n");
-            curr_chart = next_chart;
+            bar_to_pie();
+            //curr_chart = next_chart;
         }
     } else if (curr_chart == "Pie Chart") {
         if (next_chart == "Line Graph") {
@@ -114,6 +115,17 @@ void pie_to_bar() {
       half_complete = pie.pie_to_bar(line.get_y(), line.get_x());
   } else {
       half_complete = bar.pie_to_bar();
+      if (half_complete == false) {
+         curr_chart = next_chart;
+      }
+  }
+}
+
+void bar_to_pie() {
+  if (half_complete == false) {
+      half_complete = bar.bar_to_pie();
+  } else {
+      half_complete = pie.bar_to_pie(line.get_y(), line.get_x());
       if (half_complete == false) {
          curr_chart = next_chart;
       }
