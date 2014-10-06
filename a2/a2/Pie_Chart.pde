@@ -145,7 +145,7 @@ class Pie_Chart {
      } else if (phase == 4) {       //rotate wedges
          phase += rotate_wedges();
      } else {
-       phase = 4;
+       phase = 0;
        return true;
      }
 

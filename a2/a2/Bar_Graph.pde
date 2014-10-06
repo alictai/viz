@@ -300,8 +300,8 @@ class Bar_Graph {
         phase += set_ptob_dummy();
     } else if (phase == 1) {
         //print("expanding points\n");
-        //phase += expand_point();
-        phase += 1;
+        phase += expand_point();
+        //phase += 1;
     } else if (phase < 5) {
         //print("filling bar\n");
         phase += expand_axes();
