@@ -22,7 +22,6 @@ class Stacked_Bar {
     num_points = data.name.length;
     interval = 10;
     num_intervals = 0;
-    //phase = 0;
   }
   
   void draw_graph() {
@@ -133,7 +132,7 @@ class Stacked_Bar {
              tot_h = canvas_y2 - max_y_coords[i];
           for (int j = 0; j < data.num_cols-1; j++) {
               float fill_clr = map(j, 0, data.num_cols, 0, 255);
-              h_ratio = data.values[i][j]/data.row_totals[i];
+              h_ratio = data.values[j][i]/data.row_totals[i];
               curr_y -= tot_h*h_ratio;
                  
               fill(fill_clr, 200, 200);
@@ -144,7 +143,7 @@ class Stacked_Bar {
         }
     
     }
-    
+ /*   
   boolean bar_to_stack(float[] bar_y) {
     make_canvas(); 
     draw_axes();
@@ -175,5 +174,5 @@ class Stacked_Bar {
     lines_drawn = 0;
     return 1;
  }
-  
+  */
 }

@@ -500,6 +500,62 @@ class Line_Graph {
     }
     return 1;
   }
+  
+  boolean line_to_triver() {
+   if (phase == 0) {
+      dum_radius = radius;
+      phase++;
+    } else if (phase == 1) {
+      phase += shrink_points();
+    } else {
+      phase = 0;
+      //Creates blank frame if draw functions still not called in here
+      make_canvas(); 
+      draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+      draw_axes_labels(axes_color);
+      draw_axes_titles();
+      draw_points(dum_radius);
+      draw_line(x_coords, y_coords, x_coords, y_coords);
+      return true;
+    }
+
+    make_canvas(); 
+    calc_y_interval();
+    draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+    draw_axes_labels(axes_color);
+    draw_axes_titles();
+    draw_points(dum_radius);
+    draw_line(x_coords, y_coords, x_coords, y_coords);
+    return false;
+}
+
+boolean triver_to_line() {
+   if (phase == 0) {
+      dum_radius = 0;
+      phase++;
+    } else if (phase == 1) {
+      phase += expand_points();
+    } else {
+      phase = 0;
+      //Creates blank frame if draw functions still not called in here
+      make_canvas(); 
+      draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+      draw_axes_labels(axes_color);
+      draw_axes_titles();
+      draw_points(dum_radius);
+      draw_line(x_coords, y_coords, x_coords, y_coords);
+      return false;
+    }
+
+    make_canvas(); 
+    calc_y_interval();
+    draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+    draw_axes_labels(axes_color);
+    draw_axes_titles();
+    draw_points(dum_radius);
+    draw_line(x_coords, y_coords, x_coords, y_coords);
+    return true;
+}
 
   float[] get_y() { return y_coords; }
   float[] get_x() { return x_coords; }

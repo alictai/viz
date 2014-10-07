@@ -116,7 +116,7 @@ class Theme_River {
           print("curr_y: ", curr_y, "\n");
           
           for (int j = 0; j < data.num_cols; j++) {
-            sub_hratio = data.values[i][j]/data.row_totals[i];
+            sub_hratio = data.values[j][i]/data.row_totals[i];
             sub_height = sub_hratio * total_height;
             curr_y = curr_y - sub_height;
             y_coords[i][j] = curr_y;
