@@ -95,7 +95,7 @@ class Bar_Graph {
         rotate(PI/2);
         
         fill(c);
-        textAlign(LEFT, CENTER);
+        textAlign(LEFT, RIGHT);
         textSize(10);
         text(data.name[i], 0, 0);        
         //translate(0, canvas_w/num_points);
@@ -173,7 +173,7 @@ class Bar_Graph {
     
     for (int i = 0; i < num_points; i++) {
       dum_y[i] = 0;
-      dum_heights[i] = canvas_y2 - y_coords[i];
+      dum_heights[i] = 0;
     }
    
     dum_width = 0;
@@ -245,23 +245,28 @@ class Bar_Graph {
   boolean bar_to_pie() {  
     //print("phase is ", phase, "\n");
     make_canvas(); 
-    draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
-    draw_axes_labels(axes_color);
-    draw_axes_titles();
     get_y_coords();
     
     if (phase == 0) {
         phase += set_btol_dummy();
-    } else if (phase == 1) {
+    } else if (phase < 4) {
         //print("shrinking bars\n");
         phase += shrink_bar();
-    } else if (phase == 2) {
         phase += shrink_axes();
+        phase += fade_out_labels();
     } else {
+        make_canvas(); 
+        //draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+        //draw_axes_labels(axes_color);
+        //draw_axes_titles();
+        get_y_coords();
         phase = 0;
         return true;
     }
     
+    draw_axes(dum_x_x, canvas_y2, canvas_x1, dum_y_y);
+    draw_axes_labels(dum_color);
+    draw_axes_titles();
     if (phase != 0) {
       draw_bars(dum_width, dum_heights);
     }
@@ -276,6 +281,7 @@ class Bar_Graph {
     dum_y_y = canvas_y2;
     dum_x_x = canvas_x2;
     dum_x_y = canvas_y2;
+    dum_color = color(0,0,0);
     
     for (int i = 0; i < num_points; i++) {
       dum_y[i] = canvas_y2 - y_coords[i];
@@ -337,7 +343,6 @@ class Bar_Graph {
         draw_bars(x_spacing/2, heights);
         return false;
     }
-
     draw_axes(dum_x_x, dum_x_y, dum_y_x, dum_y_y);
     draw_axes_labels(dum_color);
     draw_bars(dum_width, dum_heights);
@@ -348,23 +353,23 @@ class Bar_Graph {
      dum_y = new float[num_points];
      dum_heights = new float[num_points];
      dum_y_x = canvas_x1;
-     dum_y_y = canvas_y2;
-     dum_x_x = canvas_x2;
+     dum_y_y = canvas_y1;
+     dum_x_x = canvas_x1;
      dum_x_y = canvas_y2;
      dum_color = color(255, 255, 255);
      dum_width = get_w();
     
     for (int i = 0; i < num_points; i++) {
       dum_y[i] = 0;
-      dum_heights[i] = canvas_y2 - y_coords[i];
+      dum_heights[i] = 0;
     }
 
     return 1;
  }
  
  int expand_axes() {
-      dum_x_x = lerp(dum_x_x, canvas_x2, .05);
-      dum_y_y = lerp(dum_y_y, canvas_y2, .05);
+      dum_x_x = lerp(dum_x_x, canvas_x2+100, .05);
+      dum_y_y = lerp(dum_y_y, canvas_y2+100, .05);
       
       if (int(dum_x_x) + 1 >= int(canvas_x2)) {
           return 1;
@@ -374,10 +379,10 @@ class Bar_Graph {
   }
   
   int shrink_axes() {
-      dum_x_x = lerp(dum_x_x, canvas_x1, .05);
-      dum_y_y = lerp(dum_y_y, canvas_y1, .05);
+      dum_x_x = lerp(dum_x_x, 0, .05);
+      dum_y_y = lerp(dum_y_y, 0, .05);
       
-      if (int(dum_x_x) + 1 <= int(canvas_x1)) {
+      if (int(dum_x_x) - int(canvas_x1) < 1) {
           return 1;
       } else {
           return 0;
@@ -396,6 +401,24 @@ class Bar_Graph {
      dum_color = color(tempR, tempG, tempB);
      
      if(tempR == 0 && tempG == 0 && tempB == 0) {
+       return 1;
+     } else {
+       return 0;
+     }
+  }
+  
+  int fade_out_labels() {
+     float tempR = red(dum_color);
+     float tempG = green(dum_color);
+     float tempB = blue(dum_color);
+     
+     if(tempR < 255) {tempR = tempR + 5;}
+     if(tempG < 255) {tempG = tempG + 5;}
+     if(tempB < 255) {tempB = tempB + 5;}
+     
+     dum_color = color(tempR, tempG, tempB);
+     
+     if(tempR == 255 && tempG == 255 && tempB == 255) {
        return 1;
      } else {
        return 0;

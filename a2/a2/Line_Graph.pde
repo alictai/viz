@@ -90,7 +90,6 @@ class Line_Graph {
 
     x_coords = new float[0];
     float spacing = canvas_w/num_points;
-
     for (int i = 0; i < num_points; i += 1) {
       float pos_x = (i*spacing) + (spacing/2) + canvas_x1;
       float pos_y = canvas_y2 + 10;
@@ -103,7 +102,7 @@ class Line_Graph {
       rotate(PI/2);
 
       fill(c);
-      textAlign(LEFT, CENTER);
+      textAlign(LEFT, RIGHT);
       textSize(10);
       text(data.name[i], 0, 0);        
 
@@ -136,7 +135,6 @@ class Line_Graph {
     for (int i = 0; i < data.name.length; i++) {
       float ratio = data.values[0][i]/max_height;
       y_coords = append(y_coords, (float(canvas_h)-(float(canvas_h)*ratio))+canvas_y1);
-      //y_coords = append(y_coords, canvas_y2 - ((canvas_h/(num_intervals*y_interval))*data.value[i]));
       if (i == isect) {
         fill(255, 0, 0);
         ellipse(x_coords[i], y_coords[i], r, r);
@@ -355,6 +353,7 @@ class Line_Graph {
     } else {
       phase = 0;
       make_canvas(); 
+      calc_y_interval();
       draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
       draw_axes_labels(axes_color);
       draw_axes_titles();
@@ -437,19 +436,17 @@ class Line_Graph {
       phase += set_ltop_dummy();
     } else if (phase == 1) {
       phase += shrink_lines();
-    } else if (phase < 5) {
+    } else if (phase < 6) {
       phase += shrink_points();
       phase += fade_out_labels();
       phase += shrink_axes();
     } else {
-      phase = 0;
       //Creates blank frame if draw functions still not called in here
       make_canvas(); 
-      draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
-      draw_axes_labels(axes_color);
-      draw_axes_titles();
+      calc_y_interval();
       draw_points(dum_radius);
       draw_line(x_coords, y_coords, dum_x, dum_y);
+      phase = 0;
       return true;
     }
 
@@ -470,8 +467,8 @@ class Line_Graph {
     dum_radius = radius;
     dum_color = color(0, 0, 0);
     dum_y_x = canvas_x1;
-    dum_y_y = canvas_y1;
-    dum_x_x = canvas_x1;
+    dum_y_y = canvas_y2;
+    dum_x_x = canvas_x2;
     dum_x_y = canvas_y2;
 
     for (int i = 0; i < num_points; i++) {

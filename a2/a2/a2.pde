@@ -147,7 +147,7 @@ void line_to_pie() {
   if (half_complete == false) {
       half_complete = line.line_to_pie();
   } else {
-      half_complete = pie.line_to_pie(line.get_y(), line.get_x(), bar.get_w());
+      half_complete = pie.line_to_pie(line.get_y(), line.get_x(), 50);
       if (half_complete == false) {
           curr_chart = next_chart;
       }
