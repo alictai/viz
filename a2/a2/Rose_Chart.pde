@@ -59,7 +59,7 @@ class Rose_Chart{
               }
           }
       }  
-      //print_data();
+
       if (width > height) {
         diameter = height / 2;
       } else {
@@ -67,6 +67,7 @@ class Rose_Chart{
       }
   }
   
+  /*
   void print_data() {
     for(int i = 0; i < num_wedges; i++) {
       for(int j = 0; j < num_layers; j++) {
@@ -74,23 +75,23 @@ class Rose_Chart{
       }
     }
   }
+  */
 
   void draw_chart(int f_lay, int b_lay, float[][] rad) {
-      color c = color(0, 0, 255);
       for(int i = b_lay; i >= f_lay; i--) {
+          float c = map(i, num_layers - 1, 0, 0, 105);
           draw_layer(rad[i], c);
-          c = color(255, 0, 0);
       }
   }
   
-  void draw_layer(float[] rad, color c) {
+  void draw_layer(float[] rad, float c) {
       float curr_angle = 0;
       float rad_to_draw;
-      fill(c);
       for(int i = 0; i < num_wedges; i++) {
+          float gray = map(i, 0, num_wedges, 0, 255);
+          fill(150 + c, gray, 150 + c);
           rad_to_draw = map(rad[i], 0, max_val, 0, diameter);
-          print(rad[i], " ", max_val, "    ", rad_to_draw, " ", diameter, "\n");
-          arc(width/2, height/2, rad_to_draw, rad_to_draw, curr_angle, curr_angle + angle);
+          arc(width/2, height/2, rad_to_draw, rad_to_draw, curr_angle, curr_angle + angle, PIE);
           curr_angle += angle;
       }
   }
@@ -122,7 +123,11 @@ class Rose_Chart{
      
      for(int i = 0; i < num_layers; i++) {
        for(int j = 0; j < num_wedges; j++) {
-         dum_radii[i][j] = 10;
+         if (i == num_layers - 1) {  
+             dum_radii[i][j] = 120;
+         } else {
+             dum_radii[i][j] = 0;
+         }
        }
      }
      return 1;

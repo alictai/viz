@@ -14,6 +14,7 @@ class Pie_Chart {
   //variables matt made global
   float diameter; //set during draw function
   color text_color;  //(200, 150, 200)
+  float avg_ang;
   
   //variables for transition
   int phase;
@@ -83,22 +84,32 @@ class Pie_Chart {
       }
   }
   
+  void draw_chart_r() {
+      find_diameter();
+  
+      if(phase == 0) {          //normal draw
+          make_chart(text_color, false, false, false, false);
+      } else if (phase == 1) {  //fading text color out
+          make_chart(dum_text_color, false, false, false, false);
+      } else if (phase == 2) {  //shrinking graph
+          make_chart(255, true, false, false, false);
+      } else {  //smoothing wedges
+          make_chart(255, true, false, true, false);
+      }
+  }
+  
   void draw_chart_rev() {
     find_diameter();
   
         //make_chart(text color,     wedge locations, wedge rotation)
         //make_chart(color text_c,   bool spreading,  bool rotating)
       if((phase == 0) || (phase == 1)) { //just coming out of bar & initialize
-          //print("Phase is zero, calling make\n");
           make_chart(255, true, true, true, true);
       } else if (phase == 2) {  //expand wedges
-          //print("Phase is one, calling make\n");
           make_chart(255, true, true, true, true);
       } else if (phase == 3) {  //wedges rotate back home
-          //print("Phase is two, calling make\n");
           make_chart(255, true, true, true, false);
       } else if (phase == 4) {  //wedges reconvene
-          //print("Phase is three, calling make\n");
           make_chart(255, true, true, false, false);
       } else if (phase == 5) {  //graph expands
           make_chart(255, true, false, false, false);
@@ -120,14 +131,14 @@ class Pie_Chart {
               draw_words(text_c, lastAngle, i);
           } else if (shrink && !spread && !rotate && !collapse) {
               arc(width/2, height/2, dum_dia, dum_dia, lastAngle, lastAngle + radians(angles[i]), PIE);
+          } else if (shrink && !spread && rotate && !collapse) {  //special pie_to_rose mode
+              arc(width/2, height/2, dum_dia, dum_dia, radians(dum_last_ang[i]), radians(dum_last_ang[i] + dum_angles[i]), PIE);
           } else if (shrink && spread && !rotate && !collapse) {
               arc(spread_loc[i], dum_height[i], dum_dia, dum_dia, lastAngle, lastAngle + radians(angles[i]), PIE);
           } else if (shrink && spread && rotate && !collapse) {
               arc(spread_loc[i], dum_height[i], dum_dia, dum_dia, dum_last_ang[i], dum_last_ang[i] + radians(angles[i]), PIE);
           } else {//(shrink && spread && rotate && collapse)
               arc(spread_loc[i], dum_height[i], dum_dia, dum_dia, dum_last_ang[i], radians(dum_angles[i]), PIE);
-              //print("This one, right?\n");
-              //print(spread_loc[i], ", ", dum_height[i], ", ", dum_dia, ", ", dum_last_ang[i], ", ", dum_angles[i], "\n");
           }
           
           lastAngle += radians(angles[i]);
@@ -510,8 +521,72 @@ class Pie_Chart {
    boolean line_to_pie(float[] y_coords, float[] x_coords, float bar_w) {
      return bar_to_pie(y_coords, x_coords, bar_w);
    }
-}
+   
+   boolean pie_to_rose() {
+       if(phase == 0) {
+           phase += set_ptor_dummy();
+       } else if (phase == 1) {
+           phase += change_text_col();
+       } else if (phase == 2) {
+           phase += shrink_graph();
+       } else if (phase == 3) {
+           phase += make_angles_even();
+       } else {
+         make_canvas(); 
+         find_angles();
+         draw_chart_r();
+         phase = 0;
+         return true;
+       }
+       
+       make_canvas(); 
+       find_angles();
+       draw_chart_r();
 
+       return false;
+   }
+
+
+   int set_ptor_dummy() {
+       dum_text_color = text_color;
+       dum_dia = diameter;
+       dum_dia_target = 150;
+       dum_angles = new float[data.values[0].length];
+       dum_last_ang = new float[data.values[0].length];
+       float ang_trak = 0;
+       avg_ang = 360.0 / num_points;
+       
+       for(int i = 0; i < data.values[0].length; i++) {
+           dum_angles[i] = angles[i];
+           dum_last_ang[i] = ang_trak;
+           ang_trak += angles[i];
+
+       }
+     
+       return 1;
+   }
+   
+   int make_angles_even() {
+      int count = 0;
+      
+      for(int i = 0; i < dum_angles.length; i++) {
+        // print("angle: ", dum_angles[i], " last_ang: ", dum_last_ang[i], "\n");
+         dum_angles[i] = lerp(dum_angles[i], avg_ang, .1);
+         dum_last_ang[i] = lerp(dum_last_ang[i], (i) * avg_ang, .1);
+        
+         if (!(dum_angles[i] > (avg_ang) - .1 && dum_angles[i] < (avg_ang) + .1)) {
+            count++;
+         }
+      }
+     
+     if (count > 0) {
+       return 0;
+     } else {
+       return 1;
+     } 
+   }
+   
+}
   
 
 

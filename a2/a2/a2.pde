@@ -17,7 +17,6 @@ Theme_River triver;
 Rose_Chart rose;
 boolean half_complete;
 boolean line_to_bar;
-
 void setup() {
    size(screenWidth, screenHeight);
    background(255, 255, 255);
@@ -226,7 +225,7 @@ void bar_to_stack() {
 
 void pie_to_rose() {
     if (half_complete == false) {
-      half_complete = true;
+      half_complete = pie.pie_to_rose();
     } else {
       half_complete = rose.pie_to_rose();
       if (half_complete == false) {
