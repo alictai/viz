@@ -45,8 +45,8 @@ class Line_Graph {
     draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
     draw_axes_labels(axes_color);
     draw_axes_titles();
-    draw_points(radius);
     draw_line(x_coords, y_coords, x_coords, y_coords);
+    draw_points(radius);
   }
 
   void make_canvas() {
@@ -140,7 +140,8 @@ class Line_Graph {
         textSize(10);
         text("(" + data.name[i] + ", " + data.values[0][i] + ")", x_coords[i] + 8, y_coords[i] + 8);
       } else {*/
-        fill(0, 0, 0);
+        float gray = map(i, 0, data.name.length, 0, 255);
+        fill(150, gray, 150);
         ellipse(x_coords[i], y_coords[i], r, r);
     }
   }
@@ -185,8 +186,8 @@ class Line_Graph {
       draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
       draw_axes_labels(axes_color);
       draw_axes_titles();
-      draw_points(dum_radius);
       draw_line(x_coords, y_coords, dum_x, dum_y);
+      draw_points(dum_radius);
       
       return true;
     }
@@ -196,8 +197,8 @@ class Line_Graph {
     draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
     draw_axes_labels(axes_color);
     draw_axes_titles();
-    draw_points(dum_radius);
     draw_line(x_coords, y_coords, dum_x, dum_y);
+    draw_points(dum_radius);
 
     return false;
   }
@@ -258,8 +259,8 @@ class Line_Graph {
       draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
       draw_axes_labels(axes_color);
       draw_axes_titles();
-      draw_points(dum_radius);
       draw_line(x_coords, y_coords, dum_x, dum_y);
+      draw_points(dum_radius);
       phase = 0;
       return false;
     }
@@ -269,8 +270,8 @@ class Line_Graph {
     draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
     draw_axes_labels(axes_color);
     draw_axes_titles();
-    draw_points(dum_radius);
     draw_line(x_coords, y_coords, dum_x, dum_y);
+    draw_points(dum_radius);
 
     return true;
   }
@@ -380,8 +381,8 @@ class Line_Graph {
       draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
       draw_axes_labels(axes_color);
       draw_axes_titles();
-      draw_points(dum_radius);
       draw_line(x_coords, y_coords, dum_x, dum_y);
+      draw_points(dum_radius);
       return false;
     }
 
@@ -390,9 +391,8 @@ class Line_Graph {
     draw_axes(dum_x_x, dum_x_y, dum_y_x, dum_y_y); 
     draw_axes_labels(dum_color);
     draw_axes_titles();
-    draw_points(dum_radius);
     draw_line(x_coords, y_coords, dum_x, dum_y);
-
+    draw_points(dum_radius);
     return true;
   }
   
@@ -467,8 +467,8 @@ class Line_Graph {
       //Creates blank frame if draw functions still not called in here
       make_canvas(); 
       calc_y_interval();
-      draw_points(dum_radius);
       draw_line(x_coords, y_coords, dum_x, dum_y);
+      draw_points(dum_radius);
       phase = 0;
       return true;
     }
@@ -478,9 +478,9 @@ class Line_Graph {
     draw_axes(dum_x_x, dum_x_y, dum_y_x, dum_y_y);
     draw_axes_labels(dum_color);
     draw_axes_titles();
-    draw_points(dum_radius);
     draw_line(x_coords, y_coords, dum_x, dum_y);
-
+    draw_points(dum_radius);
+    
     return false;
   }
   
