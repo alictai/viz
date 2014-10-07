@@ -87,18 +87,11 @@ class Line_Graph {
     }    
 
     //Draw x axis labels
-
-    x_coords = new float[0];
-    float spacing = canvas_w/num_points;
+    update_x();
     for (int i = 0; i < num_points; i += 1) {
-      float pos_x = (i*spacing) + (spacing/2) + canvas_x1;
+      float pos_x = x_coords[i];
       float pos_y = canvas_y2 + 10;
-
-      x_coords = append(x_coords, pos_x + 10); 
-      //fill(200, 200, 200);
-      //line(pos_x + 10, canvas_y2, pos_x + 10, canvas_y1);
-
-      translate(pos_x + 10, pos_y);
+      translate(pos_x, pos_y);
       rotate(PI/2);
 
       fill(c);
@@ -107,8 +100,17 @@ class Line_Graph {
       text(data.name[i], 0, 0);        
 
       rotate(-PI/2);
-      translate(-pos_x - 10, -pos_y);
+      translate(-pos_x, -pos_y);
     }
+  }
+  
+  void update_x() {
+      x_coords = new float[0];
+      float spacing = canvas_w/num_points;
+      for (int i = 0; i < num_points; i += 1) {
+        float pos_x = (i*spacing) + (spacing/2) + canvas_x1;
+        x_coords = append(x_coords, pos_x + 10); 
+      }
   }
 
   void draw_axes_titles() {
@@ -129,22 +131,28 @@ class Line_Graph {
   }
 
   void draw_points(float r) {
-    y_coords = new float[0];
-    float max_height = num_intervals*y_interval;
+    update_y();
 
     for (int i = 0; i < data.name.length; i++) {
-      float ratio = data.values[0][i]/max_height;
-      y_coords = append(y_coords, (float(canvas_h)-(float(canvas_h)*ratio))+canvas_y1);
-      if (i == isect) {
+      /*if (i == isect) {
         fill(255, 0, 0);
         ellipse(x_coords[i], y_coords[i], r, r);
         textSize(10);
         text("(" + data.name[i] + ", " + data.values[0][i] + ")", x_coords[i] + 8, y_coords[i] + 8);
-      } else {
+      } else {*/
         fill(0, 0, 0);
         ellipse(x_coords[i], y_coords[i], r, r);
-      }
     }
+  }
+  
+  void update_y() {
+      y_coords = new float[0];
+      float max_height = num_intervals*y_interval;
+
+      for (int i = 0; i < data.name.length; i++) {
+        float ratio = data.values[0][i]/max_height;
+        y_coords = append(y_coords, (float(canvas_h)-(float(canvas_h)*ratio))+canvas_y1);
+      }
   }
 
   void draw_line(float[] x1, float[] y1, float[] x2, float[] y2) {
@@ -152,6 +160,14 @@ class Line_Graph {
       line(x1[i], y1[i], x2[i+1], y2[i+1]);
     }
   }
+
+  void update() {
+    make_canvas();
+    calc_y_interval();
+    update_x();
+    update_y();
+  }
+
 
   boolean line_to_bar() {    
     if (phase == 0) {
@@ -237,7 +253,6 @@ class Line_Graph {
     } else if (phase == 2) {
       phase += expand_lines();
     } else {
-      phase = 0;
       make_canvas(); 
       calc_y_interval();
       draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
@@ -245,6 +260,7 @@ class Line_Graph {
       draw_axes_titles();
       draw_points(dum_radius);
       draw_line(x_coords, y_coords, dum_x, dum_y);
+      phase = 0;
       return false;
     }
 
@@ -263,6 +279,13 @@ class Line_Graph {
     dum_y = new float[num_points];
     dum_x = new float[num_points];
     dum_radius = 1;
+    make_canvas(); 
+    calc_y_interval();
+    //draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+    //draw_axes_labels(color(255, 255, 255));
+    //draw_axes_titles();
+    draw_points(dum_radius);
+
 
     for (int i = 1; i < num_points; i++) {
       dum_y[i] = y_coords[i-1];

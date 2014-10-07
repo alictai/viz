@@ -368,8 +368,8 @@ class Bar_Graph {
  }
  
  int expand_axes() {
-      dum_x_x = lerp(dum_x_x, canvas_x2+100, .05);
-      dum_y_y = lerp(dum_y_y, canvas_y2+100, .05);
+      dum_x_x = lerp(dum_x_x, canvas_x2, .05);
+      dum_y_y = lerp(dum_y_y, canvas_y2, .05);
       
       if (int(dum_x_x) + 1 >= int(canvas_x2)) {
           return 1;

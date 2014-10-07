@@ -35,6 +35,7 @@ void setup() {
 void draw() {
     background(255, 255, 255);
     draw_buttons();
+    line.update();
     
     if (curr_chart != next_chart) {
         draw_transition();
