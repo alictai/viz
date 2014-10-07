@@ -315,7 +315,7 @@ void check_button() {
                           line_button.set_default();
                           bar_button.set_default();
                           pie_button.set_default();
-                          stack_button.set_default();
+                          triver_button.set_default();
                           rose_button.set_default();
                       } else {
                           clicked = rose_button.intersect(mouseX, mouseY);

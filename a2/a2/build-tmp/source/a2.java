@@ -23,12 +23,14 @@ int screenHeight = 800;
 String curr_chart;
 String next_chart;
 Data data;
-Button line_button;
-Button bar_button;
-Button pie_button;
+Button line_button, bar_button, pie_button;
+Button triver_button, stack_button, rose_button;
 Line_Graph line;
 Bar_Graph bar;
 Pie_Chart pie;
+Stacked_Bar stack;
+Theme_River triver;
+Rose_Chart rose;
 boolean half_complete;
 boolean line_to_bar;
 
@@ -36,7 +38,7 @@ public void setup() {
    size(screenWidth, screenHeight);
    background(255, 255, 255);
    data = new Data();
-   data.parse("dataset1.csv");
+   data.parse("Dataset2.csv");
    if (frame!=null) { frame.setResizable(true); }
    buttons_set();
    curr_chart = "Line Graph";
@@ -44,6 +46,9 @@ public void setup() {
    line = new Line_Graph(data);
    bar = new Bar_Graph(data);
    pie = new Pie_Chart(data);
+   stack = new Stacked_Bar(data);
+   triver = new Theme_River(data);
+   rose = new Rose_Chart(data);
    half_complete = false;
    line_to_bar = false;
 }
@@ -62,8 +67,15 @@ public void draw() {
             bar.draw_graph();
         } else if (curr_chart == "Pie Chart") {
             pie.draw_graph();
+        } else if (curr_chart == "Theme River") {
+            triver.draw_graph();
+        } else if (curr_chart == "Stacked Bar") {
+            stack.draw_graph();
+        } else if (curr_chart == "Rose Chart") {
+            rose.draw_graph();
         }
     }
+    
 }
 
 public void mouseClicked() {
@@ -79,6 +91,13 @@ public void draw_transition() {
         } else if (next_chart == "Pie Chart") {
             //print ("line to pie\n");
             line_to_pie();
+        } else if (next_chart == "Theme River") {
+            //print ("line to triver\n");
+            line_to_triver();
+        } else if (next_chart == "Stacked Bar") {
+            line_to_bar();
+        } else if (next_chart == "Rose Chart") {
+            line_to_pie();
         }
     } else if (curr_chart == "Bar Chart") {
         if (next_chart == "Line Graph") {
@@ -88,6 +107,13 @@ public void draw_transition() {
             //print("bar to pie\n");
             bar_to_pie();
             //curr_chart = next_chart;
+        } else if (next_chart == "Theme River") {
+            //print ("line to triver\n");
+            bar_to_line();
+        } else if (next_chart == "Stacked Bar") {
+            bar_to_stack();
+        } else if (next_chart == "Rose Chart") {
+            bar_to_pie();
         }
     } else if (curr_chart == "Pie Chart") {
         if (next_chart == "Line Graph") {
@@ -96,8 +122,22 @@ public void draw_transition() {
         } else if (next_chart == "Bar Chart") {
              //print ("pie to bar\n");
              pie_to_bar();
-        } 
+        } else if (next_chart == "Theme River") {
+            //print ("line to triver\n");
+            pie_to_line();
+        } else if (next_chart == "Stacked Bar") {
+            pie_to_bar();
+        } else if (next_chart == "Rose Chart") {
+            pie_to_rose();
+        }
+    } else if (curr_chart == "Theme River") {
+         triver_to_line();
+    } else if (curr_chart == "Stacked Bar") {
+         stack_to_bar();
+    } else if (curr_chart == "Rose Chart") {
+         rose_to_pie();
     }
+        
 }
 
 public void line_to_bar() {
@@ -107,12 +147,11 @@ public void line_to_bar() {
        half_complete = bar.line_to_bar();
         if (half_complete == false) {
             //print("transition complete\n");
-            curr_chart = next_chart;
+            curr_chart = "Bar Chart";
         }
     }
 }
 
-//need to finish this transition
 public void bar_to_line() {
     if (half_complete == false) {
         //print("half complete is false, calling bar to line\n");
@@ -121,7 +160,7 @@ public void bar_to_line() {
        //print("half complete is true, calling bar to line\n");
        half_complete = line.bar_to_line();
         if (half_complete == false) {
-            curr_chart = next_chart;
+            curr_chart = "Line Graph";
         }
     }
     
@@ -133,7 +172,7 @@ public void pie_to_bar() {
   } else {
       half_complete = bar.pie_to_bar();
       if (half_complete == false) {
-         curr_chart = next_chart;
+         curr_chart = "Bar Chart";
       }
   }
 }
@@ -144,7 +183,7 @@ public void bar_to_pie() {
   } else {
       half_complete = pie.bar_to_pie(line.get_y(), line.get_x(), bar.get_w());
       if (half_complete == false) {
-         curr_chart = next_chart;
+         curr_chart = "Pie Chart";
       }
   }
 }
@@ -155,7 +194,7 @@ public void pie_to_line() {
   } else {
       half_complete = line.pie_to_line();
       if (half_complete == false) {
-          curr_chart = next_chart;
+          curr_chart = "Line Graph";
       }
   }
 }
@@ -166,30 +205,84 @@ public void line_to_pie() {
   } else {
       half_complete = pie.line_to_pie(line.get_y(), line.get_x(), 50);
       if (half_complete == false) {
-          curr_chart = next_chart;
+          curr_chart = "Pie Chart";
       }
   }
 }
 
+public void line_to_triver() {
+    if (half_complete == false) {
+       half_complete = line.line_to_triver();
+    } else {
+       half_complete = triver.line_to_triver(line.y_coords);
+        if (half_complete == false) {
+            curr_chart = "Theme River";
+        }
+    }
+}
+
+public void triver_to_line() {
+    if (half_complete == false) {
+       half_complete = triver.triver_to_line(line.y_coords);
+    } else {
+       half_complete = line.triver_to_line();
+        if (half_complete == false) {
+            curr_chart = "Line Graph";
+        }
+    }
+}
+
+public void stack_to_bar() {
+    curr_chart = "Bar Chart";
+}
+
+public void bar_to_stack() {
+    curr_chart = "Stacked Bar";
+}
+
+public void pie_to_rose() {
+    curr_chart = "Rose Chart";
+}
+
+public void rose_to_pie() {
+    curr_chart = "Pie Chart";
+}
+
 public void draw_buttons() {
-    line_button.draw_button(width/4, height-30);
-    bar_button.draw_button(width/2, height-30);
-    pie_button.draw_button(3*width/4, height-30);
+    line_button.draw_button(width/7, height-30);
+    bar_button.draw_button(2*width/7, height-30);
+    pie_button.draw_button(3*width/7, height-30);
+    triver_button.draw_button(4*width/7, height-30);
+    stack_button.draw_button(5*width/7, height-30);
+    rose_button.draw_button(6*width/7, height-30);
+    
 }
 
 public void buttons_set() {
     line_button = new Button();
-    line_button.add_state("Line Graph", 100, 20, width/4, height-30, color(100, 100, 100));
-    line_button.add_state("Line Graph", 100, 20, width/4, height-30, color(200, 200, 255));
+    line_button.add_state("Line Graph", 100, 20, width/7, height-30, color(100, 100, 100));
+    line_button.add_state("Line Graph", 100, 20, width/7, height-30, color(200, 200, 255));
     line_button.update();
     
     bar_button = new Button();
-    bar_button.add_state("Bar Chart", 100, 20, width/2, height-30, color(100, 100, 100));
-    bar_button.add_state("Bar Chart", 100, 20, width/2, height-30, color(200, 200, 255));
+    bar_button.add_state("Bar Chart", 100, 20, 2*width/7, height-30, color(100, 100, 100));
+    bar_button.add_state("Bar Chart", 100, 20, 2*width/7, height-30, color(200, 200, 255));
      
     pie_button = new Button();
-    pie_button.add_state("Pie Chart", 100, 20, 3*width/4, height-30, color(100, 100, 100));
-    pie_button.add_state("Pie Chart", 100, 20, 3*width/4, height-30, color(200, 200, 255));
+    pie_button.add_state("Pie Chart", 100, 20, 3*width/7, height-30, color(100, 100, 100));
+    pie_button.add_state("Pie Chart", 100, 20, 3*width/7, height-30, color(200, 200, 255));
+    
+    triver_button = new Button();
+    triver_button.add_state("Theme River", 100, 20, 4*width/7, height-30, color(100, 100, 100));
+    triver_button.add_state("Theme River", 100, 20, 4*width/7, height-30, color(200, 200, 255));
+    
+    stack_button = new Button();
+    stack_button.add_state("Stacked Bar", 100, 20, 5*width/7, height-30, color(100, 100, 100));
+    stack_button.add_state("Stacked Bar", 100, 20, 5*width/7, height-30, color(200, 200, 255));
+    
+    rose_button = new Button();
+    rose_button.add_state("Rose Chart", 100, 20, 6*width/7, height-30, color(100, 100, 100));
+    rose_button.add_state("Rose Chart", 100, 20, 6*width/7, height-30, color(200, 200, 255));
 }
 
 public void check_button() {
@@ -201,18 +294,57 @@ public void check_button() {
         //curr_chart = "Line Graph";
         bar_button.set_default();
         pie_button.set_default();
+        triver_button.set_default();
+        stack_button.set_default();
+        rose_button.set_default();
     } else {
         clicked = bar_button.intersect(mouseX, mouseY);
         if (clicked == true) {
             next_chart = "Bar Chart";
             line_button.set_default();
             pie_button.set_default();
+            triver_button.set_default();
+            stack_button.set_default();
+            rose_button.set_default();
         } else {
             clicked = pie_button.intersect(mouseX, mouseY);
             if (clicked == true) {
                   next_chart = "Pie Chart";
                   line_button.set_default();
                   bar_button.set_default();
+                  triver_button.set_default();
+                  stack_button.set_default();
+                  rose_button.set_default();
+            } else {
+                  clicked = triver_button.intersect(mouseX, mouseY);
+                  if (clicked == true) {
+                      next_chart = "Theme River";
+                      line_button.set_default();
+                      bar_button.set_default();
+                      pie_button.set_default();
+                      stack_button.set_default();
+                      rose_button.set_default();
+                  } else {
+                      clicked = stack_button.intersect(mouseX, mouseY);
+                      if (clicked == true) {
+                          next_chart = "Stacked Bar";
+                          line_button.set_default();
+                          bar_button.set_default();
+                          pie_button.set_default();
+                          triver_button.set_default();
+                          rose_button.set_default();
+                      } else {
+                          clicked = rose_button.intersect(mouseX, mouseY);
+                          if (clicked == true) {
+                              next_chart = "Rose Chart";
+                              line_button.set_default();
+                              bar_button.set_default();
+                              triver_button.set_default();
+                              stack_button.set_default();
+                              pie_button.set_default();
+                          }
+                      }
+                  }
             }
         }
     } 
@@ -1294,6 +1426,62 @@ class Line_Graph {
     }
     return 1;
   }
+  
+  public boolean line_to_triver() {
+   if (phase == 0) {
+      dum_radius = radius;
+      phase++;
+    } else if (phase == 1) {
+      phase += shrink_points();
+    } else {
+      phase = 0;
+      //Creates blank frame if draw functions still not called in here
+      make_canvas(); 
+      draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+      draw_axes_labels(axes_color);
+      draw_axes_titles();
+      draw_points(dum_radius);
+      draw_line(x_coords, y_coords, x_coords, y_coords);
+      return true;
+    }
+
+    make_canvas(); 
+    calc_y_interval();
+    draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+    draw_axes_labels(axes_color);
+    draw_axes_titles();
+    draw_points(dum_radius);
+    draw_line(x_coords, y_coords, x_coords, y_coords);
+    return false;
+}
+
+public boolean triver_to_line() {
+   if (phase == 0) {
+      dum_radius = 0;
+      phase++;
+    } else if (phase == 1) {
+      phase += expand_points();
+    } else {
+      phase = 0;
+      //Creates blank frame if draw functions still not called in here
+      make_canvas(); 
+      draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+      draw_axes_labels(axes_color);
+      draw_axes_titles();
+      draw_points(dum_radius);
+      draw_line(x_coords, y_coords, x_coords, y_coords);
+      return false;
+    }
+
+    make_canvas(); 
+    calc_y_interval();
+    draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
+    draw_axes_labels(axes_color);
+    draw_axes_titles();
+    draw_points(dum_radius);
+    draw_line(x_coords, y_coords, x_coords, y_coords);
+    return true;
+}
 
   public float[] get_y() { return y_coords; }
   public float[] get_x() { return x_coords; }
@@ -1816,6 +2004,91 @@ class Pie_Chart {
   
 
 
+class Rose_Chart{
+  boolean visible;  
+  Data data;
+  float max_val;
+  int num_wedges;
+  float angle;
+  int canvas_x1, canvas_x2;
+  int canvas_y1, canvas_y2;
+  int canvas_w, canvas_h;
+  float[][] radii;
+  
+  Rose_Chart(Data parsed) {
+    //phase = 0;
+    data = parsed;
+    max_val = max(data.values[0]);
+    num_wedges = data.name.length;
+    angle = (2 * PI) / num_wedges;
+  }
+  
+  public void draw_graph() {
+    make_canvas(); 
+    calc_radii();
+    draw_chart();
+  }
+
+  public void make_canvas() {
+    canvas_y1 = 40;
+    canvas_y2 = height - 90;
+    canvas_x1 = 60;
+    canvas_x2 = width - 60;
+
+    canvas_w = canvas_x2 - canvas_x1;
+    canvas_h = canvas_y2 - canvas_y1;
+  }
+  
+  
+  public void calc_radii() {
+      radii = new float[data.num_cols][num_wedges];
+      float tot_so_far;
+      
+      for(int i = 0; i < num_wedges; i++) {
+          tot_so_far = data.values[0][i];
+          radii[0][i] = tot_so_far;
+          for(int j = 1; j < data.num_cols; j++) {
+              tot_so_far += data.values[j][i];
+              radii[j][i] = tot_so_far;
+              if (tot_so_far > max_val) {
+                  max_val = tot_so_far;
+              }
+          }
+      }  
+      print_data();
+  }
+  
+  public void print_data() {
+    for(int i = 0; i < num_wedges; i++) {
+      for(int j = 0; j < data.num_cols; j++) {
+        print(j, " ", i, " ", radii[j][i], "\n");
+      }
+    }
+  }
+  
+  public void draw_chart() {
+      float curr_angle;
+      int fillVal = color(255, 0, 0);
+      int top_index = data.num_cols - 1;
+      
+      for(int i = top_index; i >= 0; i--) {
+          curr_angle = 0;
+          fill(fillVal);
+          for(int j = 0; j < num_wedges; j++) {
+              print("here ", radii[i][j], "\n");
+              arc(width/2, height/2, radii[i][j], radii[i][j], curr_angle, curr_angle + angle);
+              curr_angle += angle;
+          }
+          fillVal = color(0, 0, 255);
+      }
+  }
+
+  
+  
+  
+  
+  
+}
 class Stacked_Bar {
   Data data;
   String x_axis;
@@ -1826,7 +2099,8 @@ class Stacked_Bar {
   int canvas_y1, canvas_y2;
   int canvas_w, canvas_h;
   float[] x_coords;
-  float[] y_coords;
+  float[][] y_coords;
+  float[] max_y_coords;
   float interval;
   float x_spacing;
   int num_intervals;
@@ -1835,19 +2109,18 @@ class Stacked_Bar {
   
   Stacked_Bar(Data parsed) {
     data = parsed;
-    y_max = max(data.values[0]);
+    y_max = max(data.row_totals);
     num_points = data.name.length;
-    interval = 5;
+    interval = 10;
     num_intervals = 0;
-    //phase = 0;
   }
   
   public void draw_graph() {
     make_canvas(); 
     draw_axes();
     draw_axes_titles();
-    get_y_coords();
-    //draw_bars(x_spacing/2);
+    get_max_y_coords();
+    draw_bars(x_spacing/2);
   }
     
   public void make_canvas() {
@@ -1867,10 +2140,11 @@ class Stacked_Bar {
     
     //Draw y axis
     num_intervals = PApplet.parseInt((y_max / interval) + 1);
+    print("num intervals is: ", num_intervals, "\n");
     shown_intervals = num_intervals/10;
     for (int i = 0; i <= num_intervals; i += 1) {
         float pos_y = canvas_y2 - (i * (canvas_h/num_intervals));        
-        float pos_x = canvas_x1 - 15;
+        float pos_x = canvas_x1 - 25;
         
         if (shown_intervals == 0) {
           fill(0,0,0);
@@ -1927,19 +2201,420 @@ class Stacked_Bar {
     textAlign(BASELINE);
   }
   
-  public void get_y_coords() {
-      y_coords = new float[0];
+  public void get_max_y_coords() {
+      max_y_coords = new float[0];
       float max_height = num_intervals*interval;
         
       for (int i = 0; i < data.name.length; i++) {
-          float ratio = data.values[0][i]/max_height;
-          y_coords = append(y_coords, (PApplet.parseFloat(canvas_h)-(PApplet.parseFloat(canvas_h)*ratio))+canvas_y1);
+          float ratio = data.row_totals[i]/max_height;
+          max_y_coords = append(max_y_coords, (PApplet.parseFloat(canvas_h)-(PApplet.parseFloat(canvas_h)*ratio))+canvas_y1);
       }
     
   }
   
+  public void draw_bars(float w) {
+        float tot_h = 0;
+        float h_ratio = 0;
+        float curr_y = canvas_y2;
+        y_coords = new float[num_points][data.num_cols];
+        //print("in draw bars, dum width: ", w, "\ngoal: ", x_spacing/2, "\n");
+        for (int i = 0; i < data.name.length; i++) {
+             curr_y = canvas_y2;
+             tot_h = canvas_y2 - max_y_coords[i];
+          for (int j = 0; j < data.num_cols-1; j++) {
+              float fill_clr = map(j, 0, data.num_cols, 0, 255);
+              h_ratio = data.values[j][i]/data.row_totals[i];
+              curr_y -= tot_h*h_ratio;
+                 
+              fill(fill_clr, 200, 200);
+              // rect(x_coords[i]-(x_spacing/4), y_coords[i], x_spacing/2, canvas_y2 - y_coords[i]);
+              rect(x_coords[i]-(w/4), curr_y, w, tot_h*h_ratio); 
+              y_coords[i][j] = curr_y;
+          } 
+        }
+    
+    }
+ /*   
+  boolean bar_to_stack(float[] bar_y) {
+    make_canvas(); 
+    draw_axes();
+    draw_axes_titles();
+    
+    if (phase == 0) {
+      phase += set_btos_dummy(bar_y);
+    } else if (phase == 1) {
+      print("phase 1\n");
+      //phase += decr_lines_drawn();
+    } else if (phase == 2) {
+      //phase += raise_line(line_y);
+    } else {
+      phase = 0;
+      return false;
+    }
+    
+    draw_bars(x_spacing/2);
+   
+    return true;
+  }
   
+  int set_btos_dummy(float[] bar_y) {
+   for (int i = 0; i < data.name.length; i++) {
+      dum_y[i] = bar_y[i];
+    }
+    
+    lines_drawn = 0;
+    return 1;
+ }
+  */
+}
+class Theme_River {
+  Data data;
+  String x_axis;
+  String y_axis;
+  float y_max;
+  int num_points;
+  int canvas_x1, canvas_x2;
+  int canvas_y1, canvas_y2;
+  int canvas_w, canvas_h;
+  float[] x_coords;
+  float[][] y_coords;
+  float[] dum_y;
+  float[] ttol_dest;
+  float y_interval;
+  int num_intervals;
+  int isect;
+  int shown_intervals;
+  float radius;
+  int phase;
+  float lines_drawn;
+
+  Theme_River(Data parsed) {
+    //phase = 0;
+    data = parsed;
+    y_max = max(data.row_totals);
+    num_points = data.name.length;
+    y_interval = 10;
+    num_intervals = 0;
+    radius = 3;
+    phase = 0;
+  }
   
+  public void draw_graph() {
+    make_canvas(); 
+    draw_axes();
+    draw_axes_titles();
+    get_y_coords();
+    //draw_points();
+    draw_triver(data.num_cols - 2, x_coords, y_coords);
+  }
+    
+  public void make_canvas() {
+    canvas_y1 = 40;
+    canvas_y2 = height - 120;
+    canvas_x1 = 60;
+    canvas_x2 = width - 60;
+    
+    canvas_w = canvas_x2 - canvas_x1;
+    canvas_h = canvas_y2 - canvas_y1;
+  }
+  
+  public void draw_axes() {
+    fill(255, 255, 255);
+    line(canvas_x1, canvas_y2, canvas_x2, canvas_y2);
+    //line(canvas_x1, canvas_y1, canvas_x1, canvas_y2);
+    
+    //Draw y axis labels
+    num_intervals = PApplet.parseInt((y_max / y_interval) + 1);
+    
+    x_coords = new float[0];
+    float spacing = canvas_w/num_points;
+    
+    for (int i = 0; i < num_points; i += 1) {
+        float pos_x = (i*spacing) + (spacing/2) + canvas_x1;
+        float pos_y = canvas_y2 + 10;
+        
+        x_coords = append(x_coords, pos_x + 10); 
+        //fill(200, 200, 200);
+        //line(pos_x + 10, canvas_y2, pos_x + 10, canvas_y1);
+        
+        translate(pos_x + 10, pos_y);
+        rotate(PI/2);
+        
+        fill(0,0,0);
+        textAlign(LEFT, CENTER);
+        textSize(10);
+        text(data.name[i], 0, 0);        
+        
+        rotate(-PI/2);
+        translate(-pos_x - 10, -pos_y);
+    }
+  }
+  
+  public void draw_axes_titles() {
+    textSize(15);
+    textAlign(CENTER, CENTER);
+    
+    //x axis header
+    text(data.header[0], width/2, height - 70);
+    /*
+    //y axis header
+    translate(15, height/2);
+    rotate(-PI/2);
+    text(data.header[1], 0, 0); 
+    rotate(PI/2);
+    translate(-15, -height/2);
+    
+    textAlign(BASELINE);
+    
+    */
+  }
+  
+  public void get_y_coords() {
+      y_coords = new float[data.name.length][data.num_cols];
+      float max_height = num_intervals*y_interval;
+      float total_hratio, total_height, bottom_gutter, curr_y, sub_hratio, sub_height;
+      //print("max_height: ", max_height, "\n");
+      
+      for (int i = 0; i < data.name.length; i++) {
+          total_hratio = data.row_totals[i]/max_height;
+          total_height = total_hratio * canvas_h;
+          bottom_gutter = (canvas_h - total_height)/2;
+          curr_y = canvas_y2 - bottom_gutter;
+          /*print("hratio: ", total_hratio, "\n");
+          print("total_height: ", total_height, "\n");
+          print("curr_y: ", curr_y, "\n");*/
+          
+          for (int j = 0; j < data.num_cols; j++) {
+            sub_hratio = data.values[j][i]/data.row_totals[i];
+            sub_height = sub_hratio * total_height;
+            curr_y = curr_y - sub_height;
+            y_coords[i][j] = curr_y;
+            //print("sub height: ", sub_height, "\n");
+          }
+        
+      }
+    
+  }
+ /*
+ void draw_points() {
+     for (int i = 0; i < 1; i++) {
+       for (int j = 0; j < data.num_cols; j++) {
+           ellipse(x_coords[i], y_coords[i][j], radius, radius);
+       }
+     }
+ }
+ */
+ /* 
+  void draw_points(float r) {
+        y_coords = new float[data.name.length][data.num_cols];
+        float tot_h = 0;
+        float h_ratio = 0;
+        float curr_y = canvas_y2;
+        
+        for (int i = 0; i < data.name.length; i++) {
+            print("i is: ", i, "\n");
+            curr_y = canvas_y2;
+            tot_h = canvas_y2 - max_y_coords[i];
+          for (int j = 0; j < data.num_cols-1; j++) {
+                 h_ratio = data.values[i][j]/data.row_totals[i];
+                 curr_y -= tot_h*h_ratio;  
+            
+            //y_coords = append(y_coords, canvas_y2 - ((canvas_h/(num_intervals*y_interval))*data.value[i]));
+            fill(0,0,0);
+            ellipse(x_coords[i], curr_y, r, r);
+            y_coords[i][j] = curr_y;
+          }
+        }
+  }
+  */
+  
+  public void draw_triver(int lines_to_draw, float[]x, float[][]y) {
+        //print("data length: ", data.name.length, "\n");
+        for (int j = 0; j <= lines_to_draw; j++) {
+          //float fill_clr = map(j, 0, data.num_cols, 50, 255);
+          float fill_clr = map(i, 0, data.name.length, 0, 255);
+          if (j == lines_to_draw) {
+            fill_clr = 255;
+          }
+          //fill(fill_clr/2, 2*fill_clr/3, fill_clr);
+          fill(150, fill_clr, 150);
+          beginShape();
+          curveVertex(canvas_x1 - 25, canvas_y1 + canvas_h/2);
+          curveVertex(canvas_x1 - 15, canvas_y1 + canvas_h/2);
+          for (int i = 0; i < data.name.length; i++) {
+            curveVertex(x[i], y[i][j]);
+          }
+          
+          curveVertex(canvas_x2 + 25, canvas_y1 + canvas_h/2);
+          
+          for (int i = data.name.length - 1; i >= 0; i--) {
+              curveVertex(x[i], y[i][j+1]);
+          }
+          
+          curveVertex(canvas_x1 - 15, canvas_y1 + canvas_h/2);
+          curveVertex(canvas_x1 - 25, canvas_y1 + canvas_h/2);
+          endShape();
+          
+        }
+  }
+  
+  public boolean line_to_triver(float[] line_y) {
+    make_canvas(); 
+    draw_axes();
+    draw_axes_titles();
+    get_y_coords();
+    
+    if (phase == 0) {
+      phase += set_ltot_dummy(line_y);
+    } else if (phase == 1) {
+      phase += sink_line();
+    } else if (phase == 2) {
+      phase += incr_lines_drawn();
+    } else {
+      phase = 0;
+      return false;
+    }
+   
+    //draw_points();
+    if (phase == 1) {
+      draw_line();
+    } else {
+      draw_triver((int)lines_drawn, x_coords, y_coords);
+    }
+    
+    return true;
+  }
+  
+  public int set_ltot_dummy(float[] line_y) {
+    dum_y = new float[data.name.length];
+    /*float max_val = 0;
+    
+    for (int i = 0; i < data.name.length; i++) {
+      if (data.values[i][0] > max_val) {
+        max_val = data.values[i][0];
+      }
+    }
+    
+    int num_interv = int((max_val/ y_interval) + 1);
+    float max_height = num_interv*y_interval;
+*/
+    for (int i = 0; i < data.name.length; i++) {
+      //float ratio = data.values[i][0]/max_height;
+      //dum_y[i] = (float(canvas_h)-(float(canvas_h)*ratio))+canvas_y1;
+      //ttol_dest[i] = dum_y[i];
+      dum_y[i] = line_y[i];
+    }
+    
+    lines_drawn = 0;
+    return 1;
+  }
+  
+ public int sink_line() {
+    for (int i = 0; i < data.name.length; i++) {
+      dum_y[i] = lerp(dum_y[i], y_coords[i][0], .1f);
+    }
+    
+    boolean all_same = true;
+    for (int i = 1; i < num_points; i++) {
+      if ((int)dum_y[i] != (int)y_coords[i][0]) {
+        all_same = false;
+      }
+    }
+
+    if (all_same) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+  
+  public int incr_lines_drawn() {
+    lines_drawn = lerp(lines_drawn, data.num_cols + 5, .01f);
+    //print(lines_drawn, "\n");
+    
+    if (lines_drawn <= data.num_cols - 2) {
+       return 0;
+    } else {
+       return 1;
+    }
+  }
+  
+   public void draw_line() {
+    for (int i = 0; i < (data.name.length - 1); i++) {
+      fill(000);
+      line(x_coords[i], dum_y[i], x_coords[i+1], dum_y[i+1]);
+    }
+  }
+  
+  public boolean triver_to_line(float[] line_y) {
+    make_canvas(); 
+    draw_axes();
+    draw_axes_titles();
+    get_y_coords();
+    
+    if (phase == 0) {
+      phase += set_ttol_dummy();
+    } else if (phase == 1) {
+      //print("phase 1\n");
+      phase += decr_lines_drawn();
+    } else if (phase == 2) {
+      phase += raise_line(line_y);
+    } else {
+      phase = 0;
+      draw_line();
+      return true;
+    }
+    
+   
+    if (phase == 2 || phase == 3) {
+      draw_line();
+    } else {
+      draw_triver((int)lines_drawn, x_coords, y_coords);
+    }
+    
+    return false;
+  }
+  
+  public int set_ttol_dummy() {
+    dum_y = new float[data.name.length];
+    
+    for (int i = 0; i < data.name.length; i++) {
+      dum_y[i] = y_coords[i][0];
+    }
+    
+    lines_drawn = data.num_cols - 2;
+    return 1;
+  }
+  
+  public int decr_lines_drawn() {
+    lines_drawn = lerp(lines_drawn, -3, .01f);
+    //print(lines_drawn, "\n");
+    
+    if (lines_drawn > 0) {
+       return 0;
+    } else {
+       return 1;
+    }
+  }
+  
+  public int raise_line(float[] line_y) {
+    for (int i = 0; i < data.name.length; i++) {
+      dum_y[i] = lerp(dum_y[i], line_y[i], .05f);
+    }
+    
+    boolean all_same = true;
+    for (int i = 1; i < num_points; i++) {
+      if ((int)dum_y[i] != (int)line_y[i]) {
+        all_same = false;
+      }
+    }
+
+    if (all_same) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
 }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "a2" };

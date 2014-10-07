@@ -104,23 +104,23 @@ class Theme_River {
       y_coords = new float[data.name.length][data.num_cols];
       float max_height = num_intervals*y_interval;
       float total_hratio, total_height, bottom_gutter, curr_y, sub_hratio, sub_height;
-      print("max_height: ", max_height, "\n");
+      //print("max_height: ", max_height, "\n");
       
       for (int i = 0; i < data.name.length; i++) {
           total_hratio = data.row_totals[i]/max_height;
           total_height = total_hratio * canvas_h;
           bottom_gutter = (canvas_h - total_height)/2;
           curr_y = canvas_y2 - bottom_gutter;
-          print("hratio: ", total_hratio, "\n");
+          /*print("hratio: ", total_hratio, "\n");
           print("total_height: ", total_height, "\n");
-          print("curr_y: ", curr_y, "\n");
+          print("curr_y: ", curr_y, "\n");*/
           
           for (int j = 0; j < data.num_cols; j++) {
             sub_hratio = data.values[j][i]/data.row_totals[i];
             sub_height = sub_hratio * total_height;
             curr_y = curr_y - sub_height;
             y_coords[i][j] = curr_y;
-            print("sub height: ", sub_height, "\n");
+            //print("sub height: ", sub_height, "\n");
           }
         
       }
@@ -160,13 +160,15 @@ class Theme_River {
   */
   
   void draw_triver(int lines_to_draw, float[]x, float[][]y) {
-        print("data length: ", data.name.length, "\n");
+        //print("data length: ", data.name.length, "\n");
         for (int j = 0; j <= lines_to_draw; j++) {
-          float fill_clr = map(j, 0, data.num_cols, 50, 255);
+          //float fill_clr = map(j, 0, data.num_cols, 50, 255);
+          float fill_clr = map(j, 0, lines_to_draw, 0, 255);
           if (j == lines_to_draw) {
             fill_clr = 255;
           }
-          fill(fill_clr/2, 2*fill_clr/3, fill_clr);
+          //fill(fill_clr/2, 2*fill_clr/3, fill_clr);
+          fill(150, fill_clr, 150);
           beginShape();
           curveVertex(canvas_x1 - 25, canvas_y1 + canvas_h/2);
           curveVertex(canvas_x1 - 15, canvas_y1 + canvas_h/2);
@@ -259,7 +261,7 @@ class Theme_River {
   
   int incr_lines_drawn() {
     lines_drawn = lerp(lines_drawn, data.num_cols + 5, .01);
-    print(lines_drawn, "\n");
+    //print(lines_drawn, "\n");
     
     if (lines_drawn <= data.num_cols - 2) {
        return 0;
@@ -284,7 +286,7 @@ class Theme_River {
     if (phase == 0) {
       phase += set_ttol_dummy();
     } else if (phase == 1) {
-      print("phase 1\n");
+      //print("phase 1\n");
       phase += decr_lines_drawn();
     } else if (phase == 2) {
       phase += raise_line(line_y);
@@ -317,7 +319,7 @@ class Theme_River {
   
   int decr_lines_drawn() {
     lines_drawn = lerp(lines_drawn, -3, .01);
-    print(lines_drawn, "\n");
+    //print(lines_drawn, "\n");
     
     if (lines_drawn > 0) {
        return 0;

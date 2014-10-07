@@ -135,7 +135,7 @@ class Stacked_Bar {
               h_ratio = data.values[j][i]/data.row_totals[i];
               curr_y -= tot_h*h_ratio;
                  
-              fill(fill_clr, 200, 200);
+              fill(150, fill_clr, 150);
               // rect(x_coords[i]-(x_spacing/4), y_coords[i], x_spacing/2, canvas_y2 - y_coords[i]);
               rect(x_coords[i]-(w/4), curr_y, w, tot_h*h_ratio); 
               y_coords[i][j] = curr_y;
