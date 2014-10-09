@@ -47,14 +47,14 @@ void setup(){
 void example(){
     // how to initialize a color scheme   
     Color[] colorsrr = new Color[numberOfColor];
-    colorsrr[0] = new Color("RGB", 85,0,128);
-    colorsrr[1] = new Color("RGB", 171,0,128);
-    colorsrr[2] = new Color("RGB", 255,128,128);
-    colorsrr[3] = new Color("RGB", 0,128,128);
-    colorsrr[4] = new Color("RGB", 85,255,128);
-    colorsrr[5] = new Color("RGB", 171,255,128);
-    colorsrr[6] = new Color("RGB", 128,128,0);
-    colorsrr[7] = new Color("RGB", 128,128,255);
+    colorsrr[0] = new Color("RGB", 0, 128, 224);
+    colorsrr[1] = new Color("RGB", 32, 54, 192);
+    colorsrr[2] = new Color("RGB", 64, 192, 160);
+    colorsrr[3] = new Color("RGB", 96, 0, 128);
+    colorsrr[4] = new Color("RGB", 128, 224, 96);
+    colorsrr[5] = new Color("RGB", 160, 32, 64);
+    colorsrr[6] = new Color("RGB", 192, 160, 32);
+    colorsrr[7] = new Color("RGB", 224, 96, 0);
    
     cs = new ColorScheme(colorsrr, "RGB");
     
