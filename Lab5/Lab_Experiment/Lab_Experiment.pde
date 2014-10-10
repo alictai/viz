@@ -28,13 +28,14 @@ void setup() {
     /**
      ** Finish this: decide how to generate the dataset you are using (see DataGenerator)
      **/
-    d = null;
+    d = new Data();
 
     /**
      ** Finish this: how to generate participant IDs
      ** You can write a short alphanumeric ID generator (cool) or modify this for each participant (less cool).
      **/
-    partipantID = DECIDE_YOURSELF;
+     
+    partipantID = int(random(100000));
 }
 
 void draw() {
@@ -56,7 +57,7 @@ void draw() {
         /**
          **  Finish this: decide the chart type. You can do this randomly.
          **/
-        int chartType = DECIDE_YOURSELF;
+        int chartType = 0;
 
         switch (chartType) {
             case -1: // This is a placeholder, you can remove it and use the other cases for the final version
@@ -70,6 +71,8 @@ void draw() {
                  rect(chartLeftX, chartLeftY, chartSize, chartSize);
                  break;
             case 0:
+                Bar_Graph bar = new Bar_Graph(d, int(chartLeftX), int(chartLeftY), int(chartLeftX + chartSize), int(chartLeftY + chartSize) );
+                bar.draw_graph();
                 /**
                  ** finish this: 1st visualization
                  **/
