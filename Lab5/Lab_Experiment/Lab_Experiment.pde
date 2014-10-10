@@ -71,6 +71,14 @@ void draw() {
                  rect(chartLeftX, chartLeftY, chartSize, chartSize);
                  break;
             case 0:
+                stroke(0);
+                 strokeWeight(1);
+                 fill(255);
+                 rectMode(CORNER);
+                 /*
+                  * all your charts must be inside this rectangle
+                  */
+                 rect(chartLeftX, chartLeftY, chartSize, chartSize);
                 Bar_Graph bar = new Bar_Graph(d, int(chartLeftX), int(chartLeftY), int(chartLeftX + chartSize), int(chartLeftY + chartSize) );
                 bar.draw_graph();
                 /**
@@ -146,8 +154,14 @@ public void next() {
         /**
          ** Finish this: decide the dataset (similar to how you did in setup())
          **/
-        d = null;
-
+        d = new Data();
+        /*
+        fill(255);
+        rect(chartLeftX-5, chartLeftY-5, chartSize+10, chartSize+10);  
+        fill(0);
+        */
+  
+  
         cp5.get(Textfield.class, "answer").clear();
         index++;
 

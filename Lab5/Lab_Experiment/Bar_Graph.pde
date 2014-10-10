@@ -54,7 +54,7 @@ class Bar_Graph {
   void draw_graph() {
     //make_canvas(); 
     draw_axes(canvas_x2, canvas_y2, canvas_x1, canvas_y2);
-    draw_axes_labels(axes_color);
+    find_x_spacing(axes_color);
     //draw_axes_titles();
     get_y_coords();
     draw_bars(x_spacing/2, y_coords);
@@ -76,7 +76,7 @@ class Bar_Graph {
     line(canvas_x1, canvas_y2, x_x, x_y);  //x axis
   }
  
-  void draw_axes_labels(color c) {    
+  void find_x_spacing(color c) {    
     /*
     //Draw y axis
     num_intervals = int((y_max / interval) + 1);
@@ -103,7 +103,7 @@ class Bar_Graph {
         float pos_x = (i*x_spacing) + (x_spacing/2) + canvas_x1;
         float pos_y = canvas_y2 + 10;
         
-        x_coords = append(x_coords, pos_x + 10); 
+        x_coords = append(x_coords, pos_x); 
         /*
         translate(pos_x + 10, pos_y);
         rotate(PI/2);
@@ -141,10 +141,10 @@ class Bar_Graph {
   void get_y_coords() {
       y_coords = new float[0];
       //heights = new float[0];
-      float max_height = canvas_y2 - canvas_y1;
+      float max_height = 100;
         
       for (int i = 0; i < data.getLength(); i++) {
-          float ratio =data.getVal(i)/max_height;
+          float ratio = data.getVal(i)/max_height;
           y_coords = append(y_coords, (float(canvas_h)-(float(canvas_h)*ratio))+canvas_y1);
           //heights = append(heights, canvas_y2 - ((float(canvas_h)-(float(canvas_h)*ratio))+canvas_y1));
       }
@@ -153,10 +153,14 @@ class Bar_Graph {
   
   void draw_bars(float w, float[] hs) {
         for (int i = 0; i < data.getLength(); i++) {
-              //float gray = map(i, 0, data.values[0].length, 0, 255);
-              fill(0);
-              //print("y coords", y_coords[i], "\n");
-              rect(x_coords[i]-(w/4), y_coords[i], w, canvas_y2 - y_coords[i]);   
+              float hgt = canvas_y2 - y_coords[i];
+              fill(255);
+              stroke(0);
+              rect(x_coords[i]-(w/2), y_coords[i], w, hgt);
+              if(data.isMarked(i)) {
+                 fill(0);
+                 ellipse(x_coords[i], canvas_y2 - (hgt / 2), 5, 5);
+              } 
         }
   }
   /*

@@ -31,6 +31,10 @@ class Data {
    float getVal(int i) {
        return data[i].getValue();
    }
+   
+   boolean isMarked(int i) {
+       return data[i].isMarked();
+   }
 
     Data() {
         // NUM is a global varibale in support.pde
