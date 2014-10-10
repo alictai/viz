@@ -57,7 +57,7 @@ void draw() {
         /**
          **  Finish this: decide the chart type. You can do this randomly.
          **/
-        int chartType = 0;
+        int chartType = 2;
 
         switch (chartType) {
             case -1: // This is a placeholder, you can remove it and use the other cases for the final version
@@ -91,9 +91,18 @@ void draw() {
                  **/
                 break;
             case 2:
-                /**
-                 ** finish this: 3rd visualization
-                 **/
+                stroke(0);
+                 strokeWeight(1);
+                 fill(255);
+                 rectMode(CORNER);
+                 /*
+                  * all your charts must be inside this rectangle
+                  */
+                 rect(chartLeftX, chartLeftY, chartSize, chartSize);
+                Treemap_Parser parser = new Treemap_Parser();
+                Canvas root = parser.parse(d);
+                Treemap tree = new Treemap(root, int(chartLeftX), int(chartLeftY), int(chartSize), int(chartSize));
+                tree.draw_treemap();
                 break;
             case 3:
                 /**
