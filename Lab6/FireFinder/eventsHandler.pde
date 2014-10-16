@@ -72,16 +72,13 @@ void submitQuery() {
         // submit the sql query and get a ResultSet from the database
        rs  = (ResultSet) DBHandler.exeQuery(sql);
        
-       float[] xs = new float[0];
-       float[] ys = new float[0];
+       xs = new float[0];
+       ys = new float[0];
        
        while (rs.next()) {
           xs = append(xs, rs.getFloat("X"));
           ys = append(ys, rs.getFloat("Y"));
        }
-       
-       println(xs);
-       println(ys);
     } catch (Exception e) {
         // should be a java.lang.NullPointerException here when rs is empty
         e.printStackTrace();
