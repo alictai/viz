@@ -30,7 +30,7 @@ void setup() {
   
   d = new Data();
 
-  partipantID = 10;
+  partipantID = 2;
   //partipantID = int(random(100000));
 }
 
