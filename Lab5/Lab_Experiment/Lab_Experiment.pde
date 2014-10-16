@@ -7,7 +7,7 @@ final int DECIDE_YOURSELF = -1; // This is a placeholder for variables you will 
  */
 Data d = null;
 int chartType = 0;
-int num_trials = 5;
+int num_trials = 20;
 
 void setup() {
   totalWidth = displayWidth;
@@ -152,7 +152,7 @@ public void next() {
       /**
        ** Finish this: decide how to compute the log error from Cleveland and McGill (see the handout for details)
        **/
-      error = log(abs(truePerc - reportPerc) + 1/8) / log(2);
+      error = log(abs(reportPerc - truePerc) + 1/8) / log(2);
       
       saveJudgement(chartType);
     }

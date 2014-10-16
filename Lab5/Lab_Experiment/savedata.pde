@@ -45,7 +45,7 @@ void saveJudgement(int type) {
     /**
      ** finish this: decide current vis id
      **/
-    newRow.setInt("VisID", DECIDE_YOURSELF);
+    newRow.setInt("VisID", type);
     newRow.setFloat("Error", error);
     newRow.setFloat("TruePerc", truePerc);
     newRow.setFloat("ReportPerc", reportPerc);
