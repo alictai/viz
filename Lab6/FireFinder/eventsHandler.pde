@@ -71,10 +71,17 @@ void submitQuery() {
     try {
         // submit the sql query and get a ResultSet from the database
        rs  = (ResultSet) DBHandler.exeQuery(sql);
+       
+       float[] xs = new float[0];
+       float[] ys = new float[0];
+       
        while (rs.next()) {
-          float temperature = rs.getFloat("TEMP");
-          print(temperature + "\n");
+          xs = append(xs, rs.getFloat("X"));
+          ys = append(ys, rs.getFloat("Y"));
        }
+       
+       println(xs);
+       println(ys);
     } catch (Exception e) {
         // should be a java.lang.NullPointerException here when rs is empty
         e.printStackTrace();
