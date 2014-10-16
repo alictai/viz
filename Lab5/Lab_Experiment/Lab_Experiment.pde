@@ -30,7 +30,8 @@ void setup() {
   
   d = new Data();
 
-  partipantID = int(random(100000));
+  partipantID = 10;
+  //partipantID = int(random(100000));
 }
 
 void draw() {
