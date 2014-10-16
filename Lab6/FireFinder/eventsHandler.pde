@@ -65,13 +65,16 @@ void submitQuery() {
      ** finish the sql
      ** do read information from the ResultSet
      **/
-    String sql = null;
+    String sql = "select * from forestfire where month='sep'";
     ResultSet rs = null;
 
     try {
         // submit the sql query and get a ResultSet from the database
        rs  = (ResultSet) DBHandler.exeQuery(sql);
-
+       while (rs.next()) {
+          float temperature = rs.getFloat("TEMP");
+          print(temperature + "\n");
+       }
     } catch (Exception e) {
         // should be a java.lang.NullPointerException here when rs is empty
         e.printStackTrace();
