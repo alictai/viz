@@ -6,6 +6,8 @@ final int DECIDE_YOURSELF = -1; // This is a placeholder for variables you will 
  * This is a global variable for the dataset in your visualization. You'll be overwriting it each trial.
  */
 Data d = null;
+int chartType = 0;
+int num_trials = 5;
 
 void setup() {
   totalWidth = displayWidth;
@@ -25,15 +27,8 @@ void setup() {
   textFont(pfont);
   page1 = true;
 
-  /**
-   ** Finish this: decide how to generate the dataset you are using (see DataGenerator)
-   **/
+  
   d = new Data();
-
-  /**
-   ** Finish this: how to generate participant IDs
-   ** You can write a short alphanumeric ID generator (cool) or modify this for each participant (less cool).
-   **/
 
   partipantID = int(random(100000));
 }
@@ -46,7 +41,7 @@ void draw() {
   if (index < 0 && page1) {
     drawIntro();
     page1 = false;
-  } else if (index >= 0 && index < vis.length) {
+  } else if (index >= 0 && index < num_trials) {
     if (index == 0 && page2) {
       clearIntro();
       drawTextField();
@@ -54,10 +49,6 @@ void draw() {
       page2 = false;
     }
 
-    /**
-     **  Finish this: decide the chart type. You can do this randomly.
-     **/
-    int chartType = 4;
 
     switch (chartType) {
     case -1: // This is a placeholder, you can remove it and use the other cases for the final version
@@ -75,41 +66,13 @@ void draw() {
       strokeWeight(1);
       fill(255);
       rectMode(CORNER);
-      /*
-                  * all your charts must be inside this rectangle
-       */
+      
       rect(chartLeftX, chartLeftY, chartSize, chartSize);
       Bar_Graph bar = new Bar_Graph(d, int(chartLeftX), int(chartLeftY), int(chartLeftX + chartSize), int(chartLeftY + chartSize) );
       bar.draw_graph();
-      /**
-       ** finish this: 1st visualization
-       **/
+      
       break;
     case 1:
-      /**
-       ** finish this: 2nd visualization
-       **/
-      break;
-    case 2:
-      stroke(0);
-      strokeWeight(1);
-      fill(255);
-      rectMode(CORNER);
-      /*
-                  * all your charts must be inside this rectangle
-       */
-      rect(chartLeftX, chartLeftY, chartSize, chartSize);
-      Treemap_Parser parser = new Treemap_Parser();
-      Canvas root = parser.parse(d);
-      Treemap tree = new Treemap(root, int(chartLeftX), int(chartLeftY), int(chartSize), int(chartSize));
-      tree.draw_treemap();
-      break;
-    case 3:
-      /**
-       ** finish this: 4th visualization
-       **/
-      break;
-    case 4:
       stroke(0);
       strokeWeight(1);
       fill(255);
@@ -118,11 +81,25 @@ void draw() {
       rect(chartLeftX, chartLeftY, chartSize, chartSize);
       Pie_Chart pie = new Pie_Chart(d, int(chartLeftX), int(chartLeftY), int(chartLeftX + chartSize), int(chartLeftY + chartSize) );
       pie.draw_graph();
+      
       break;
+    case 2:
+      stroke(0);
+      strokeWeight(1);
+      fill(255);
+      rectMode(CORNER);
+      
+      rect(chartLeftX, chartLeftY, chartSize, chartSize);
+      Treemap_Parser parser = new Treemap_Parser();
+      Canvas root = parser.parse(d);
+      Treemap tree = new Treemap(root, int(chartLeftX), int(chartLeftY), int(chartSize), int(chartSize));
+      tree.draw_treemap();
+      break;
+      
     }
 
     drawWarning();
-  } else if (index > vis.length - 1 && pagelast) {
+  } else if (index > num_trials - 1 && pagelast) {
     drawThanks();
     drawClose();
     pagelast = false;
@@ -146,22 +123,38 @@ public void next() {
   } else if (num > 100) {
     warning = "Please input a number between 0 - 100!";
   } else {
-    if (index >= 0 && index < vis.length) {
+    if (index >= 0 && index < num_trials) {
       float ans = parseFloat(cp5.get(Textfield.class, "answer").getText());
 
-      /**
-       ** Finish this: decide how to compute the right answer
-       **/
-      truePerc = DECIDE_YOURSELF; // hint: from your list of DataPoints, extract the two marked ones to calculate the "true" percentage
+      float val1 = 0;
+      float val2 = 0;
+      int counter = 0;
+       
+      for (int i = 0; i < d.getLength(); i++) {
+         if (d.isMarked(i) && counter == 0) {
+             val1 = d.getVal(i);
+             counter++;
+         } else if (d.isMarked(i) && counter == 1) {
+             val2 = d.getVal(i);
+             counter = 0;
+         }
+      }
+      
+      if (val1 < val2) {
+        truePerc = val1/val2;
+      } else {
+        truePerc = val2/val1;
+      }
+      print("vals = ", val1, " ", val2, " percentage = ", truePerc, "\n");
 
       reportPerc = ans / 100.0; // this is the participant's response
 
       /**
        ** Finish this: decide how to compute the log error from Cleveland and McGill (see the handout for details)
        **/
-      error = DECIDE_YOURSELF;
-
-      saveJudgement();
+      error = log(abs(truePerc - reportPerc) + 1/8) / log(2);
+      
+      saveJudgement(chartType);
     }
 
     /**
@@ -177,8 +170,8 @@ public void next() {
 
     cp5.get(Textfield.class, "answer").clear();
     index++;
-
-    if (index == vis.length - 1) {
+    chartType = int(random(3));
+    if (index == num_trials - 1) {
       pagelast = true;
     }
   }

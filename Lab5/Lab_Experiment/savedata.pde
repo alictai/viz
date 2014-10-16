@@ -18,13 +18,13 @@ Table expData = null;
  */
 
 String[] vis = {
-    "BarChart", "PieChart", "StackedBarChart", "TreeMap", "LineChart"
+    "BarChart", "PieChart", "TreeMap"
 };
 
 /**
  * add the data for this judgement from the participant to the table.
  */ 
-void saveJudgement() {
+void saveJudgement(int type) {
     if (expData == null) {
         expData = new Table();
         expData.addColumn("PartipantID");
@@ -39,11 +39,8 @@ void saveJudgement() {
     TableRow newRow = expData.addRow();
     newRow.setInt("PartipantID", partipantID);
     newRow.setInt("Index", index);
-
-    /**
-     ** finish this: decide the current visualization
-     **/
-    newRow.setString("Vis", "" + DECIDE_YOURSELF);
+      
+    newRow.setString("Vis", vis[type]);
 
     /**
      ** finish this: decide current vis id
@@ -62,5 +59,5 @@ void saveExpData() {
     /**
      ** Change this if you need 
      **/
-    saveTable(expData, "expData.csv");
+        saveTable(expData, "expData.csv");
 }

@@ -134,7 +134,7 @@ class Pie_Chart {
       
       for (int i = 0; i < data.getLength(); i++) {
           float gray = map(i, 0, data.getLength(), 0, 255);
-          fill(150, gray, 150);
+          fill(255);
          
           if(!shrink && !spread && !rotate && !collapse) {
               arc(center_x, center_y, diameter, diameter, lastAngle, lastAngle + radians(angles[i]), PIE);
