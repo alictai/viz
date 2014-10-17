@@ -13,13 +13,18 @@ class Node {
        dist_to_parent = 0;
        num_children = 0;
        resting_dist = 0;
-       x = 0;
-       y = 0;
+       x = random(10, width-10);
+       y = random(10, height-10);
    }
    
    Node(int i, float mas) {
        id = i;
        mass = mas;
+       dist_to_parent = 0;
+       num_children = 0;
+       resting_dist = 0;
+       x = random(10, width-10);
+       y = random(10, height-10);
    }
    
 }

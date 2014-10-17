@@ -19,5 +19,6 @@ void setup() {
 }
 
 void draw() {
-    //treemap.draw_treemap();
+    background(255);
+    graph.draw_graph();
 }
