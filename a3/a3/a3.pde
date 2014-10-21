@@ -7,7 +7,7 @@ Graph graph;
 
 void setup() {
     // PUT INPUT FILE NAME HERE
-    String file = "data.csv";
+    String file = "data2.csv";
     
     size(screenWidth, screenHeight);
     if (frame != null) {

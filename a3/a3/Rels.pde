@@ -8,6 +8,7 @@ class Rels {
   void update_act(float n1x, float n1y, float n2x, float n2y) {
       act_edge_x = abs(n1x - n2x);
       act_edge_y = abs(n1y - n2y);
+      update_r();
   }
   
   //CALL AFTER UPDATE_ACT

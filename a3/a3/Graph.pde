@@ -2,18 +2,48 @@ class Graph {
    Node[] nodes;
    Rels[] relations;
    float k_h, k_c;
+   float KE_threshold;
+   boolean start;
    
    Graph() {
-      k_h = 5.0; 
-      k_c = 2.0;
+      k_h = 1.0; 
+      k_c = 1.0;
+      KE_threshold = 0;
+      start = true;
    }
    void draw_graph() {
-       for (int i = 0; i < nodes.length; i++) {
-           //print(nodes[i].x, ", ", nodes[i].y, "\n");
-           nodes[i].update_position();
+       float total_KE = calc_KE();       
+       if(total_KE > KE_threshold || start) {
+           update_with_forces();
+           start = false;
+       } else {
+         print("you hit the threshold!\n");
        }
        draw_edges();
        draw_nodes();
+   }
+   
+   float calc_KE() {
+       float total = 0;
+       for(int i = 0; i < nodes.length; i++) {
+           total += nodes[i].KE;
+       }
+       return total;
+   }
+   
+   void update_with_forces() {
+     for (int i = 0; i < nodes.length; i++) {
+           //print(nodes[i].x, ", ", nodes[i].y, "\n");
+           nodes[i].update_position();
+       }
+       
+       for (int k = 0; k < relations.length; k++) {
+           Node n1 = lookup(relations[k].node1);
+           Node n2 = lookup(relations[k].node2);
+           
+           relations[k].update_act(n1.x, n1.y, n2.x, n2.y);
+       }
+     
    }
    
    void draw_nodes() {
@@ -51,7 +81,7 @@ class Graph {
     void calc_forces() {
         initialize_forces();
         find_coulumb();
-        //find_hooke();
+        find_hooke();
     }
 
     void initialize_forces() {
@@ -89,12 +119,22 @@ class Graph {
         for (int i = 0; i < relations.length; i++) {
            n1 = lookup(relations[i].node1);
            n2 = lookup(relations[i].node2);
-           // call calc_hooke() to accumualte fx and fy
+           
+           float ex = relations[i].act_edge_x;
+           float rex = relations[i].r_edge_x;
+           float ey = relations[i].act_edge_y;
+           float rey = relations[i].r_edge_x;
+           
+           n1.fx += calc_hooke(n1.x, n2.x, ex, rex);
+           n1.fy += calc_hooke(n1.y, n2.y, ey, rey);
+           n2.fx += calc_hooke(n2.x, n1.x, ex, rex);
+           n2.fy += calc_hooke(n2.y, n1.y, ey, rey);
         }
     }
     
-    float calc_hooke(float target, float pusher) {
-        
+    float calc_hooke(float target, float pusher, float e, float re) {
+        int dir = check_dir(target, pusher);
+        return dir * k_h*(abs(e - re));
     }
     
     int check_dir (float target, float pusher) {
