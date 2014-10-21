@@ -50,7 +50,7 @@ class Parser {
          split_line = splitTokens(lines[f_place], ",");
          relations[j].node1 = int(split_line[0]);
          relations[j].node2  = int(split_line[1]);
-         relations[j].edge = float(split_line[2]);
+         relations[j].rest_edge = float(split_line[2]);
          j++;
        }
     }
