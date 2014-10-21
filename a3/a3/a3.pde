@@ -20,5 +20,8 @@ void setup() {
 
 void draw() {
     background(255);
+    graph.calc_forces();
     graph.draw_graph();
 }
+
+
