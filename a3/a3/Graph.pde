@@ -6,14 +6,15 @@ class Graph {
    boolean start;
    
    Graph() {
-      k_h = 1.0; 
+      k_h = .01; 
       k_c = 1.0;
-      KE_threshold = 0;
+      KE_threshold = 1;
       start = true;
    }
    void draw_graph() {
-       float total_KE = calc_KE();       
+       float total_KE = calc_KE();     
        if(total_KE > KE_threshold || start) {
+           //print("hello\n");
            update_with_forces();
            start = false;
        } else {
@@ -35,6 +36,7 @@ class Graph {
      for (int i = 0; i < nodes.length; i++) {
            //print(nodes[i].x, ", ", nodes[i].y, "\n");
            nodes[i].update_position();
+           //print(nodes[i].x, ", ", nodes[i].y, "\n");
        }
        
        for (int k = 0; k < relations.length; k++) {
@@ -43,7 +45,6 @@ class Graph {
            
            relations[k].update_act(n1.x, n1.y, n2.x, n2.y);
        }
-     
    }
    
    void draw_nodes() {
@@ -81,7 +82,7 @@ class Graph {
     void calc_forces() {
         initialize_forces();
         find_coulumb();
-        //find_hooke();
+        find_hooke();
     }
 
     void initialize_forces() {
@@ -115,6 +116,7 @@ class Graph {
 
     // for all edges, finds hooke force effects for both affected nodes
     void find_hooke() {
+        //print("finding hooke\n");
         Node n1, n2;
         for (int i = 0; i < relations.length; i++) {
            n1 = lookup(relations[i].node1);
@@ -129,12 +131,13 @@ class Graph {
            n1.fy += calc_hooke(n1.y, n2.y, ey, rey);
            n2.fx += calc_hooke(n2.x, n1.x, ex, rex);
            n2.fy += calc_hooke(n2.y, n1.y, ey, rey);
+           //print("in hooke: ", n1.fx, " ", n1.fy, "\n");
         }
     }
     
     float calc_hooke(float target, float pusher, float e, float re) {
         int dir = check_dir(target, pusher);
-        return dir * k_h*(abs(e - re));
+        return dir * k_h*(re - e);
     }
     
     int check_dir (float target, float pusher) {

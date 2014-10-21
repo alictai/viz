@@ -11,7 +11,6 @@ class Rels {
       update_r();
   }
   
-  //CALL AFTER UPDATE_ACT
   void update_r() {
     //act_edge should be updated
     if (act_edge_x == 0) {
@@ -22,6 +21,9 @@ class Rels {
       r_edge_x = rest_edge * cos(theta_rad);
       r_edge_y = rest_edge * sin(theta_rad);
     }
+    
+    print("REST: ", r_edge_x, ", ", r_edge_y, "\n");
+    print("ACTUAL: ", act_edge_x, ", ", act_edge_y, "\n");
   }
 }
 

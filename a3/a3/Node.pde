@@ -41,19 +41,20 @@ class Node {
    void update_position() {
       //assuming t = 1 frame
       float t = 1;
-    
-      print(fx, ",", fy, "\n");
+        
+      //print(ax, ",", ay, "\n");
       //x
-      float ax = fx/mass;
+      ax = fx/mass;
       x = x + vx*t + .5*ax*(t*t);
       vx = vx + ax*t;
     
       //y
-      float ay = fy/mass;
+      ay = fy/mass;
       y = y + vy*t + .5*ay*(t*t);
       vy = vy + ay*t;
       
       KE = .5 * mass * ((vx*vx) + (vy*vy));
+      //print("KE is ", KE, "\n");
       
       if (x < 10) { x = 10; }
       if (y < 10) { y = 10; }

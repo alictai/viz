@@ -51,8 +51,19 @@ class Parser {
          relations[j].node1 = int(split_line[0]);
          relations[j].node2  = int(split_line[1]);
          relations[j].rest_edge = float(split_line[2]);
+         relations[j].update_act(lookup(relations[j].node1).x, lookup(relations[j].node1).y, lookup(relations[j].node2).x, lookup(relations[j].node2).y);
          j++;
        }
+    }
+    
+    Node lookup(int id) {
+       Node toret = null;
+       for (int i = 0; i < nodes.length; i++) {
+           if (nodes[i].id == id) {
+              toret = nodes[i]; 
+           }
+       }
+       return toret;
     }
   /*  
     void attach_nodes() {
