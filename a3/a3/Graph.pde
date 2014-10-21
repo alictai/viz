@@ -1,8 +1,17 @@
 class Graph {
    Node[] nodes;
    Rels[] relations;
+   float k_h, k_c;
    
+   Graph() {
+      k_h = 5.0; 
+      k_c = 2.0;
+   }
    void draw_graph() {
+       for (int i = 0; i < nodes.length; i++) {
+           //print(nodes[i].x, ", ", nodes[i].y, "\n");
+           nodes[i].update_position();
+       }
        draw_edges();
        draw_nodes();
    }
@@ -40,8 +49,16 @@ class Graph {
    
     //finds total coulumb and hooke's forces for all nodes
     void calc_forces() {
+        initialize_forces();
         find_coulumb();
-        find_hooke();
+        //find_hooke();
+    }
+
+    void initialize_forces() {
+       for(int i = 0; i < nodes.length; i++) {
+          nodes[i].fx = 0;
+          nodes[i].fy = 0;
+       }
     }
 
     //for all nodes, finds coulumb forces from other nodes
@@ -54,15 +71,16 @@ class Graph {
     //for a single node, find coulumb forces from other nodes
     void accumulate_coulumb(Node n) {
         for (int i = 0; i < nodes.length; i++) {
-            if (i != n.id) {
-              n.fx = calc_coulumb(n.x, nodes[i].x);
-              n.fy = calc_coulumb(n.y, nodes[i].y);
+            if (nodes[i].id != n.id) {
+              n.fx += calc_coulumb(n.x, nodes[i].x);
+              n.fy += calc_coulumb(n.y, nodes[i].y);
             }
         }
     }
     
     float calc_coulumb(float target, float pusher) {
-      
+        int dir = check_dir(target, pusher);
+        return dir * k_c / (abs(pusher - target));
     }
 
     // for all edges, finds hooke force effects for both affected nodes

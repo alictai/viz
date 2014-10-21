@@ -6,7 +6,7 @@ class Node {
    float resting_dist;
    int num_children;
    float x, y;
-   float Fx, Fy;
+   float fx, fy;
    float vx, vy;
    float ax, ay;
    
@@ -18,6 +18,12 @@ class Node {
        resting_dist = 0;
        x = random(10, width-10);
        y = random(10, height-10);
+       fx = 0;
+       fy = 0;
+       vx = 0;
+       vy = 0;
+       ax = 0;
+       ay = 0;
    }
    
    Node(int i, float mas) {
@@ -35,14 +41,14 @@ class Node {
       float t = 1;
     
       //x
-      float ax = Fx/mass
-      x = x + vxt + .5*ax*(t^2)
-      vx = vx + ax*t
+      float ax = fx/mass;
+      x = x + vx*t + .5*ax*(t*t);
+      vx = vx + ax*t;
     
       //y
-      float ay = Fy/mass
-      y = y + vyt + .5*ay*(t^2)
-      vy = vy + ay*t
+      float ay = fy/mass;
+      y = y + vy*t + .5*ay*(t*t);
+      vy = vy + ay*t;
     }
    
 }
