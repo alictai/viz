@@ -12,9 +12,9 @@ class Parser {
        
        find_nodes(lines);
        find_rels(lines);
-       attach_nodes();
+       //attach_nodes();
        
-       print_rels();
+       //print_rels();
        
        graph.nodes = nodes;
        graph.relations = relations;
@@ -48,30 +48,30 @@ class Parser {
       for(; f_place < lines.length; f_place++) {
          relations[j] = new Rels();
          split_line = splitTokens(lines[f_place], ",");
-         relations[j].parent = int(split_line[0]);
-         relations[j].child  = int(split_line[1]);
+         relations[j].node1 = int(split_line[0]);
+         relations[j].node2  = int(split_line[1]);
          relations[j].edge = float(split_line[2]);
          j++;
        }
     }
-    
+  /*  
     void attach_nodes() {
        for (int i = 0; i < relations.length; i++) {
           for (int j = 0; j < nodes.length; j++) {
-             if (relations[i].parent == nodes[j].id) {
-                relations[i].node1 = nodes[j];
+             if (relations[i].node1 == nodes[j].id) {
+                relations[i].node1 = nodes[j].id;
              }
-             if (relations[i].child == nodes[j].id) {
+             if (relations[i].node2 == nodes[j].id) {
                 relations[i].node2 = nodes[j];
              }
           }
        }
     }
-    
+  
     void print_rels() {
         for (int i = 0; i < relations.length; i++) {
             print("node1 = ", relations[i].node1.id, "node2 = ", relations[i].node2.id, "spring = ", relations[i].edge, "\n");
         }
     }
-    
+   */ 
 }
