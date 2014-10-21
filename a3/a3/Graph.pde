@@ -1,14 +1,15 @@
 class Graph {
    Node[] nodes;
    Rels[] relations;
-   float k_h, k_c;
+   float k_h, k_c, k_damp;
    float KE_threshold;
    boolean start;
    
    Graph() {
-      k_h = 10; 
-      k_c = 10;
-      KE_threshold = 0;
+      k_h = .001; 
+      k_c = .01;
+      k_damp = .9;
+      KE_threshold = .05;
       start = true;
    }
    void draw_graph() {
@@ -29,13 +30,14 @@ class Graph {
        for(int i = 0; i < nodes.length; i++) {
            total += nodes[i].KE;
        }
+       print("total: ", total, "\n");
        return total;
    }
    
    void update_with_forces() {
      for (int i = 0; i < nodes.length; i++) {
            //print(nodes[i].x, ", ", nodes[i].y, "\n");
-           nodes[i].update_position();
+           nodes[i].update_position(k_damp);
            //print(nodes[i].x, ", ", nodes[i].y, "\n");
        }
        
@@ -114,7 +116,7 @@ class Graph {
     
     float calc_coulumb(float target, float pusher) {
         int dir = check_dir(target, pusher);
-        float force_c = dir * k_c / (abs(pusher - target));
+        float force_c = dir * k_c / ((pusher - target) * (pusher - target));
         return force_c;
     }
 

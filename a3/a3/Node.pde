@@ -42,7 +42,7 @@ class Node {
        // y = width/2;
    }
    
-   void update_position() {
+   void update_position(float damp_const) {
       //assuming t = 1 frame
       float t = 1;
       
@@ -50,13 +50,13 @@ class Node {
       //x
       ax = fx/mass;
       x = x + vx*t + .5*ax*(t*t);
-      vx = vx + ax*t;
+      vx = damp_const * (vx + ax*t);
       //print("x: ", x, "\n");
     
       //y
       ay = fy/mass;
       y = y + vy*t + .5*ay*(t*t);
-      vy = vy + ay*t;
+      vy = damp_const * (vy + ay*t);
       //print("y: ", y, "\n");
       
       KE = .5 * mass * ((vx*vx) + (vy*vy));
