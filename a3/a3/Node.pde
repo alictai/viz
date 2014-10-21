@@ -55,10 +55,10 @@ class Node {
       
       KE = .5 * mass * ((vx*vx) + (vy*vy));
       
-      if (x < 0) { x = 10; }
-      if (y < 0) { y = 10; }
-      if (x > width) { x = width - 10; }
-      if (y > height) { y = height - 10; }
+      if (x < 10) { x = 10; }
+      if (y < 10) { y = 10; }
+      if (x > width-10) { x = width - 10; }
+      if (y > height-10) { y = height - 10; }
     }
    
 }

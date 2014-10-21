@@ -81,7 +81,7 @@ class Graph {
     void calc_forces() {
         initialize_forces();
         find_coulumb();
-        find_hooke();
+        //find_hooke();
     }
 
     void initialize_forces() {
