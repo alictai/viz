@@ -19,6 +19,8 @@ class Node {
        resting_dist = 0;
        x = random(10, width-10);
        y = random(10, height-10);
+       // x = height/2;
+       // y = width/2;
        fx = 0;
        fy = 0;
        vx = 0;
@@ -36,22 +38,26 @@ class Node {
        resting_dist = 0;
        x = random(10, width-10);
        y = random(10, height-10);
+       // x = height/2;
+       // y = width/2;
    }
    
    void update_position() {
       //assuming t = 1 frame
       float t = 1;
-        
-      //print(ax, ",", ay, "\n");
+      
+      //print(fx, ",", fy, "\n");
       //x
       ax = fx/mass;
       x = x + vx*t + .5*ax*(t*t);
       vx = vx + ax*t;
+      //print("x: ", x, "\n");
     
       //y
       ay = fy/mass;
       y = y + vy*t + .5*ay*(t*t);
       vy = vy + ay*t;
+      //print("y: ", y, "\n");
       
       KE = .5 * mass * ((vx*vx) + (vy*vy));
       //print("KE is ", KE, "\n");

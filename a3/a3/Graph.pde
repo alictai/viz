@@ -6,9 +6,9 @@ class Graph {
    boolean start;
    
    Graph() {
-      k_h = .01; 
-      k_c = 1.0;
-      KE_threshold = 1;
+      k_h = 10; 
+      k_c = 10;
+      KE_threshold = 0;
       start = true;
    }
    void draw_graph() {
@@ -18,7 +18,7 @@ class Graph {
            update_with_forces();
            start = false;
        } else {
-         print("you hit the threshold!\n");
+           print("you hit the threshold!\n");
        }
        draw_edges();
        draw_nodes();
@@ -103,15 +103,19 @@ class Graph {
     void accumulate_coulumb(Node n) {
         for (int i = 0; i < nodes.length; i++) {
             if (nodes[i].id != n.id) {
-              n.fx += calc_coulumb(n.x, nodes[i].x);
-              n.fy += calc_coulumb(n.y, nodes[i].y);
+            	// restricts nodes from landing on top of each other
+            	if (n.x == nodes[i].x) { n.x = n.x - 1; } 
+            	if (n.y == nodes[i].y) { n.y = n.y + 1; }
+            	n.fx += calc_coulumb(n.x, nodes[i].x);
+            	n.fy += calc_coulumb(n.y, nodes[i].y); 
             }
         }
     }
     
     float calc_coulumb(float target, float pusher) {
         int dir = check_dir(target, pusher);
-        return dir * k_c / (abs(pusher - target));
+        float force_c = dir * k_c / (abs(pusher - target));
+        return force_c;
     }
 
     // for all edges, finds hooke force effects for both affected nodes
@@ -137,7 +141,8 @@ class Graph {
     
     float calc_hooke(float target, float pusher, float e, float re) {
         int dir = check_dir(target, pusher);
-        return dir * k_h*(re - e);
+        float force_h = dir * k_h * (re - e);
+        return force_h;
     }
     
     int check_dir (float target, float pusher) {
@@ -147,5 +152,4 @@ class Graph {
           return 1;
         }
     }
-
 }
