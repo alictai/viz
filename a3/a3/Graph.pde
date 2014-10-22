@@ -6,7 +6,7 @@ class Graph {
    boolean start;
    
    Graph() { 
-      k_h = .005;
+      k_h = .5;
       k_c = 100*k_h;
       k_damp = .5;
       thresh = 0;
@@ -18,7 +18,8 @@ class Graph {
            update_with_forces();
            start = false;
        } else {
-           print("you hit the threshold!\n");
+           //print("you hit the threshold!\n");
+           update_with_forces();
        }
        draw_edges();
        draw_nodes();
@@ -138,14 +139,13 @@ class Graph {
            float ex = relations[i].curr_edge_x;
            float targex = relations[i].targ_edge_x;
            float ey = relations[i].curr_edge_y;
-           float targey = relations[i].targ_edge_x;
+           float targey = relations[i].targ_edge_y;
 
            n1.fx += calc_hooke(n1.x, n2.x, ex, targex);
            n1.fy += calc_hooke(n1.y, n2.y, ey, targey);
            n2.fx += calc_hooke(n2.x, n1.x, ex, targex);
            n2.fy += calc_hooke(n2.y, n1.y, ey, targey);
            //print("in hooke: ", n1.fx, " ", n1.fy, "\n");
-           print("fx: ", n1.fx, " fy: ", n1.fy, " ft: ", (n1.fx * n1.fx) + (n1.fy * n1.fy), "\n");
         }
         
     }
@@ -153,11 +153,7 @@ class Graph {
     float calc_hooke(float target, float pusher, float e, float targe) {
         int dir = check_dir(target, pusher);
         float force_h = dir * k_h * (targe - e);
-        if ((targe - e) > 0) {
-            print ("positive\n");
-        } else {
-            print ("negative\n");
-        }
+        
         return force_h;
     }
     

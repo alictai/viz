@@ -25,35 +25,11 @@ class Rels {
       float theta_rad = atan(curr_edge_y / curr_edge_x);
       targ_edge_x = targ_edge * cos(theta_rad);
       targ_edge_y = targ_edge * sin(theta_rad);
-      //print("theta: ", (180 / PI) * theta_rad, "\n");
+      print("theta: ", (180 / PI) * theta_rad, "\n");
     }
 
-    if(compressed) {
-        if ((targ_edge_x > curr_edge_x) && (targ_edge_y > curr_edge_y)) {
-            print("should be expanding, both targets bigger than currs\n");
-        } else {
-            print("BAD BAD BAD should be expanding, but ");
-            if (targ_edge_x < curr_edge_x) {
-                print("x is contracting\n");
-            } else {
-                print("y is contracting\n");
-            }
-        }
-    } else {
-        if ((targ_edge_x < curr_edge_x) && (targ_edge_y < curr_edge_y)) {
-            print("should be contracting, both targets smaller than currs\n");
-        } else {
-            print("BAD BAD BAD should be contracting, but ");
-            if (targ_edge_x > curr_edge_x) {
-                print("x is expanding\n");
-            } else {
-                print("y is expanding\n");
-            }
-        }
-    }
-
-    //print("targ:  x-", targ_edge_x, " y-", targ_edge_y, "\n");
-    //print("curr: x-", curr_edge_x, " y-", curr_edge_y, "\n");
+    print("targ:  x-", targ_edge_x, " y-", targ_edge_y, " tot-", targ_edge, "\n");
+    print("curr: x-", curr_edge_x, " y-", curr_edge_y, " tot-", curr_edge, "\n");
 
     /*if(rest_edge > curr_edge) { print("expanding\n"); }
     else if (rest_edge < curr_edge) { print("compressing\n"); }

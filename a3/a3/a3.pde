@@ -37,4 +37,12 @@ void mouseDragged() {
 void mouseReleased() {
     graph.undrag(); 
 }
+/*
+void keyPressed() {
+    graph.k_h = 0;
+}
 
+void keyReleased() {
+    graph.k_h = .2;
+}
+*/

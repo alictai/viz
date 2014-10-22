@@ -49,9 +49,7 @@ class Node {
    void update_position(float damp_const) {
       //assuming t = 1 frame
       float t = 1;
-      
-                //print("force ratio: ", fx/fy, "\n");
-                
+                    
       if (!drag) {
       
           //print(fx, ",", fy, "\n");
@@ -74,6 +72,12 @@ class Node {
           // if (y < 10) { y = 10; }
           // if (x > width-10) { x = width - 10; }
           // if (y > height-10) { y = height - 10; }
+          
+          if(id == 1) {
+            print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            print("X: f-", fx, " a-", ax, " v-", vx, " x-", x, "\n");
+            print("Y: f-", fy, " a-", ay, " v-", vy, " y-", y, "\n\n\n");
+          }
       }
     }
    
