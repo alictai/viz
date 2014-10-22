@@ -3,7 +3,6 @@ class Node {
    float mass;
    Node parent;
    float dist_to_parent;
-   float resting_dist;
    int num_children;
    float x, y;
    float fx, fy;
@@ -12,13 +11,13 @@ class Node {
    float KE;
    boolean intersect;
    boolean drag;
+   float radius;
    
    Node() {
        id = 0;
        mass = 0;
        dist_to_parent = 0;
        num_children = 0;
-       resting_dist = 0;
        x = random(10, width-10);
        y = random(10, height-10);
        fx = 0;
@@ -30,6 +29,7 @@ class Node {
        KE = 0;
        intersect = false;
        drag = false;
+       radius = 0;
    }
    
    Node(int i, float mas) {
@@ -37,9 +37,22 @@ class Node {
        mass = mas;
        dist_to_parent = 0;
        num_children = 0;
-       resting_dist = 0;
        x = random(10, width-10);
        y = random(10, height-10);
+       fx = 0;
+       fy = 0;
+       vx = 0;
+       vy = 0;
+       ax = 0;
+       ay = 0;
+       KE = 0;
+       intersect = false;
+       drag = false;
+       radius = crunch();
+   }
+   
+   float crunch() {
+       return (map(mass, 1, 10, 5, 20));
    }
    
    void update_position(float damp_const) {
@@ -69,7 +82,7 @@ class Node {
     void intersect (int mousex, int mousey) {
     	float distance;
     	distance = sqrt(((mousex - x) * (mousex - x)) + ((mousey - y) * (mousey - y)));
-    	if (distance < mass) { 
+    	if (distance < radius) { 
     		intersect = true; 
     	} else {
     		intersect = false;

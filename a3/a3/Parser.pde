@@ -30,10 +30,8 @@ class Parser {
       nodes = new Node[num_nodes];
 
       for(f_place = 1; f_place <= num_nodes; f_place++) {
-           nodes[f_place-1] = new Node();
            split_line = splitTokens(lines[f_place], ",");
-           nodes[f_place-1].id = int(split_line[0]);
-           nodes[f_place-1].mass = float(split_line[1]);
+           nodes[f_place-1] = new Node(int(split_line[0]), float(split_line[1]));
        }
 
     }

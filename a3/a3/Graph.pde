@@ -4,20 +4,28 @@ class Graph {
    float k_h, k_c, k_damp;
    float thresh;
    boolean start;
+   int last_h, last_w;
+   float total_KE;
    
    Graph() { 
       k_h = .2;
       k_c = 10000;
-      k_damp = .5;
-      thresh = .3;
+      k_damp = .4;
+      thresh = .2;
       start = true;
    }
    void draw_graph() {
-       float total_KE = calc_KE(); 
+       total_KE = calc_KE(); 
        if(total_KE > thresh || start) {
            update_with_forces();
            start = false;
-       } 
+           last_h = height;
+           last_w = width;
+       } else {
+           if ((width != last_w) || (height != last_h)) {
+               start = true;
+           }
+       }
        
        draw_edges();
        draw_nodes();
@@ -28,6 +36,7 @@ class Graph {
         initialize_forces();
         find_coulumb();
         find_hooke();
+        find_middle();
     }
    
    float calc_KE() {
@@ -56,15 +65,17 @@ class Graph {
        for (int i = 0; i < nodes.length; i++) {
           stroke(0, 102, 153);
           if (nodes[i].intersect) {
+                fill (200, 200, 255);
+                ellipse(nodes[i].x, nodes[i].y, 2*nodes[i].radius, 2*nodes[i].radius);
           	fill(0);
           	textAlign(CENTER);
           	String label = "ID: " + nodes[i].id + ", MASS: " + nodes[i].mass;
           	text(label, nodes[i].x, nodes[i].y - nodes[i].mass);
-          	fill (255, 0, 0);
           } else {
-          	fill(16, 220, 250);
+          	fill(nodes[i].KE, 51, 255 - nodes[i].KE);
+                ellipse(nodes[i].x, nodes[i].y, 2*nodes[i].radius, 2*nodes[i].radius);
           }
-          ellipse(nodes[i].x, nodes[i].y, 2*nodes[i].mass, 2*nodes[i].mass);
+          
        }
      
    }
@@ -193,6 +204,26 @@ class Graph {
            return -1; 
         } else {
           return 1;
+        }
+    }
+    
+    void find_middle () {
+        for(int i = 0; i < nodes.length; i++) {
+            check_middle(nodes[i]);
+        }
+    }
+    
+    void check_middle (Node n) {
+        if (n.x > width/2) {
+            n.fx -= 1;
+        } else {
+            n.fx += 1;
+        }
+        
+        if (n.y > height/2) {
+            n.fy -= 1;
+        } else {
+            n.fy += 1;
         }
     }
 
