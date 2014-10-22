@@ -10,6 +10,8 @@ class Node {
    float vx, vy;
    float ax, ay;
    float KE;
+   boolean intersect;
+   boolean drag;
    
    Node() {
        id = 0;
@@ -28,6 +30,8 @@ class Node {
        ax = 0;
        ay = 0;
        KE = 0;
+       intersect = false;
+       drag = false;
    }
    
    Node(int i, float mas) {
@@ -62,10 +66,27 @@ class Node {
       KE = .5 * mass * ((vx*vx) + (vy*vy));
       //print("KE is ", KE, "\n");
       
-      if (x < 10) { x = 10; }
-      if (y < 10) { y = 10; }
-      if (x > width-10) { x = width - 10; }
-      if (y > height-10) { y = height - 10; }
+      // if (x < 10) { x = 10; }
+      // if (y < 10) { y = 10; }
+      // if (x > width-10) { x = width - 10; }
+      // if (y > height-10) { y = height - 10; }
     }
    
+    void intersect (int mousex, int mousey) {
+    	float distance;
+    	distance = sqrt(((mousex - x) * (mousex - x)) + ((mousey - y) * (mousey - y)));
+    	if (distance < mass) { 
+    		intersect = true; 
+    	} else {
+    		intersect = false;
+    	}
+    }
+
+    void drag (int mousex, int mousey) {
+    	if (intersect) {
+    		drag = true;
+    		x = float(mousex);
+    		y = float(mousey);
+    	}
+    }
 }

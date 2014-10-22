@@ -14,8 +14,8 @@ import java.io.IOException;
 
 public class a3 extends PApplet {
 
-int screenWidth = 400;
-int screenHeight = 400;
+int screenWidth = 1000;
+int screenHeight = 1000;
 
 Parser parser;
 Node root;
@@ -23,7 +23,9 @@ Graph graph;
 
 public void setup() {
     // PUT INPUT FILE NAME HERE
-    String file = "data3.csv";
+    String file = "data.csv";
+    
+    frameRate(20);
     
     size(screenWidth, screenHeight);
     if (frame != null) {
@@ -40,23 +42,31 @@ public void draw() {
     graph.draw_graph();
 }
 
+public void mouseMoved() {
+    graph.intersect(mouseX, mouseY);
+}
+
+public void mouseDragged() {
+    graph.drag(mouseX, mouseY);
+}
 
 class Graph {
    Node[] nodes;
    Rels[] relations;
-   float k_h, k_c;
-   float KE_threshold;
+   float k_h, k_c, k_damp;
+   float thresh;
    boolean start;
    
-   Graph() {
-      k_h = 10; 
+   Graph() { 
+      k_h = .01f;
       k_c = 10;
-      KE_threshold = 0;
+      k_damp = .5f;
+      thresh = 0;
       start = true;
    }
    public void draw_graph() {
        float total_KE = calc_KE();     
-       if(total_KE > KE_threshold || start) {
+       if(total_KE > thresh || start) {
            //print("hello\n");
            update_with_forces();
            start = false;
@@ -66,19 +76,27 @@ class Graph {
        draw_edges();
        draw_nodes();
    }
+
+   //finds total coulumb and hooke's forces for all nodes
+    public void calc_forces() {
+        initialize_forces();
+        //find_coulumb();
+        find_hooke();
+    }
    
    public float calc_KE() {
        float total = 0;
        for(int i = 0; i < nodes.length; i++) {
            total += nodes[i].KE;
        }
+       print("total: ", total, "\n");
        return total;
    }
    
    public void update_with_forces() {
      for (int i = 0; i < nodes.length; i++) {
            //print(nodes[i].x, ", ", nodes[i].y, "\n");
-           nodes[i].update_position();
+           nodes[i].update_position(k_damp);
            //print(nodes[i].x, ", ", nodes[i].y, "\n");
        }
        
@@ -94,8 +112,16 @@ class Graph {
        int size = 0;
        for (int i = 0; i < nodes.length; i++) {
           stroke(0, 102, 153);
-          fill(16, 220, 250);
-          ellipse(nodes[i].x, nodes[i].y, nodes[i].mass, nodes[i].mass);
+          if (nodes[i].intersect) {
+          	fill(0);
+          	textAlign(CENTER);
+          	String label = "ID: " + nodes[i].id + ", MASS: " + nodes[i].mass;
+          	text(label, nodes[i].x, nodes[i].y - nodes[i].mass);
+          	fill (255, 0, 0);
+          } else {
+          	fill(16, 220, 250);
+          }
+          ellipse(nodes[i].x, nodes[i].y, 2*nodes[i].mass, 2*nodes[i].mass);
        }
      
    }
@@ -119,14 +145,6 @@ class Graph {
        }
        return toret;
    }
-   
-   
-    //finds total coulumb and hooke's forces for all nodes
-    public void calc_forces() {
-        initialize_forces();
-        find_coulumb();
-        find_hooke();
-    }
 
     public void initialize_forces() {
        for(int i = 0; i < nodes.length; i++) {
@@ -157,7 +175,7 @@ class Graph {
     
     public float calc_coulumb(float target, float pusher) {
         int dir = check_dir(target, pusher);
-        float force_c = dir * k_c / (abs(pusher - target));
+        float force_c = dir * k_c / ((pusher - target));
         return force_c;
     }
 
@@ -173,7 +191,7 @@ class Graph {
            float rex = relations[i].r_edge_x;
            float ey = relations[i].act_edge_y;
            float rey = relations[i].r_edge_x;
-           
+
            n1.fx += calc_hooke(n1.x, n2.x, ex, rex);
            n1.fy += calc_hooke(n1.y, n2.y, ey, rey);
            n2.fx += calc_hooke(n2.x, n1.x, ex, rex);
@@ -184,7 +202,7 @@ class Graph {
     
     public float calc_hooke(float target, float pusher, float e, float re) {
         int dir = check_dir(target, pusher);
-        float force_h = dir * k_h * (re - e);
+        float force_h = -dir * k_h * (e - re);
         return force_h;
     }
     
@@ -195,6 +213,20 @@ class Graph {
           return 1;
         }
     }
+
+    public void intersect(int mousex, int mousey) {
+    	for(int i = 0; i < nodes.length; i++) {
+    		nodes[i].intersect(mousex, mousey);
+    	}
+
+    }
+
+    public void drag(int mousex, int mousey) {
+    	for (int i = 0; i < nodes.length; i++) {
+    		nodes[i].drag(mousex, mousey);
+    	}
+    }
+    
 }
 class Node {
    int id;
@@ -208,6 +240,8 @@ class Node {
    float vx, vy;
    float ax, ay;
    float KE;
+   boolean intersect;
+   boolean drag;
    
    Node() {
        id = 0;
@@ -226,6 +260,8 @@ class Node {
        ax = 0;
        ay = 0;
        KE = 0;
+       intersect = false;
+       drag = false;
    }
    
    Node(int i, float mas) {
@@ -240,7 +276,7 @@ class Node {
        // y = width/2;
    }
    
-   public void update_position() {
+   public void update_position(float damp_const) {
       //assuming t = 1 frame
       float t = 1;
       
@@ -248,24 +284,41 @@ class Node {
       //x
       ax = fx/mass;
       x = x + vx*t + .5f*ax*(t*t);
-      vx = vx + ax*t;
+      vx = damp_const * (vx + ax*t);
       //print("x: ", x, "\n");
     
       //y
       ay = fy/mass;
       y = y + vy*t + .5f*ay*(t*t);
-      vy = vy + ay*t;
+      vy = damp_const * (vy + ay*t);
       //print("y: ", y, "\n");
       
       KE = .5f * mass * ((vx*vx) + (vy*vy));
       //print("KE is ", KE, "\n");
       
-      if (x < 10) { x = 10; }
-      if (y < 10) { y = 10; }
-      if (x > width-10) { x = width - 10; }
-      if (y > height-10) { y = height - 10; }
+      // if (x < 10) { x = 10; }
+      // if (y < 10) { y = 10; }
+      // if (x > width-10) { x = width - 10; }
+      // if (y > height-10) { y = height - 10; }
     }
    
+    public void intersect (int mousex, int mousey) {
+    	float distance;
+    	distance = sqrt(((mousex - x) * (mousex - x)) + ((mousey - y) * (mousey - y)));
+    	if (distance < mass) { 
+    		intersect = true; 
+    	} else {
+    		intersect = false;
+    	}
+    }
+
+    public void drag (int mousex, int mousey) {
+    	if (intersect) {
+    		drag = true;
+    		x = PApplet.parseFloat(mousex);
+    		y = PApplet.parseFloat(mousey);
+    	}
+    }
 }
 class Parser {
   Node[] nodes;

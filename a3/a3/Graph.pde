@@ -2,19 +2,19 @@ class Graph {
    Node[] nodes;
    Rels[] relations;
    float k_h, k_c, k_damp;
-   float KE_threshold;
+   float thresh;
    boolean start;
    
-   Graph() {
-      k_h = .001; 
-      k_c = .01;
-      k_damp = .9;
-      KE_threshold = .05;
+   Graph() { 
+      k_h = .01;
+      k_c = 10;
+      k_damp = .5;
+      thresh = 0;
       start = true;
    }
    void draw_graph() {
        float total_KE = calc_KE();     
-       if(total_KE > KE_threshold || start) {
+       if(total_KE > thresh || start) {
            //print("hello\n");
            update_with_forces();
            start = false;
@@ -24,6 +24,13 @@ class Graph {
        draw_edges();
        draw_nodes();
    }
+
+   //finds total coulumb and hooke's forces for all nodes
+    void calc_forces() {
+        initialize_forces();
+        //find_coulumb();
+        find_hooke();
+    }
    
    float calc_KE() {
        float total = 0;
@@ -53,8 +60,16 @@ class Graph {
        int size = 0;
        for (int i = 0; i < nodes.length; i++) {
           stroke(0, 102, 153);
-          fill(16, 220, 250);
-          ellipse(nodes[i].x, nodes[i].y, nodes[i].mass, nodes[i].mass);
+          if (nodes[i].intersect) {
+          	fill(0);
+          	textAlign(CENTER);
+          	String label = "ID: " + nodes[i].id + ", MASS: " + nodes[i].mass;
+          	text(label, nodes[i].x, nodes[i].y - nodes[i].mass);
+          	fill (255, 0, 0);
+          } else {
+          	fill(16, 220, 250);
+          }
+          ellipse(nodes[i].x, nodes[i].y, 2*nodes[i].mass, 2*nodes[i].mass);
        }
      
    }
@@ -78,14 +93,6 @@ class Graph {
        }
        return toret;
    }
-   
-   
-    //finds total coulumb and hooke's forces for all nodes
-    void calc_forces() {
-        initialize_forces();
-        find_coulumb();
-        find_hooke();
-    }
 
     void initialize_forces() {
        for(int i = 0; i < nodes.length; i++) {
@@ -116,7 +123,7 @@ class Graph {
     
     float calc_coulumb(float target, float pusher) {
         int dir = check_dir(target, pusher);
-        float force_c = dir * k_c / ((pusher - target) * (pusher - target));
+        float force_c = dir * k_c / ((pusher - target));
         return force_c;
     }
 
@@ -132,7 +139,7 @@ class Graph {
            float rex = relations[i].r_edge_x;
            float ey = relations[i].act_edge_y;
            float rey = relations[i].r_edge_x;
-           
+
            n1.fx += calc_hooke(n1.x, n2.x, ex, rex);
            n1.fy += calc_hooke(n1.y, n2.y, ey, rey);
            n2.fx += calc_hooke(n2.x, n1.x, ex, rex);
@@ -143,7 +150,7 @@ class Graph {
     
     float calc_hooke(float target, float pusher, float e, float re) {
         int dir = check_dir(target, pusher);
-        float force_h = dir * k_h * (re - e);
+        float force_h = -dir * k_h * (e - re);
         return force_h;
     }
     
@@ -154,4 +161,18 @@ class Graph {
           return 1;
         }
     }
+
+    void intersect(int mousex, int mousey) {
+    	for(int i = 0; i < nodes.length; i++) {
+    		nodes[i].intersect(mousex, mousey);
+    	}
+
+    }
+
+    void drag(int mousex, int mousey) {
+    	for (int i = 0; i < nodes.length; i++) {
+    		nodes[i].drag(mousex, mousey);
+    	}
+    }
+    
 }
