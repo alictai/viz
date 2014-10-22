@@ -21,8 +21,6 @@ class Node {
        resting_dist = 0;
        x = random(10, width-10);
        y = random(10, height-10);
-       // x = height/2;
-       // y = width/2;
        fx = 0;
        fy = 0;
        vx = 0;
@@ -42,45 +40,30 @@ class Node {
        resting_dist = 0;
        x = random(10, width-10);
        y = random(10, height-10);
-       // x = height/2;
-       // y = width/2;
    }
    
    void update_position(float damp_const) {
-      //assuming t = 1 frame
-      float t = 1;
+        //assuming t = 1 frame
+        float t = 1;
                     
-      if (!drag) {
-      
-          //print(fx, ",", fy, "\n");
-          //x
-          ax = fx/mass;
-          x = x + vx*t + .5*ax*(t*t);
-          vx = damp_const * (vx + ax*t);
-          //print("x: ", x, "\n");
+        if (!drag) {
+            //x
+            ax = fx/mass;
+            x = x + vx*t + .5*ax*(t*t);
+            vx = damp_const * (vx + ax*t);
     
-          //y
-          ay = fy/mass;
-          y = y + vy*t + .5*ay*(t*t);
-          vy = damp_const * (vy + ay*t);
-          //print("y: ", y, "\n");
+            //y
+            ay = fy/mass;
+            y = y + vy*t + .5*ay*(t*t);
+            vy = damp_const * (vy + ay*t);
       
-          KE = .5 * mass * ((vx*vx) + (vy*vy));
-          //print("KE is ", KE, "\n");
-      
-          // if (x < 10) { x = 10; }
-          // if (y < 10) { y = 10; }
-          // if (x > width-10) { x = width - 10; }
-          // if (y > height-10) { y = height - 10; }
-          
-          /*
-          if(id == 1) {
-            print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-            print("X: f-", fx, " a-", ax, " v-", vx, " x-", x, "\n");
-            print("Y: f-", fy, " a-", ay, " v-", vy, " y-", y, "\n\n\n");
-          }
-          */
-      }
+            KE = .5 * mass * ((vx*vx) + (vy*vy));
+        }
+            
+        if (x < 10) { x = 10; }
+        if (y < 10) { y = 10; }
+        if (x > width-10) { x = width - 10; }
+        if (y > height-10) { y = height - 10; }
     }
    
     void intersect (int mousex, int mousey) {
@@ -93,11 +76,13 @@ class Node {
     	}
     }
 
-    void drag (int mousex, int mousey) {
+    boolean drag (int mousex, int mousey) {
     	if (intersect) {
     		drag = true;
     		x = float(mousex);
     		y = float(mousey);
+                return true;
     	}
+        return false;
     }
 }
