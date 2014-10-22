@@ -7,7 +7,7 @@ Graph graph;
 
 void setup() {
     // PUT INPUT FILE NAME HERE
-    String file = "data.csv";
+    String file = "data2.csv";
     
     frameRate(20);
     
@@ -32,5 +32,9 @@ void mouseMoved() {
 
 void mouseDragged() {
     graph.drag(mouseX, mouseY);
+}
+
+void mouseReleased() {
+    graph.undrag(); 
 }
 

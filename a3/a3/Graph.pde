@@ -6,7 +6,7 @@ class Graph {
    boolean start;
    
    Graph() { 
-      k_h = .01;
+      k_h = .005;
       k_c = 100*k_h;
       k_damp = .5;
       thresh = 0;
@@ -15,7 +15,6 @@ class Graph {
    void draw_graph() {
        float total_KE = calc_KE();     
        if(total_KE > thresh || start) {
-           //print("hello\n");
            update_with_forces();
            start = false;
        } else {
@@ -37,7 +36,7 @@ class Graph {
        for(int i = 0; i < nodes.length; i++) {
            total += nodes[i].KE;
        }
-       print("total: ", total, "\n");
+       //print("total: ", total, "\n");
        return total;
    }
    
@@ -52,7 +51,7 @@ class Graph {
            Node n1 = lookup(relations[k].node1);
            Node n2 = lookup(relations[k].node2);
            
-           relations[k].update_act(n1.x, n1.y, n2.x, n2.y);
+           relations[k].update_curr(n1.x, n1.y, n2.x, n2.y);
        }
    }
    
@@ -130,27 +129,35 @@ class Graph {
     // for all edges, finds hooke force effects for both affected nodes
     void find_hooke() {
         //print("finding hooke\n");
+        
         Node n1, n2;
         for (int i = 0; i < relations.length; i++) {
            n1 = lookup(relations[i].node1);
            n2 = lookup(relations[i].node2);
            
-           float ex = relations[i].act_edge_x;
-           float rex = relations[i].r_edge_x;
-           float ey = relations[i].act_edge_y;
-           float rey = relations[i].r_edge_x;
+           float ex = relations[i].curr_edge_x;
+           float targex = relations[i].targ_edge_x;
+           float ey = relations[i].curr_edge_y;
+           float targey = relations[i].targ_edge_x;
 
-           n1.fx += calc_hooke(n1.x, n2.x, ex, rex);
-           n1.fy += calc_hooke(n1.y, n2.y, ey, rey);
-           n2.fx += calc_hooke(n2.x, n1.x, ex, rex);
-           n2.fy += calc_hooke(n2.y, n1.y, ey, rey);
+           n1.fx += calc_hooke(n1.x, n2.x, ex, targex);
+           n1.fy += calc_hooke(n1.y, n2.y, ey, targey);
+           n2.fx += calc_hooke(n2.x, n1.x, ex, targex);
+           n2.fy += calc_hooke(n2.y, n1.y, ey, targey);
            //print("in hooke: ", n1.fx, " ", n1.fy, "\n");
+           print("fx: ", n1.fx, " fy: ", n1.fy, " ft: ", (n1.fx * n1.fx) + (n1.fy * n1.fy), "\n");
         }
+        
     }
     
-    float calc_hooke(float target, float pusher, float e, float re) {
+    float calc_hooke(float target, float pusher, float e, float targe) {
         int dir = check_dir(target, pusher);
-        float force_h = -dir * k_h * (e - re);
+        float force_h = dir * k_h * (targe - e);
+        if ((targe - e) > 0) {
+            print ("positive\n");
+        } else {
+            print ("negative\n");
+        }
         return force_h;
     }
     
@@ -173,6 +180,12 @@ class Graph {
     	for (int i = 0; i < nodes.length; i++) {
     		nodes[i].drag(mousex, mousey);
     	}
+    }
+    
+    void undrag() {
+       for (int i = 0; i < nodes.length; i++) {
+          nodes[i].drag = false;
+       } 
     }
     
 }

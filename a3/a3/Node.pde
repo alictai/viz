@@ -50,26 +50,31 @@ class Node {
       //assuming t = 1 frame
       float t = 1;
       
-      //print(fx, ",", fy, "\n");
-      //x
-      ax = fx/mass;
-      x = x + vx*t + .5*ax*(t*t);
-      vx = damp_const * (vx + ax*t);
-      //print("x: ", x, "\n");
+                //print("force ratio: ", fx/fy, "\n");
+                
+      if (!drag) {
+      
+          //print(fx, ",", fy, "\n");
+          //x
+          ax = fx/mass;
+          x = x + vx*t + .5*ax*(t*t);
+          vx = damp_const * (vx + ax*t);
+          //print("x: ", x, "\n");
     
-      //y
-      ay = fy/mass;
-      y = y + vy*t + .5*ay*(t*t);
-      vy = damp_const * (vy + ay*t);
-      //print("y: ", y, "\n");
+          //y
+          ay = fy/mass;
+          y = y + vy*t + .5*ay*(t*t);
+          vy = damp_const * (vy + ay*t);
+          //print("y: ", y, "\n");
       
-      KE = .5 * mass * ((vx*vx) + (vy*vy));
-      //print("KE is ", KE, "\n");
+          KE = .5 * mass * ((vx*vx) + (vy*vy));
+          //print("KE is ", KE, "\n");
       
-      // if (x < 10) { x = 10; }
-      // if (y < 10) { y = 10; }
-      // if (x > width-10) { x = width - 10; }
-      // if (y > height-10) { y = height - 10; }
+          // if (x < 10) { x = 10; }
+          // if (y < 10) { y = 10; }
+          // if (x > width-10) { x = width - 10; }
+          // if (y > height-10) { y = height - 10; }
+      }
     }
    
     void intersect (int mousex, int mousey) {
