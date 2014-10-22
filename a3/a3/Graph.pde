@@ -7,7 +7,7 @@ class Graph {
    
    Graph() { 
       k_h = .01;
-      k_c = 10;
+      k_c = 100*k_h;
       k_damp = .5;
       thresh = 0;
       start = true;
@@ -123,7 +123,7 @@ class Graph {
     
     float calc_coulumb(float target, float pusher) {
         int dir = check_dir(target, pusher);
-        float force_c = dir * k_c / ((pusher - target));
+        float force_c = dir * k_c / ((pusher - target)*(pusher - target));
         return force_c;
     }
 

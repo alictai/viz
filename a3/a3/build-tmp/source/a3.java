@@ -59,7 +59,7 @@ class Graph {
    
    Graph() { 
       k_h = .01f;
-      k_c = 10;
+      k_c = 100*k_h;
       k_damp = .5f;
       thresh = 0;
       start = true;
