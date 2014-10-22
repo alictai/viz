@@ -73,11 +73,13 @@ class Node {
           // if (x > width-10) { x = width - 10; }
           // if (y > height-10) { y = height - 10; }
           
+          /*
           if(id == 1) {
             print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
             print("X: f-", fx, " a-", ax, " v-", vx, " x-", x, "\n");
             print("Y: f-", fy, " a-", ay, " v-", vy, " y-", y, "\n\n\n");
           }
+          */
       }
     }
    

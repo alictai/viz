@@ -25,11 +25,11 @@ class Rels {
       float theta_rad = atan(curr_edge_y / curr_edge_x);
       targ_edge_x = targ_edge * cos(theta_rad);
       targ_edge_y = targ_edge * sin(theta_rad);
-      print("theta: ", (180 / PI) * theta_rad, "\n");
+      //print("theta: ", (180 / PI) * theta_rad, "\n");
     }
 
-    print("targ:  x-", targ_edge_x, " y-", targ_edge_y, " tot-", targ_edge, "\n");
-    print("curr: x-", curr_edge_x, " y-", curr_edge_y, " tot-", curr_edge, "\n");
+    //print("targ:  x-", targ_edge_x, " y-", targ_edge_y, " tot-", targ_edge, "\n");
+    //print("curr: x-", curr_edge_x, " y-", curr_edge_y, " tot-", curr_edge, "\n");
 
     /*if(rest_edge > curr_edge) { print("expanding\n"); }
     else if (rest_edge < curr_edge) { print("compressing\n"); }
