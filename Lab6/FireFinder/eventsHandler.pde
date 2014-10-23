@@ -50,7 +50,21 @@ void submitQuery() {
      ** checkboxDay (Mon-Sun) is similar with checkboxMon
      **/
     println("the " + checkboxMon.getItem(0).getName() + " is " + checkboxMon.getState(0));
-
+    String[] months = new String [0];
+    for (int i = 0; i < checkboxMon.getItems().size(); i++) {
+        if (checkboxMon.getState(i)) {
+            String s = checkboxMon.getItem(i).getName();
+            months = append(months, s);
+        }
+    }
+    
+    String[] days = new String [0];
+    for (int i = 0; i < checkboxDay.getItems().size(); i++) {
+        if (checkboxDay.getState(i)) {
+            String s = checkboxDay.getItem(i).getName();
+            days = append(days, s);
+        }
+    }
 
     /** use getHighValue() to get the upper value of the current selected interval
      ** use getLowValue() to get the lower value
@@ -59,15 +73,37 @@ void submitQuery() {
      **/
     float maxTemp = rangeTemp.getHighValue();
     float minTemp = rangeTemp.getLowValue();
-
+    float maxHum = rangeHumidity.getHighValue();
+    float minHum = rangeHumidity.getLowValue();
+    float maxWind = rangeWind.getHighValue();
+    float minWind = rangeWind.getLowValue();
     /** Finish this
      **
      ** finish the sql
      ** do read information from the ResultSet
      **/
-    String sql = "select * from forestfire where month='sep'";
+    String sql = "select * from forestfire where (";
+    for (int i = 0; i < months.length; i++) {
+        if(i != 0) {
+            sql += " OR ";
+        }
+            sql += "month='" + months[i] + "'";
+    }
+    
+    sql += ") AND (";
+    
+    for (int i = 0; i < days.length; i++) {
+        if(i != 0) {
+            sql += " OR ";
+        }
+            sql += "day='" + days[i] + "'";
+    }
+    sql += ") AND temp BETWEEN " + String.valueOf(minTemp) + " AND " + String.valueOf(maxTemp);
+    sql += " AND humidity BETWEEN " + String.valueOf(minHum) + " AND " + String.valueOf(maxHum);
+    sql += " AND wind BETWEEN " + String.valueOf(minWind) + " AND " + String.valueOf(maxWind);
+    
     ResultSet rs = null;
-
+    
     try {
         // submit the sql query and get a ResultSet from the database
        rs  = (ResultSet) DBHandler.exeQuery(sql);

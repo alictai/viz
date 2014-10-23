@@ -42,8 +42,6 @@ String[] days = {
 boolean queryReady = false;
 boolean interfaceReady = false;
 
-Line_Graph data;
-
 void setup() {
     size(int(displayWidth * 0.8), int(displayHeight * 0.8));
     background(245);
