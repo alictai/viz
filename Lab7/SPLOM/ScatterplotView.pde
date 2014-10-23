@@ -37,7 +37,12 @@ class ScatterplotView extends AbstractView {
         // 1. create a new message instance (see Message.pde)
         // 2. set the source of this message (see Message.pde)
         // 3. set the conditions of this message (see Message.pde)
-        // 4. send the message (see AbstractView.pde)
+        // 4. send the message (see AbstractView.pde) 
+
+        Message msg = new Message();
+        msg.setSource(name);
+        msg.setConditions(conds);
+        sendMsg(msg);
     }
 
     // handle sending messages to the Controller when a rectangle is selected
@@ -46,7 +51,16 @@ class ScatterplotView extends AbstractView {
         Rectangle rectSub = getIntersectRegion(rect);
 
         if (rectSub != null) {
-            Condition[] conds = null;
+            //Condition[] conds = null;
+            Condition cond1 = new Condition(xTitle, "<=", inverseToXReal(rectSub.p2.x));
+            Condition cond2 = new Condition(xTitle, ">=", inverseToXReal(rectSub.p1.x));
+            Condition cond3 = new Condition(yTitle, "<=", inverseToYReal(rectSub.p1.y));
+            Condition cond4 = new Condition(yTitle, ">=", inverseToYReal(rectSub.p2.y));
+            Condition[] conds = new Condition[4];
+            conds[0] = cond1;
+            conds[1] = cond2;
+            conds[2] = cond3;
+            conds[3] = cond4;
 
             // Finish this:
             // Create the conditions for what points to highlight to send
