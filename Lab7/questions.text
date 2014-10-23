@@ -1,0 +1,20 @@
+a. As you draw a selection rectangle that starts across the top of a cell and 
+gets dragged down to capture every point from top to bottom, what happens 
+within the same row? Column?
+
+	ROW: It also captures every point from top to bottom. This is because the
+	Y values are the same across a row.
+	COLUMN: It also captures each point that has the corresponding x value. 
+
+b. How about drawing the rectangle from left to right: within the same row? 
+Column?
+
+	a but flipped.
+
+c. Use one of the class plots to highlight all the points with the same class. 
+Notice one point that isn’t as beautifully grouped with its class as the 
+rest. Which dimension seems to be causing this distinction? Any ideas for 
+how you might have figured that out without this handy visualization (no 
+one correct answer)?
+
+	Sepal width seems to be causing this distinction. You can figure this out using the rectangle highlighting and looking in what graphs it is an outlier.

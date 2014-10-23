@@ -527,8 +527,6 @@ class ScatterplotView extends AbstractView {
             conds[2] = cond3;
             conds[3] = cond4;
 
-            //printArray(conds);
-
             // Finish this:
             // Create the conditions for what points to highlight to send
             // in the message below. (reference Condition.pde, Rectangle.pde,
