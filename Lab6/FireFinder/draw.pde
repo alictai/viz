@@ -1,7 +1,6 @@
 int canvasWidth = MIN_INT; // this would be initialized in setup
 float[] xs;
 float[] ys;
-//Scatterplot scatter;
 
 void draw() {
   clearCanvas();
@@ -14,6 +13,7 @@ void draw() {
    ** the hovering is optional
    **/
    
-   //scatter = new Scatterplot(canvasWidth);
+   Scatterplot scatter = new Scatterplot(canvasWidth, xs, ys);
+   scatter.draw_graph();
    
 }
