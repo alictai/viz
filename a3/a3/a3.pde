@@ -9,7 +9,7 @@ void setup() {
     // PUT INPUT FILE NAME HERE
     String file = "data.csv";
     
-    frameRate(50);
+    frameRate(30);
     
     size(screenWidth, screenHeight);
     if (frame != null) {

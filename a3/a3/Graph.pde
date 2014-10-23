@@ -11,7 +11,7 @@ class Graph {
       k_h = .2;
       k_c = 10000;
       k_damp = .4;
-      thresh = .2;
+      thresh = .1;
       start = true;
    }
    void draw_graph() {
@@ -72,7 +72,7 @@ class Graph {
           	String label = "ID: " + nodes[i].id + ", MASS: " + nodes[i].mass;
           	text(label, nodes[i].x, nodes[i].y - nodes[i].mass);
           } else {
-          	fill(nodes[i].KE, 51, 255 - nodes[i].KE);
+          	fill(nodes[i].KE, 80, 255 - nodes[i].KE);
                 ellipse(nodes[i].x, nodes[i].y, 2*nodes[i].radius, 2*nodes[i].radius);
           }
           
@@ -215,15 +215,15 @@ class Graph {
     
     void check_middle (Node n) {
         if (n.x > width/2) {
-            n.fx -= 1;
+            n.fx -= .005 * abs(n.x - width/2);
         } else {
-            n.fx += 1;
+            n.fx += .005 * abs(n.x - width/2);
         }
         
         if (n.y > height/2) {
-            n.fy -= 1;
+            n.fy -= .005 * abs(n.y - height/2);
         } else {
-            n.fy += 1;
+            n.fy += .005 * abs(n.y - height/2);
         }
     }
 
