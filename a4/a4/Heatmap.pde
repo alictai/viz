@@ -2,10 +2,13 @@ class Heatmap {
    float time_min, time_max;
    float time_interval;
    int num_intervals;
-   int num_ports;
    Data data;
    int[][] hmap;
    String[] ports;
+   int canvas_w, canvas_h;
+   int interval_w, interval_h;
+   int min_val, max_val;
+   int buffer_w, buffer_h;
   
   Heatmap(Data parsed) {
      data = parsed;
@@ -16,10 +19,13 @@ class Heatmap {
      ports = new String[0];
      find_timebounds();
      time_interval = (time_max - time_min)/num_intervals;
+     num_intervals++;
      find_num_ports();
      hmap = new int[ports.length][num_intervals];
+     fill_hmap();
+     find_val_bounds();
      print("time_min = ", time_min, " time max: ", time_max, " time interval: ", time_interval,"\n");
-    
+     print_hmap();
   }
   
   void find_timebounds() {
@@ -66,13 +72,82 @@ class Heatmap {
   
   void fill_hmap() {
       for (int i = 0; i < data.events.length; i++) {
-        
-        //hmap[find_port(data.events[i].dest_port)][which_interval(data.events[i].time))]++;  
+        hmap[find_port(data.events[i].dest_port)][which_interval(data.events[i].time)] += 1;  
       }
   }
   
+  void find_val_bounds() {
+      for (int i = 0; i < ports.length; i++) {
+        for (int j = 0; j < num_intervals; j++) {
+            if(hmap[i][j] < min_val) {
+               min_val = hmap[i][j]; 
+            }
+            if(hmap[i][j] > max_val) {
+               max_val = hmap[i][j]; 
+            }
+        } 
+     }
+  }
+  
   int which_interval(float curr) {
-     return ((curr - time_min)/time_interval);
+     float difference = curr - time_min;
+     return floor(difference/time_interval);
+  }
+  
+  void draw_heatmap(int x1, int x2, int y1, int y2) {
+    canvas_w = (x2 - x1);
+    canvas_h = (y2 - y1);
+    interval_w = canvas_w/(num_intervals + 4);
+    interval_h = canvas_h/(ports.length + 1);
+    canvas_w -= 4*interval_w;
+    canvas_h -= interval_h;
+    int curr_x = x1 + 4*interval_w;
+    int curr_y = y1 + interval_w;
+    float c;
+    
+    draw_axis_labels(x1, x2, y1, y2);
+    
+    fill(255);
+    stroke(0);
+    textAlign(CENTER, CENTER);
+    for (int i = 0; i < ports.length; i++) {
+        for (int j = 0; j < num_intervals; j++) {
+           c = map(hmap[i][j], min_val, max_val, 0, 255);
+           fill(10, 255 - c, 255 - c);
+           rect(curr_x, curr_y, interval_w, interval_h);
+           fill(0);
+           text(hmap[i][j], curr_x + interval_w/2, curr_y + interval_h/2);
+           curr_x += interval_w;
+        }
+        curr_y += interval_h;
+        curr_x = x1 + 4*interval_w;
+    }
+  }
+  
+  void draw_axis_labels(int x1, int x2, int y1, int y2) {
+     int curr_x = x1 + interval_w + interval_w/2;
+     int curr_y = y1 + 3*interval_h/4;
+     float curr_time = time_min;
+     
+     textAlign(CENTER, CENTER);
+     for (int i = 0; i < ports.length; i++) {
+         fill(0);
+         text(ports[i], curr_x + interval_w/2, curr_y + interval_h/2);
+         curr_y += interval_h;
+         curr_time += time_interval;
+     }
+        
+     curr_y = y1;
+  }
+  
+  void print_hmap() {
+     for (int i = 0; i < ports.length; i++) {
+        print(ports[i], ": - ");
+        for (int j = 0; j < num_intervals; j++) {
+           print(hmap[i][j], " ");
+        }
+        print("\n"); 
+     }
   }
   
 }
