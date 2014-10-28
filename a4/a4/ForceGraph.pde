@@ -1,4 +1,4 @@
-class ForceGraph {
+/*class ForceGraph {
    ForceNode[] nodes;
    ForceRels[] relations;
    float k_h, k_c, k_damp;
@@ -236,3 +236,4 @@ class ForceGraph {
     }
     
 }
+*/

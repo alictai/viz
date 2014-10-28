@@ -1,5 +1,5 @@
 class Event {
-     String time;
+     float time;
      String src_ip;
      String src_port;
      String dest_ip;
@@ -8,7 +8,7 @@ class Event {
      String operation;
      String protocol;
      
-     Event(String t, String sip, String sport, String dip, 
+     Event(float t, String sip, String sport, String dip, 
            String deport, String prior, String op, String proto) {
          time = t;
          src_ip = sip;

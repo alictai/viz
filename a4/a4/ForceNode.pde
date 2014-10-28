@@ -1,4 +1,4 @@
-class ForceNode {
+/*class ForceNode {
    int id;
    float mass;
    Node parent;
@@ -99,3 +99,4 @@ class ForceNode {
         return false;
     }
 }
+*/

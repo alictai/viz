@@ -1,4 +1,4 @@
-class NetworkView {
+/*class NetworkView {
     ForceNode[] nodes;
     ForceRels[] relations;
     ForceGraph graph;
@@ -28,4 +28,4 @@ class NetworkView {
     int node_exists(String IP) {
         //if it exists then return index. else return -1
     }
-}
+}*/
