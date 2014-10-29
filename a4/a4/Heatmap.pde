@@ -24,8 +24,8 @@ class Heatmap {
      hmap = new int[ports.length][num_intervals];
      fill_hmap();
      find_val_bounds();
-     print("time_min = ", time_min, " time max: ", time_max, " time interval: ", time_interval,"\n");
-     print_hmap();
+     //print("time_min = ", time_min, " time max: ", time_max, " time interval: ", time_interval,"\n");
+     //print_hmap();
   }
   
   void find_timebounds() {
@@ -39,24 +39,12 @@ class Heatmap {
      } 
   }
   
-  void convert_time(float total) {
-     float hour, minutes, seconds;
-   
-     hour = floor(total/3600);
-     minutes = floor(total%3600/60);
-     seconds = floor((total/3600)/60);
-   
-     print(hour, " ", minutes, " ", seconds, " ", total);
-  }
-  
   void find_num_ports () {
       for (int i = 0; i < data.events.length; i++) {
           if (find_port(data.events[i].dest_port) == -1) {
               ports = append(ports, data.events[i].dest_port);
           }
       }
-      
-      print("num ports", ports.length, "\n");
   }
  
   int find_port(String curr) {
@@ -65,8 +53,6 @@ class Heatmap {
            return i; 
         }
      }
-     print(curr, "\n");
-     
      return -1; 
   }
   
@@ -95,14 +81,16 @@ class Heatmap {
   }
   
   void draw_heatmap(int x1, int x2, int y1, int y2) {
-    canvas_w = (x2 - x1);
-    canvas_h = (y2 - y1);
-    interval_w = canvas_w/(num_intervals + 4);
-    interval_h = canvas_h/(ports.length + 1);
-    canvas_w -= 4*interval_w;
-    canvas_h -= interval_h;
-    int curr_x = x1 + 4*interval_w;
-    int curr_y = y1 + interval_w;
+    buffer_w = 90;
+    buffer_h = 50;
+    canvas_w = (x2 - x1) - buffer_w;
+    canvas_h = (y2 - y1) - buffer_h;
+    
+    interval_w = canvas_w/(num_intervals);
+    interval_h = canvas_h/(ports.length);
+    
+    int curr_x = x1 + buffer_w;
+    int curr_y = y1;
     float c;
     
     draw_axis_labels(x1, x2, y1, y2);
@@ -113,33 +101,57 @@ class Heatmap {
     for (int i = 0; i < ports.length; i++) {
         for (int j = 0; j < num_intervals; j++) {
            c = map(hmap[i][j], min_val, max_val, 0, 255);
-           fill(10, 255 - c, 255 - c);
+           fill(c, 195 - c, 255 - c);
            rect(curr_x, curr_y, interval_w, interval_h);
            fill(0);
-           text(hmap[i][j], curr_x + interval_w/2, curr_y + interval_h/2);
+           //text(hmap[i][j], curr_x + interval_w/2, curr_y + interval_h/2);
            curr_x += interval_w;
         }
         curr_y += interval_h;
-        curr_x = x1 + 4*interval_w;
+        curr_x = x1 + buffer_w;
     }
   }
   
   void draw_axis_labels(int x1, int x2, int y1, int y2) {
-     int curr_x = x1 + interval_w + interval_w/2;
-     int curr_y = y1 + 3*interval_h/4;
+     int curr_x = x1 + buffer_w/3;
+     int curr_y = y1;
      float curr_time = time_min;
+     
      
      textAlign(CENTER, CENTER);
      for (int i = 0; i < ports.length; i++) {
          fill(0);
          text(ports[i], curr_x + interval_w/2, curr_y + interval_h/2);
          curr_y += interval_h;
+     }
+     
+     curr_x = buffer_w;
+     
+     for (int i = 0; i < num_intervals; i++) {
+         fill(0);
+         textSize(10);
+         translate(curr_x + interval_w/2, curr_y + buffer_h/2);
+         rotate(PI/2);
+         text(convert_time(curr_time), 0, 0);
+         rotate(-PI/2);
+         translate(-(curr_x + interval_w/2), -(curr_y + buffer_h/2));
+         curr_x += interval_w;
          curr_time += time_interval;
      }
-        
-     curr_y = y1;
   }
   
+  String convert_time(float total) {
+     int hour, minutes, seconds;
+   
+     hour = floor(total/3600);
+     minutes = floor(total%3600/60);
+     seconds = floor(total%3600)%60;
+   
+     String s = str(hour) + ":" + str(minutes) + ":" + str(seconds);
+     
+     return s;
+  }
+/*  
   void print_hmap() {
      for (int i = 0; i < ports.length; i++) {
         print(ports[i], ": - ");
@@ -149,7 +161,7 @@ class Heatmap {
         print("\n"); 
      }
   }
-  
+*/
 }
 
 
