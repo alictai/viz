@@ -4,8 +4,10 @@ int screenWidth = 800;
 int screenHeight = 800;
 Data data;
 Heatmap heatmap;
+Message message;
 int heatmap_x1, heatmap_x2;
 int heatmap_y1, heatmap_y2;
+Rect[] rect;
 
 void setup() {
    size(screenWidth, screenHeight);
@@ -16,7 +18,8 @@ void setup() {
    data.parse("data_aggregate.csv");
    
    heatmap = new Heatmap(data);
-   
+   message = new Message();
+   rect = new Rect[0];
 }
 
 void draw() {
@@ -25,5 +28,17 @@ void draw() {
    heatmap_x2 = width;
    heatmap_y1 = 2 * height/3;
    heatmap_y2 = height;
-   heatmap.draw_heatmap(heatmap_x1, heatmap_x2, heatmap_y1, heatmap_y2);
+   message = heatmap.draw_heatmap(heatmap_x1, heatmap_x2, heatmap_y1, heatmap_y2, message);
 }
+
+void mouseClicked(MouseEvent e) {
+   if (e.getButton() == RIGHT) {
+     rect = new Rect[0];
+   }
+}
+
+void mouseDragged(MouseEvent e) {
+  
+}
+
+
