@@ -60,7 +60,11 @@ class Para_Coord {
 
   void draw_axes() {
     for (int i = 0; i < x_coords.length; i++) {
+      fill(0,0,0);
       line(x_coords[i], y_top, x_coords[i], y_bott);
+      textSize(15);
+      textAlign(CENTER);
+      text(data.get_header(i), x_coords[i], y_bott + 20);
     }
   }
 
