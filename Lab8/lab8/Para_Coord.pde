@@ -22,14 +22,14 @@ class Para_Coord {
     y = y_in;
     w = w_in;
     h = h_in;
-    
+
     calculate_axes();
     calc_pts();
-    
+
     draw_axes();
-    //draw_pts();
-    //draw_lines();
-    
+    draw_pts();
+    draw_lines();
+
     //draw_labels
   }
 
@@ -42,29 +42,43 @@ class Para_Coord {
 
   void calculate_axes() {
     float x_spacing = w/(data.get_num_cols()+1);
-    for(int i = 0; i < x_coords.length; i++) {
-        x_coords[i] = x_spacing * (i+1);
+    for (int i = 0; i < x_coords.length; i++) {
+      x_coords[i] = x_spacing * (i+1);
     }
-    
+
     y_top = y + 20;
-    y_bott = y + h - 60; 
-    
-    
+    y_bott = y + h - 60;
   }
-  
+
   void calc_pts() {
-     for (int i = 0; i < data.get_num_cols(); i++) {
-        for (int k = 0; k < data.get_num_rows(); k++) {
-           y_coords[i][k] = map(data.vals[i][k], maxes[i], mins[i], y_bott, y_top);
-           ellipse(x_coords[i], y_coords[i][k], 10, 10);
-        }
-     } 
+    for (int i = 0; i < data.get_num_cols (); i++) {
+      for (int k = 0; k < data.get_num_rows (); k++) {
+        y_coords[i][k] = map(data.vals[i][k], maxes[i], mins[i], y_bott, y_top);
+      }
+    }
   }
-  
+
   void draw_axes() {
-     for (int i = 0; i < x_coords.length; i++) {
-        line(x_coords[i], y_top, x_coords[i], y_bott);
-     } 
+    for (int i = 0; i < x_coords.length; i++) {
+      line(x_coords[i], y_top, x_coords[i], y_bott);
+    }
+  }
+
+  void draw_pts() {
+    for (int i = 0; i < data.get_num_cols (); i++) {
+      for (int k = 0; k < data.get_num_rows (); k++) {
+        fill(0, 0, 0);
+        ellipse(x_coords[i], y_coords[i][k], 5, 5);
+      }
+    }
+  }
+
+  void draw_lines() {
+    for (int i = 0; i < (data.get_num_rows ()); i++) {
+      for (int k = 0; k < data.get_num_cols () - 1; k++) {
+        line(x_coords[k], y_coords[k][i], x_coords[k+1], y_coords[k+1][i]);
+      }
+    }
   }
 }
 
