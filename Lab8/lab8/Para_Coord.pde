@@ -10,6 +10,7 @@ class Para_Coord {
   float w, h;
   float y_top, y_bott;
   int num_labels;
+  PGraphics pg;
 
   Para_Coord (Data d) {
     data = d;
@@ -21,6 +22,7 @@ class Para_Coord {
     num_labels = 5;
     labels = new float[data.get_num_cols()][num_labels];
     label_coords = new float[data.get_num_cols()][num_labels];
+    pg = null;
   }
 
   void draw_graph(float x_in, float y_in, float w_in, float h_in) {
@@ -74,9 +76,6 @@ class Para_Coord {
         labels[i][k] = label;
         label_coords[i][k] = y_bott - (y_spacing*k);
       }
-      print("label coords: \n");
-      println(labels[i]);
-      print("\n");
     }
   }
 
@@ -103,9 +102,9 @@ class Para_Coord {
     for (int i = 0; i < (data.get_num_rows ()); i++) {
       for (int k = 0; k < data.get_num_cols () - 1; k++) {
         //coloring is temporary
-        stroke(0,255,0);
+        stroke(0, 255, 0);
         line(x_coords[k], y_coords[k][i], x_coords[k+1], y_coords[k+1][i]);
-        stroke(0,0,0);
+        stroke(0, 0, 0);
       }
     }
   }

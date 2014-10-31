@@ -5,13 +5,13 @@ int screenHeight = 800;
 
 void setup() {
   size(screenWidth, screenHeight);
-  if(frame != null) {
+  if (frame != null) {
     frame.setResizable(true);
   }
-  
+
   data = new Data();
   data.parse("iris.csv");
-  graph = new Para_Coord(data); 
+  graph = new Para_Coord(data);
 }
 
 void draw() {
