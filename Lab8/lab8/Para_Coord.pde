@@ -66,15 +66,17 @@ class Para_Coord {
   }
 
   void calc_labels() {
+    float y_spacing = (y_bott - y_top)/(num_labels-1);
     for (int i = 0; i < data.get_num_cols (); i++) {
       for (int k = 0; k < num_labels; k++) {
-        float label = ((maxes[i] - mins[i])/num_labels)*k;
-        //print(label, '\n');
-        //label_coords[i][k] = map(label, maxes[i], mins[i], y_bott, y_top);
+        float label_spacing = (maxes[i] - mins[i])/(num_labels-1);
+        float label = mins[i] + (label_spacing*k);
         labels[i][k] = label;
-        label_coords[i][k] = map(label, mins[i], maxes[i], y_bott, y_top);
+        label_coords[i][k] = y_bott - (y_spacing*k);
       }
-      println(label_coords[i]);
+      print("label coords: \n");
+      println(labels[i]);
+      print("\n");
     }
   }
 
@@ -110,12 +112,12 @@ class Para_Coord {
 
   void draw_labels() {
     for (int i = 0; i < data.get_num_cols (); i++) {
-      for (int k = 1; k < num_labels; k++) {
+      for (int k = 0; k < num_labels; k++) {
         fill(0, 0, 0);
         textSize(10);
         textAlign(RIGHT, CENTER);
         float len = y_bott - y_top;
-        text(labels[i][k], x_coords[i]-5, y_bott - ((len*k)/num_labels));
+        text(labels[i][k], x_coords[i]-5, label_coords[i][k]);
       }
     }
   }
