@@ -1,4 +1,4 @@
-class Stacked_Bar {
+/*class Stacked_Bar {
   Data data;
   String x_axis;
   String y_axis;
@@ -63,9 +63,9 @@ class Stacked_Bar {
         } else {
            shown_intervals--;
         }
-        /*fill(0,0,0);
+        / *fill(0,0,0);
         textSize(10);
-        text(i*interval, pos_x, pos_y);*/
+        text(i*interval, pos_x, pos_y);* /
     }    
     
     
@@ -143,7 +143,7 @@ class Stacked_Bar {
         }
     
     }
- /*   
+ / *   
   boolean bar_to_stack(float[] bar_y) {
     make_canvas(); 
     draw_axes();
@@ -174,5 +174,7 @@ class Stacked_Bar {
     lines_drawn = 0;
     return 1;
  }
-  */
+  * /
 }
+
+*/

@@ -1,6 +1,6 @@
-class Cat_View {
+/*class Cat_View {
   Stacked_Bar[] views;
-  Data data
+  Data data;
   
   
   
@@ -10,7 +10,7 @@ class Cat_View {
     data = parsed;
     
     for(int i = 0; i < 3; i++) {
-      views[[i] = new Stacked_Bar(/*data*/);
+      views[[i] = new Stacked_Bar(/ *data* /);
     
   }
   
@@ -19,3 +19,4 @@ class Cat_View {
   
   
 }
+*/

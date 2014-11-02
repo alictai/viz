@@ -40,7 +40,7 @@ void draw() {
    cat_y2 = 2 * height/3;
    
    fill(0, 0, 0);
-   rect(cat_x1, cat_y1, cat_x2 - cat_x1, cat_y2 - cat_y1);
+   //rect(cat_x1, cat_y1, cat_x2 - cat_x1, cat_y2 - cat_y1);
 }
 
 void mouseClicked(MouseEvent e) {
