@@ -5,7 +5,7 @@ class Rect {
     xleft = 0;
     xright = 0;
     ytop = 0;
-    ybot = 0;t
+    ybot = 0;
   }
   
   Rect(int x1, int x2, int y1, int y2) {
