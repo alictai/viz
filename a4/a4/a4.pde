@@ -6,10 +6,13 @@ Data data;
 Heatmap heatmap;
 Message message;
 Cat_View categ;
+ForceGraph graph;
 int heatmap_x1, heatmap_x2;
 int heatmap_y1, heatmap_y2;
 int cat_x1, cat_x2;
 int cat_y1, cat_y2;
+float graph_x1, graph_x2;
+float graph_y1, graph_y2;
 int press_x, press_y;
 Rect[] rects;
 
@@ -21,6 +24,7 @@ void setup() {
    data = new Data();
    data.parse("data_aggregate.csv");
    
+   graph = new ForceGraph(data);
    heatmap = new Heatmap(data);
    categ = new Cat_View(data);
    message = new Message();
@@ -31,6 +35,12 @@ void setup() {
 
 void draw() {
    background(255, 255, 255);
+   
+   graph_x1 = 0;
+   graph_x2 = 2 * width/3;
+   graph_y1 = 0;
+   graph_y2 = 2 * height/3;
+   graph.draw_graph(graph_x1, graph_x2, graph_y1, graph_y2);
    
    heatmap_x1 = 0;
    heatmap_x2 = width;
@@ -45,7 +55,7 @@ void draw() {
    
    fill(0, 0, 0);
    categ.draw_cat_view(cat_x1, cat_x2, cat_y1, cat_y2);
-   
+  
    draw_rects();
 }
 

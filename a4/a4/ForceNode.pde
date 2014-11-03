@@ -1,7 +1,7 @@
-/*class ForceNode {
-   int id;
+class ForceNode {
+   String id;
    float mass;
-   Node parent;
+   ForceNode parent;
    float dist_to_parent;
    int num_children;
    float x, y;
@@ -13,8 +13,8 @@
    boolean drag;
    float radius;
    
-   Node() {
-       id = 0;
+   ForceNode() {
+       id = "0";
        mass = 0;
        dist_to_parent = 0;
        num_children = 0;
@@ -32,7 +32,7 @@
        radius = 0;
    }
    
-   Node(int i, float mas) {
+   ForceNode(String i, float mas) {
        id = i;
        mass = mas;
        dist_to_parent = 0;
@@ -99,4 +99,3 @@
         return false;
     }
 }
-*/

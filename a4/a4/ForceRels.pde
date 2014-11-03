@@ -1,6 +1,6 @@
 class ForceRels {
-  int node1;
-  int node2;
+  String node1;
+  String node2;
   float targ_edge;
   float curr_edge;
   float targ_edge_x, targ_edge_y;
