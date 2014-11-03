@@ -96,6 +96,8 @@ void mouseDragged(MouseEvent e) {
     if ((press_x != -1) && (press_y != -1)) {
         curr.set_dim(press_x, mouseX, press_y, mouseY);
     }
+    
+    //graph.drag(mouseX, mouseY);
 }
 
 void draw_rects() {

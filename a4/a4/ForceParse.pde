@@ -20,6 +20,7 @@ class ForceParse {
     find_rels();
     find_nodes();
     change_lengths();
+    //populate_events();
     //attach_nodes();
 
     //print_rels();
@@ -59,6 +60,7 @@ class ForceParse {
         temp.node2 = data.events[i].dest_ip;
         temp.weight = 1;
         temp.targ_edge = fixed_length;
+        temp.events = (Event[])append(temp.events, data.events[i]);
         relations = (ForceRels[])append(relations, temp);
       }
     }
@@ -95,18 +97,15 @@ class ForceParse {
   }
 
   void change_lengths() {
-    //find max
+    //find min & max
     float max = 0;
+    float min = relations[0].weight;
     for (int i = 0; i < relations.length; i++) {
       if (relations[i].weight > max) { 
         max = relations[i].weight;
       }
-    }
-    //find min
-    float min = max;
-    for (int j = 0; j < relations.length; j++) {
-      if (relations[j].weight < min) { 
-        min = relations[j].weight;
+      if (relations[i].weight < min) { 
+        min = relations[i].weight;
       }
     }
 
@@ -114,7 +113,7 @@ class ForceParse {
       relations[k].weight = map(relations[k].weight, min, max, 0, 10);
     }
   }
-   
+
   void print_rels() {
     for (int i = 0; i < relations.length; i++) {
       print("REL ", i, ": node1 = ", relations[i].node1, "node2 = ", relations[i].node2, "edge = ", relations[i].targ_edge, "\n");

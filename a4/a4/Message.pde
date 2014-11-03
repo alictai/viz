@@ -28,8 +28,6 @@ class Message {
     dest_port = append(dest_port, val);
   }
 
-
-
   int in_dest_port(String port) {
     for (int i = 0; i < dest_port.length; i++) {
       if (port.equals(dest_port[i])) {
@@ -46,9 +44,8 @@ class Message {
         return i;
       }
     }
-    
+
     return -1;
   }
-  
-  
 }
+

@@ -29,7 +29,7 @@ class ForceGraph {
     x_2 = x2;
     y_1 = y1;
     y_2 = y2;
-    
+
     total_KE = calc_KE();
     if (total_KE > thresh || start) {
       //print("updating\n");
@@ -71,7 +71,7 @@ class ForceGraph {
     for (int k = 0; k < relations.length; k++) {
       ForceNode n1 = lookup(relations[k].node1);
       ForceNode n2 = lookup(relations[k].node2);
-      
+
       relations[k].update_curr(n1.x, n1.y, n2.x, n2.y);
     }
   }
@@ -88,6 +88,7 @@ class ForceGraph {
         textAlign(CENTER);
         String label = "IP: " + nodes[i].id;
         text(label, nodes[i].x, nodes[i].y - nodes[i].mass*2);
+        textSize(10);
       } else {
         fill(nodes[i].KE, 80, 255 - nodes[i].KE);
         ellipse(nodes[i].x, nodes[i].y, 2*nodes[i].radius, 2*nodes[i].radius);
@@ -250,5 +251,24 @@ class ForceGraph {
       nodes[i].intersect(mousex, mousey);
     }
   }
+
+  /*void drag(int mousex, int mousey) {
+   boolean intersected = false;
+   for (int i = 0; i < nodes.length; i++) {
+   if (nodes[i].drag(mousex, mousey) == true) {
+   intersected = true;
+   }
+   }
+   
+   if (intersected) {
+   start = true;
+   }
+   }
+   
+   void undrag() {
+   for (int i = 0; i < nodes.length; i++) {
+   nodes[i].drag = false;
+   }
+   }*/
 }
 
