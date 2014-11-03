@@ -24,7 +24,7 @@ class Cat_View {
     
     int num_chunks = 2 * num_graphs + 1;
     float spacing = 1.0 / num_chunks;
-    print(spacing);
+    //print(spacing);
     
     for(int i = 0; i < num_graphs; i++) {
       int mag_num = 2 * i + 1;

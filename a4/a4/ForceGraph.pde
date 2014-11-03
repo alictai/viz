@@ -27,7 +27,7 @@ class ForceGraph {
     //print("drawing");
     total_KE = calc_KE();
     if (total_KE > thresh || start) {
-      print("updating\n");
+      //print("updating\n");
       update_with_forces();
       start = false;
       last_h = canv_h;
