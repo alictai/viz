@@ -6,6 +6,7 @@ class ForceParse {
   int ult_root;
   int fixed_mass;
   int canvas_w, canvas_h;
+  int fixed_length;
 
   ForceParse(Data d, int canv_w, int canv_h) {   
     canvas_w = canv_w;
@@ -14,13 +15,14 @@ class ForceParse {
     relations = new ForceRels[0];
     data = d;
     fixed_mass = 10;
+    fixed_length = width/5;
 
     find_rels();
     find_nodes();
     change_lengths();
     //attach_nodes();
 
-    print_rels();
+    //print_rels();
   }
 
   void find_nodes() {
@@ -50,12 +52,13 @@ class ForceParse {
     for (int i = 0; i < data.events.length; i++) {
       int exists_index = rel_exists(data.events[i]);
       if (exists_index != -1) {
-        relations[exists_index].targ_edge += 1;
+        relations[exists_index].weight += 1;
       } else {
         ForceRels temp = new ForceRels();
         temp.node1 = data.events[i].src_ip;
         temp.node2 = data.events[i].dest_ip;
-        temp.targ_edge = 1;
+        temp.weight = 1;
+        temp.targ_edge = fixed_length;
         relations = (ForceRels[])append(relations, temp);
       }
     }
@@ -90,40 +93,28 @@ class ForceParse {
     }
     return toret;
   }
-  
+
   void change_lengths() {
-      //find max
-      float max = 0;
-      for(int i = 0; i < relations.length; i++) {
-         if (relations[i].targ_edge > max) { max = relations[i].targ_edge; }
+    //find max
+    float max = 0;
+    for (int i = 0; i < relations.length; i++) {
+      if (relations[i].weight > max) { 
+        max = relations[i].weight;
       }
-      //find min
-      float min = max;
-      for(int j = 0; j < relations.length; j++) {
-         if (relations[j].targ_edge < min) { min = relations[j].targ_edge; }
+    }
+    //find min
+    float min = max;
+    for (int j = 0; j < relations.length; j++) {
+      if (relations[j].weight < min) { 
+        min = relations[j].weight;
       }
-      
-      for(int k = 0; k < relations.length; k ++) {
-         relations[k].targ_edge = map(relations[k].targ_edge, min, max, 0, 100); 
-         //print(relations[k].targ_edge, "\n");
-      }
-      
+    }
+
+    for (int k = 0; k < relations.length; k ++) {
+      relations[k].weight = map(relations[k].weight, min, max, 0, 10);
+    }
   }
-  /*  
-   void attach_nodes() {
-   for (int i = 0; i < relations.length; i++) {
-   for (int j = 0; j < nodes.length; j++) {
-   if (relations[i].node1 == nodes[j].id) {
-   relations[i].node1 = nodes[j].id;
-   }
-   if (relations[i].node2 == nodes[j].id) {
-   relations[i].node2 = nodes[j];
-   }
-   }
-   }
-   }
    
-   */
   void print_rels() {
     for (int i = 0; i < relations.length; i++) {
       print("REL ", i, ": node1 = ", relations[i].node1, "node2 = ", relations[i].node2, "edge = ", relations[i].targ_edge, "\n");

@@ -55,7 +55,7 @@ class ForceNode {
        return (map(mass, 1, 10, 1, 10));
    }
    
-   void update_position(float damp_const) {
+   void update_position(float damp_const, float x1, float x2, float y1, float y2) {
         //assuming t = 1 frame
         float t = 1;
                     
@@ -73,10 +73,10 @@ class ForceNode {
             KE = .5 * mass * ((vx*vx) + (vy*vy));
         }
             
-        if (x < 10) { x = 10; }
-        if (y < 10) { y = 10; }
-        if (x > width-10) { x = width - 10; }
-        if (y > height-10) { y = height - 10; }
+        if (x < x1 + 10) { x = x1 + 10; }
+        if (y < y1 + 10) { y = y1 + 10; }
+        if (x > x2 - 10) { x = x2 - 10; }
+        if (y > y2 - 10) { y = y2 - 10; }
     }
    
     void intersect (int mousex, int mousey) {

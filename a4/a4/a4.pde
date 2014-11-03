@@ -42,13 +42,6 @@ void setup() {
 void draw() {
    background(255, 255, 255);
    
-   graph_x1 = 0;
-   graph_x2 = 2 * width/3;
-   graph_y1 = 0;
-   graph_y2 = 2 * height/3;
-   graph.calc_forces();
-   graph.draw_graph(graph_x1, graph_x2, graph_y1, graph_y2);
-   
    heatmap_x1 = 0;
    heatmap_x2 = width;
    heatmap_y1 = 2 * height/3;
@@ -64,6 +57,17 @@ void draw() {
    categ.draw_cat_view(cat_x1, cat_x2, cat_y1, cat_y2);
   
    draw_rects();
+   
+   graph_x1 = 0;
+   graph_x2 = 2 * width/3;
+   graph_y1 = 0;
+   graph_y2 = 2 * height/3;
+   graph.calc_forces();
+   graph.draw_graph(graph_x1, graph_x2, graph_y1, graph_y2);
+}
+
+void mouseMoved() {
+   graph.intersect(mouseX, mouseY); 
 }
 
 void mouseClicked(MouseEvent e) {

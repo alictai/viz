@@ -1,12 +1,13 @@
 class ForceGraph {
   ForceNode[] nodes;
   ForceRels[] relations;
-  float k_h, k_c, k_damp;
+  float k_h, k_c, k_damp, k_mid;
   float thresh;
   boolean start;
   int last_h, last_w;
   int canv_h, canv_w;
   float total_KE;
+  float x_1, x_2, y_1, y_2;
 
   ForceGraph(Data data, int canvas_w, int canvas_h) {
     canv_w = canvas_w;
@@ -16,15 +17,19 @@ class ForceGraph {
     relations = parser.relations;
 
     k_h = .2;
-    k_c = 10000;
+    k_c = 10000*nodes.length;
     k_damp = .4;
-    thresh = 0;
-    //thresh = .1;
+    k_mid = .5;
+    thresh = .01;
     start = true;
   }
 
   void draw_graph(int x1, int x2, int y1, int y2) {
-    //print("drawing");
+    x_1 = x1;
+    x_2 = x2;
+    y_1 = y1;
+    y_2 = y2;
+    
     total_KE = calc_KE();
     if (total_KE > thresh || start) {
       //print("updating\n");
@@ -60,7 +65,7 @@ class ForceGraph {
 
   void update_with_forces() {
     for (int i = 0; i < nodes.length; i++) {
-      nodes[i].update_position(k_damp);
+      nodes[i].update_position(k_damp, x_1, x_2, y_1, y_2);
     }
 
     for (int k = 0; k < relations.length; k++) {
@@ -78,10 +83,11 @@ class ForceGraph {
       if (nodes[i].intersect) {
         fill (200, 200, 255);
         ellipse(nodes[i].x, nodes[i].y, 2*nodes[i].radius, 2*nodes[i].radius);
-        fill(0);
+        fill(255, 0, 0);
+        textSize(15);
         textAlign(CENTER);
-        String label = "ID: " + nodes[i].id + ", MASS: " + nodes[i].mass;
-        text(label, nodes[i].x, nodes[i].y - nodes[i].mass);
+        String label = "IP: " + nodes[i].id;
+        text(label, nodes[i].x, nodes[i].y - nodes[i].mass*2);
       } else {
         fill(nodes[i].KE, 80, 255 - nodes[i].KE);
         ellipse(nodes[i].x, nodes[i].y, 2*nodes[i].radius, 2*nodes[i].radius);
@@ -95,7 +101,9 @@ class ForceGraph {
     for (int i = 0; i < relations.length; i++) {
       n1 = lookup(relations[i].node1);
       n2 = lookup(relations[i].node2);
+      strokeWeight(relations[i].weight);
       line(n1.x, n1.y, n2.x, n2.y);
+      strokeWeight(1);
     }
   }
 
@@ -225,15 +233,15 @@ class ForceGraph {
 
   void check_middle (ForceNode n) {
     if (n.x > canv_w/2) {
-      n.fx -= .005 * abs(n.x - canv_w/2);
+      n.fx -= k_mid * abs(n.x - canv_w/2);
     } else {
-      n.fx += .005 * abs(n.x - canv_w/2);
+      n.fx += k_mid * abs(n.x - canv_w/2);
     }
 
     if (n.y > canv_h/2) {
-      n.fy -= .005 * abs(n.y - canv_h/2);
+      n.fy -= k_mid * abs(n.y - canv_h/2);
     } else {
-      n.fy += .005 * abs(n.y - canv_h/2);
+      n.fy += k_mid * abs(n.y - canv_h/2);
     }
   }
 

@@ -1,4 +1,5 @@
 class ForceRels {
+  float weight;
   String node1;
   String node2;
   float targ_edge;
