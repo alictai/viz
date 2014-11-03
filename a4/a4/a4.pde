@@ -15,6 +15,7 @@ float graph_x1, graph_x2;
 float graph_y1, graph_y2;
 int press_x, press_y;
 Rect[] rects;
+Rect curr;
 
 void setup() {
    size(screenWidth, screenHeight);
@@ -72,8 +73,8 @@ void mousePressed(MouseEvent e) {
     press_x = mouseX;
     press_y = mouseY;
     
-    Rect new_rect = new Rect(press_x, mouseX, press_y, mouseY);
-    rects = (Rect[])append(rects, new_rect);
+    curr = new Rect(press_x, mouseX, press_y, mouseY);
+    rects = (Rect[])append(rects, curr);
 }
 
 void mouseDragged(MouseEvent e) {
@@ -83,8 +84,7 @@ void mouseDragged(MouseEvent e) {
     }
     
     if ((press_x != -1) && (press_y != -1)) {
-        Rect new_rect = new Rect(press_x, mouseX, press_y, mouseY);
-        rects = (Rect[])append(rects, new_rect);
+        curr.set_dim(press_x, mouseX, press_y, mouseY);
     }
 }
 
