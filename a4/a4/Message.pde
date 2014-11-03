@@ -30,24 +30,24 @@ class Message {
 
 
 
-  boolean in_dest_port(String port) {
+  int in_dest_port(String port) {
     for (int i = 0; i < dest_port.length; i++) {
       if (port.equals(dest_port[i])) {
-        return true;
+        return i;
       }
     }
 
-    return false;
+    return -1;
   }
 
-  boolean in_time(float t) {
+  int in_time(float t) {
     for (int i = 0; i < time.length; i++) {
       if (t == time[i]) {
-        return true;
+        return i;
       }
     }
     
-    return false;
+    return -1;
   }
   
   

@@ -92,7 +92,7 @@ class Heatmap {
     return floor(difference/time_interval);
   }
 
-  Message draw_heatmap(int x1, int x2, int y1, int y2, Message message) {
+  Message draw_heatmap(int x1, int x2, int y1, int y2, Message message, Rect[] rects) {
     if(intersect(x1, y1, x2, y2)) {
         message = new Message();
     }
@@ -118,13 +118,13 @@ class Heatmap {
     for (int i = 0; i < ports.length; i++) {
       for (int j = 0; j < num_intervals; j++) {
         c = map(hmap[i][j], min_val, max_val, 0, 255);
-        
-        
-        if (intersect(curr_x, curr_y, curr_x + interval_w, curr_y + interval_h)) {
+            
+        if (intersect(curr_x, curr_y, curr_x + interval_w, curr_y + interval_h) || 
+              rect_intersect(rects, curr_x, curr_y, curr_x + interval_w, curr_y + interval_h)) {
           fill(50, 50, 50);
           message.add_time(intervals[j]);
           message.add_dest_port(ports[i]);
-        } else if (message.in_dest_port(ports[i]) && message.in_time(intervals[j])) {
+        } else if ((message.in_dest_port(ports[i]) == message.in_time(intervals[j])) && (message.in_time(intervals[j]) != -1)) {
           fill(50, 50, 50);
         } else {
           fill(c, 195 - c, 255 - c);
@@ -149,6 +149,24 @@ class Heatmap {
       return false;
     }
   }
+  
+  boolean rect_intersect(Rect[] rects, int x1, int y1, int x2, int y2) {
+    for (int i = 0; i < rects.length; i++) {
+        if(is_in(rects[i], x1, y1) || is_in(rects[i], x1, y2) ||
+            is_in(rects[i], x2, y1) || is_in(rects[i], x2, y2)) {
+                return true;
+        }
+    }
+      return false;
+  }    
+      
+  boolean is_in(Rect r, int x, int y) {
+      if ((x > r.xleft && x < r.xright) && (y > r.ytop && y < r.ybot)) {
+          return true;
+      } else {
+          return false;
+      } 
+ }
 
   void draw_axis_labels(int x1, int x2, int y1, int y2) {
     int curr_x = x1 + buffer_w/3;

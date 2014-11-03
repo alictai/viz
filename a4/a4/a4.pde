@@ -10,7 +10,8 @@ int heatmap_x1, heatmap_x2;
 int heatmap_y1, heatmap_y2;
 int cat_x1, cat_x2;
 int cat_y1, cat_y2;
-Rect[] rect;
+int press_x, press_y;
+Rect[] rects;
 
 void setup() {
    size(screenWidth, screenHeight);
@@ -23,16 +24,19 @@ void setup() {
    heatmap = new Heatmap(data);
    categ = new Cat_View(data);
    message = new Message();
-   rect = new Rect[0];
+   rects = new Rect[0];
+   press_x = -1;
+   press_y = -1;
 }
 
 void draw() {
    background(255, 255, 255);
+   
    heatmap_x1 = 0;
    heatmap_x2 = width;
    heatmap_y1 = 2 * height/3;
    heatmap_y2 = height;
-   message = heatmap.draw_heatmap(heatmap_x1, heatmap_x2, heatmap_y1, heatmap_y2, message);
+   message = heatmap.draw_heatmap(heatmap_x1, heatmap_x2, heatmap_y1, heatmap_y2, message, rects);
    
    cat_x1 = 2 * width/3;
    cat_x2 = width;
@@ -41,16 +45,42 @@ void draw() {
    
    fill(0, 0, 0);
    categ.draw_cat_view(cat_x1, cat_x2, cat_y1, cat_y2);
+   
+   draw_rects();
 }
 
 void mouseClicked(MouseEvent e) {
    if (e.getButton() == RIGHT) {
-     rect = new Rect[0];
+     rects = new Rect[0];
    }
 }
 
-void mouseDragged(MouseEvent e) {
-  
+void mousePressed(MouseEvent e) {
+    if (e.getButton() == RIGHT) {
+     rects = new Rect[0];
+    }
+    press_x = mouseX;
+    press_y = mouseY;
+    
+    Rect new_rect = new Rect(press_x, mouseX, press_y, mouseY);
+    rects = (Rect[])append(rects, new_rect);
 }
 
+void mouseDragged(MouseEvent e) {
+    if (e.getButton() == RIGHT) {
+        rects = new Rect[0];
+        return;
+    }
+    
+    if ((press_x != -1) && (press_y != -1)) {
+        Rect new_rect = new Rect(press_x, mouseX, press_y, mouseY);
+        rects = (Rect[])append(rects, new_rect);
+    }
+}
+
+void draw_rects() {
+    for (int i = 0; i < rects.length; i++) {
+        rects[i].draw_rect();
+    }
+}
 
