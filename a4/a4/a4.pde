@@ -5,7 +5,7 @@ int screenHeight = 800;
 Data data;
 Heatmap heatmap;
 Message message;
-//Cat_View categ;
+Cat_View categ;
 int heatmap_x1, heatmap_x2;
 int heatmap_y1, heatmap_y2;
 int cat_x1, cat_x2;
@@ -21,7 +21,7 @@ void setup() {
    data.parse("data_aggregate.csv");
    
    heatmap = new Heatmap(data);
-   //categ = new Cat_View(data);
+   categ = new Cat_View(data);
    message = new Message();
    rect = new Rect[0];
 }
@@ -40,7 +40,7 @@ void draw() {
    cat_y2 = 2 * height/3;
    
    fill(0, 0, 0);
-   //rect(cat_x1, cat_y1, cat_x2 - cat_x1, cat_y2 - cat_y1);
+   categ.draw_cat_view(cat_x1, cat_x2, cat_y1, cat_y2);
 }
 
 void mouseClicked(MouseEvent e) {
