@@ -5,11 +5,13 @@ class ForceGraph {
   float thresh;
   boolean start;
   int last_h, last_w;
-  float canv_h, canv_w;
+  int canv_h, canv_w;
   float total_KE;
 
-  ForceGraph(Data data) { 
-    ForceParse parser = new ForceParse(data);
+  ForceGraph(Data data, int canvas_w, int canvas_h) {
+    canv_w = canvas_w;
+    canv_h = canvas_h; 
+    ForceParse parser = new ForceParse(data, canv_w, canv_h);
     nodes = parser.nodes;
     relations = parser.relations;
 
@@ -21,17 +23,17 @@ class ForceGraph {
     start = true;
   }
 
-  void draw_graph(float x1, float x2, float y1, float y2) {
+  void draw_graph(int x1, int x2, int y1, int y2) {
     //print("drawing");
     total_KE = calc_KE();
     if (total_KE > thresh || start) {
       print("updating\n");
       update_with_forces();
       start = false;
-      last_h = height;
-      last_w = width;
+      last_h = canv_h;
+      last_w = canv_w;
     } else {
-      if ((width != last_w) || (height != last_h)) {
+      if ((canv_w != last_w) || (canv_h != last_h)) {
         start = true;
       }
     }
@@ -222,16 +224,16 @@ class ForceGraph {
   }
 
   void check_middle (ForceNode n) {
-    if (n.x > width/2) {
-      n.fx -= .005 * abs(n.x - width/2);
+    if (n.x > canv_w/2) {
+      n.fx -= .005 * abs(n.x - canv_w/2);
     } else {
-      n.fx += .005 * abs(n.x - width/2);
+      n.fx += .005 * abs(n.x - canv_w/2);
     }
 
-    if (n.y > height/2) {
-      n.fy -= .005 * abs(n.y - height/2);
+    if (n.y > canv_h/2) {
+      n.fy -= .005 * abs(n.y - canv_h/2);
     } else {
-      n.fy += .005 * abs(n.y - height/2);
+      n.fy += .005 * abs(n.y - canv_h/2);
     }
   }
 

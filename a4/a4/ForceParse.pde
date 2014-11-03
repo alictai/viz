@@ -5,8 +5,11 @@ class ForceParse {
   int f_place;
   int ult_root;
   int fixed_mass;
+  int canvas_w, canvas_h;
 
-  ForceParse(Data d) {       
+  ForceParse(Data d, int canv_w, int canv_h) {   
+    canvas_w = canv_w;
+    canvas_h = canv_h;    
     nodes = new ForceNode[0];
     relations = new ForceRels[0];
     data = d;
@@ -25,7 +28,7 @@ class ForceParse {
     for (int i = 0; i < relations.length; i++) {
       int exists_index = node_exists(relations[i].node1);
       if (exists_index == -1) {
-        temp1 = new ForceNode(relations[i].node1, fixed_mass);
+        temp1 = new ForceNode(relations[i].node1, fixed_mass, canvas_w, canvas_h);
         nodes = (ForceNode[])append(nodes, temp1);
       } else {
         temp1 = nodes[exists_index];
@@ -33,7 +36,7 @@ class ForceParse {
 
       exists_index = node_exists(relations[i].node2);
       if (exists_index == -1) {
-        temp2 = new ForceNode(relations[i].node2, fixed_mass);
+        temp2 = new ForceNode(relations[i].node2, fixed_mass, canvas_w, canvas_h);
         nodes = (ForceNode[])append(nodes, temp2);
       } else {
         temp2 = nodes[exists_index];

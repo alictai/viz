@@ -32,13 +32,13 @@ class ForceNode {
        radius = 0;
    }
    
-   ForceNode(String i, float mas) {
+   ForceNode(String i, float mas, int canvas_w, int canvas_h) {
        id = i;
        mass = mas;
        dist_to_parent = 0;
        num_children = 0;
-       x = random(10, width-10);
-       y = random(10, height-10);
+       x = random(10, canvas_w-10);
+       y = random(10, canvas_h-10);
        fx = 0;
        fy = 0;
        vx = 0;
@@ -52,7 +52,7 @@ class ForceNode {
    }
    
    float crunch() {
-       return (map(mass, 1, 10, 5, 20));
+       return (map(mass, 1, 10, 1, 10));
    }
    
    void update_position(float damp_const) {
