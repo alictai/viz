@@ -47,12 +47,12 @@ class ForceGraph {
     }
 
     refresh_message();
+    refresh_highlight();
+
     draw_edges();
-    update_message();
     highlighting();
+    update_message();
     draw_nodes();
-    
-    //add to message if in rectangle
     
     return message;
   }
@@ -97,14 +97,14 @@ class ForceGraph {
   		for(int k = 0; k < relations.length; k++) {
   			//updating message based on rectangles
   			if(in_rect(lookup(relations[k].node1), rect[i])) {
-  				//lookup(relations[k].node1).highlight = true;
-  				message.add_src_port(relations[k].node1);
-  				message.add_dest_port(relations[k].node1);
+  				lookup(relations[k].node1).highlight = true;
+  				message.add_src_ip(relations[k].node1);
+  				message.add_dest_ip(relations[k].node1);
   			}
   			if(in_rect(lookup(relations[k].node2), rect[i])) {
-  				//lookup(relations[k].node2).highlight = true;
-  				message.add_src_port(relations[k].node2);
-  				message.add_dest_port(relations[k].node2);
+  				lookup(relations[k].node2).highlight = true;
+  				message.add_src_ip(relations[k].node2);
+  				message.add_dest_ip(relations[k].node2);
   			}
   		}
   	}
@@ -119,17 +119,36 @@ class ForceGraph {
   	return false;
   }
 
+  void refresh_highlight() {
+  	for (int i = 0; i < relations.length; i++) {
+  		for (int k = 0; k < relations[i].events.length; k++) {
+  			lookup(relations[i].node1).highlight = true;
+  			lookup(relations[i].node2).highlight = true;
+  		}
+  	}
+
+  }
+
   void highlighting() {
   	for (int i = 0; i < relations.length; i++) {
   		for (int k = 0; k < relations[i].events.length; k++) {
   			if(message.is_empty()) {
-  				lookup(relations[i].node1).highlight = false;
-  				lookup(relations[i].node2).highlight = false;
+  				rm_hl(relations[i]);
   			} else {
-
-  			}
+  				if(!check_time(message, relations[i].events[k].time)) { rm_hl(relations[i]); }
+  				if(!check_src_port(message, relations[i].events[k].src_port)) { rm_hl(relations[i]); }
+  				if(!check_dest_port(message, relations[i].events[k].dest_port)) { rm_hl(relations[i]); }
+  				if(!check_priority(message, relations[i].events[k].priority)) { rm_hl(relations[i]); }
+  				if(!check_operation(message, relations[i].events[k].operation)) { rm_hl(relations[i]); }
+  				if(!check_protocol(message, relations[i].events[k].protocol)) { rm_hl(relations[i]); }
+   			}
   		}
   	}
+  }
+
+  void rm_hl(ForceRels r) {
+  	lookup(r.node1).highlight = false;
+  	lookup(r.node2).highlight = false;
   }
 
   boolean check_time(Message message, float time) {
@@ -199,6 +218,7 @@ class ForceGraph {
         String label = "IP: " + nodes[i].id;
         text(label, nodes[i].x, nodes[i].y - nodes[i].mass*2);
         textSize(10);
+
         //update message
         message.add_src_ip(nodes[i].id);
   		message.add_dest_ip(nodes[i].id);

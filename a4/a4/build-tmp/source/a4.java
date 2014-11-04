@@ -32,6 +32,7 @@ int graph_y1, graph_y2;
 int press_x, press_y;
 Rect[] rects;
 Rect curr;
+int curr_section;
 
 public void setup() {
   size(screenWidth, screenHeight);
@@ -100,6 +101,8 @@ public void mousePressed(MouseEvent e) {
   }
   press_x = mouseX;
   press_y = mouseY;
+  curr_section = which_section(press_x, press_y);
+  //print(curr_section);
 
   curr = new Rect(press_x, mouseX, press_y, mouseY);
   rects = (Rect[])append(rects, curr);
@@ -111,9 +114,35 @@ public void mouseDragged(MouseEvent e) {
     message = new Message();
     return;
   }
-
+  int bounded_x, bounded_y;
   if ((press_x != -1) && (press_y != -1)) {
-    curr.set_dim(press_x, mouseX, press_y, mouseY);
+    if (curr_section == which_section(mouseX, mouseY)) {
+        curr.set_dim(press_x, mouseX, press_y, mouseY);
+    } else {
+        bounded_x = mouseX;
+        bounded_y = mouseY;
+        if (curr_section == 0) {
+           if (mouseX > cat_x1) {
+             bounded_x = PApplet.parseInt(cat_x1);
+           }
+           if (mouseY > heatmap_y1) {
+             bounded_y = heatmap_y1;
+           }
+        } else if (curr_section == 1) {
+           if (mouseX < cat_x1) {
+             bounded_x = PApplet.parseInt(cat_x1);
+           }
+           if (mouseY > heatmap_y1) {
+             bounded_y = heatmap_y1;
+           }
+        } else {
+           if (mouseY < heatmap_y1) {
+             bounded_y = heatmap_y1;
+           }
+        }
+      
+        curr.set_dim(press_x, bounded_x, press_y, bounded_y);
+    }
   }
 
   //graph.drag(mouseX, mouseY);
@@ -123,6 +152,18 @@ public void draw_rects() {
   for (int i = 0; i < rects.length; i++) {
     rects[i].draw_rect();
   }
+}
+
+public int which_section(int x, int y) {
+    if (y < heatmap_y1) {
+      if (x < cat_x1) {
+          return 0;
+      } else {
+          return 1;
+      }
+    } else {
+      return 2;
+    }
 }
 
 class Cat_Bar {
@@ -135,9 +176,12 @@ class Cat_Bar {
   float xl, xr;
   float yt, yb;
   float wid, hgt;
-  
+
   int num_fields;
   String[] fields;
+
+  int highlight_mouse;
+  int highlight_message;
 
   Cat_Bar(Event[] parsed, String category, int _key) {
     xl = 0;
@@ -146,15 +190,17 @@ class Cat_Bar {
     yb = 0;
     wid = 0;
     hgt = 0;
-    
+    highlight_mouse = color(255, 200, 0);
+    highlight_message = color(255, 170, 0);
+
     data_big = parsed;
     title = category;
     index_key = _key;
-    
+
     num_points = data_big.length;
     data = new String[num_points];
     extract_data();
-    
+
     num_fields = 0;
     fields = new String[0];
     find_fields();
@@ -181,29 +227,29 @@ class Cat_Bar {
       print("ERROR: Data headings not in expected format");
     }
   }
-  
+
   public void find_fields() {
-    for(int i = 0; i < num_points; i++) {
-      if(!member(data[i], fields)) {
+    for (int i = 0; i < num_points; i++) {
+      if (!member(data[i], fields)) {
         fields = append(fields, data[i]);
         num_fields++;
       }
     }
   }
-  
+
   public boolean member(String data, String[] array) {
-    for(int i = 0; i < array.length; i++) {
-      if(data.equals(array[i])) {
-         return true;
+    for (int i = 0; i < array.length; i++) {
+      if (data.equals(array[i])) {
+        return true;
       }
     } 
     return false;
   }
 
-  public void draw_graph(float xl, float xr, float yt, float yb) {
+  public void draw_graph(float xl, float xr, float yt, float yb, Message msg, Rect[] rs) {
     make_canvas(xl, xr, yt, yb); 
     print_header();
-    draw_bars();
+    draw_bars(msg, rs);
   }
 
   public void make_canvas(float _xl, float _xr, float _yt, float _yb) {
@@ -215,53 +261,146 @@ class Cat_Bar {
     wid = xr - xl;
     hgt = yb - yt;
   }
-  
+
   public void print_header() {
     textSize(10);
     fill(200, 0, 0);
     text(title, ((xl + xr) / 2), (yt - 12));
   }
 
-  public void print_data() {
-    print(title, '\n');
-    printArray(data);
-  }
-
-
-  public void draw_bars() {
+  public void draw_bars(Message msg, Rect[] rs) {
     float run_top = yt;
     float temp_h = 0;
-    
-    for(int i = 0; i < num_fields; i++) {
-      if(num_fields == 1) {
+
+    for (int i = 0; i < num_fields; i++) {
+      float field_percent = (count_occurrence(fields[i], data) / num_points);    
+      temp_h = field_percent * hgt;
+
+      //draw original rectangle
+      if (num_fields == 1) {
         fill(0, 195, 255);
       } else {
         fill(map(i, 0, num_fields - 1, 0, 255), map(i, 0, num_fields - 1, 195, 0), map(i, 0, num_fields - 1, 255, 0));
       }
-      float percent = (count_occurrence(fields[i], data) / num_points);    
-      
-      temp_h = percent * hgt;
+
       rect(xl, run_top, wid, temp_h);
-      
-      //draw message rectangle on top
-      //  go through data_big, maybe use index_key
-      
+
+      //draw highlight rectangle on top          
+      if (intersect(xl, xl + wid, run_top, run_top + temp_h)) {
+        fill(highlight_mouse);
+        //add to message
+        rect(xl, run_top, wid, temp_h);
+      } else {
+        fill(highlight_message);
+        float highlight_percent = find_highlight(msg, fields[i]);
+        float highlight_top = (1 - highlight_percent) * (temp_h) + run_top;
+        rect(xl, highlight_top, wid, highlight_percent * temp_h);
+      }
+
+      //add chunk label
       fill(0, 0, 0);
-      text(fields[i], (xl + xr) / 2, run_top + (temp_h / 2));
-      
-      run_top += temp_h;   
+      if (temp_h < 10) {
+        text(fields[i], (xl + xr) / 2, run_top - 6);
+      } else {
+        text(fields[i], (xl + xr) / 2, run_top + (temp_h / 2));
+      }
+
+      //update for next chunk
+      run_top += temp_h;
     }
+  }
+
+  public float find_highlight(Message msg, String field) {
+    int[] hl_ind = new int[0];
+    int hl_count = 0;
+    float chunk_count = count_occurrence(field, data);
+
+    for (int i = 0; i < num_points; i++) {
+      //determine if point even falls into chunk
+      switch(index_key) {
+      case 5: //Syslog priority
+        if (field.equals(data_big[i].priority)) {
+          hl_ind = append(hl_ind, i);
+        }
+        break;
+      case 6: //Operation
+        if (field.equals(data_big[i].operation)) {
+          hl_ind = append(hl_ind, i);
+        }
+        break;
+      case 7: //Protocol
+        if (field.equals(data_big[i].protocol)) {
+          hl_ind = append(hl_ind, i);
+        }
+        break;
+      }
+    } 
+    
+    //if in chunk, check if in message
+    if (hl_ind.length > 0) {
+      /*
+      for(int i = 0; i < hl_ind.length; i++) {
+        if (is_in_array_flt(data_big[hl_ind[i]].time, msg.time)) {
+          hl_count++;
+        } else if (is_in_array(data_big[hl_ind[i]].src_ip, msg.src_ip)) {
+          hl_count++;
+        } else if (is_in_array(data_big[hl_ind[i]].src_port, msg.src_port)) {
+          hl_count++;
+        } else if (is_in_array(data_big[hl_ind[i]].dest_ip, msg.dest_ip)) {
+          hl_count++;
+        } else if (is_in_array(data_big[hl_ind[i]].dest_port, msg.dest_port)) {
+          hl_count++;
+        } else if (is_in_array(data_big[hl_ind[i]].priority, msg.priority)) {
+          hl_count++;
+        } else if (is_in_array(data_big[hl_ind[i]].operation, msg.operation)) {
+          hl_count++;
+        } else if (is_in_array(data_big[hl_ind[i]].protocol, msg.protocol)) {
+          hl_count++;
+        }
+      }
+      */
+    }
+    return hl_count / chunk_count;
+  }
+  
+  public boolean is_in_array_flt(float val, float[] arr) {
+    for(int i = 0; i < arr.length; i++) {
+      if(val == arr[i]) {
+        return true;
+      }
+    }
+    return false; 
+  }
+  
+  public boolean is_in_array(String val, String[] arr) {
+    for(int i = 0; i < arr.length; i++) {
+      if(val.equals(arr[i])) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public float count_occurrence(String s, String[] array) {
     float count = 0;
-    for(int i = 0; i < num_points; i++) {
-      if(s.equals(array[i])) {count++;}
+    for (int i = 0; i < num_points; i++) {
+      if (s.equals(array[i])) {
+        count++;
+      }
     } 
-    
+
     return count;
   }
 
+  public boolean intersect(float xl, float xr, float yt, float yb) {
+    if ((mouseX > xl) && (mouseX < xr)) {
+      if ((mouseY > yt) && (mouseY < yb)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 }
 
 class Cat_View {
@@ -293,11 +432,13 @@ class Cat_View {
 
     for(int i = 0; i < num_graphs; i++) {
       int mag_num = 2 * i + 1;
+      
       graphs[i].draw_graph(x1 + (mag_num * spacing),
                            x1 + ((mag_num * spacing) + spacing),
                            y1 + 20,
-                           y2 );
-    } 
+                           y2,
+                           msg, rs );
+    }     
     
     return msg;
   }  
@@ -426,12 +567,12 @@ class ForceGraph {
     }
 
     refresh_message();
+    refresh_highlight();
+
     draw_edges();
-    update_message();
     highlighting();
+    update_message();
     draw_nodes();
-    
-    //add to message if in rectangle
     
     return message;
   }
@@ -476,14 +617,14 @@ class ForceGraph {
   		for(int k = 0; k < relations.length; k++) {
   			//updating message based on rectangles
   			if(in_rect(lookup(relations[k].node1), rect[i])) {
-  				//lookup(relations[k].node1).highlight = true;
-  				message.add_src_port(relations[k].node1);
-  				message.add_dest_port(relations[k].node1);
+  				lookup(relations[k].node1).highlight = true;
+  				message.add_src_ip(relations[k].node1);
+  				message.add_dest_ip(relations[k].node1);
   			}
   			if(in_rect(lookup(relations[k].node2), rect[i])) {
-  				//lookup(relations[k].node2).highlight = true;
-  				message.add_src_port(relations[k].node2);
-  				message.add_dest_port(relations[k].node2);
+  				lookup(relations[k].node2).highlight = true;
+  				message.add_src_ip(relations[k].node2);
+  				message.add_dest_ip(relations[k].node2);
   			}
   		}
   	}
@@ -498,17 +639,37 @@ class ForceGraph {
   	return false;
   }
 
+  public void refresh_highlight() {
+  	for (int i = 0; i < relations.length; i++) {
+  		for (int k = 0; k < relations[i].events.length; k++) {
+  			lookup(relations[i].node1).highlight = true;
+  			lookup(relations[i].node2).highlight = true;
+  		}
+  	}
+
+  }
+
   public void highlighting() {
   	for (int i = 0; i < relations.length; i++) {
   		for (int k = 0; k < relations[i].events.length; k++) {
   			if(message.is_empty()) {
-  				lookup(relations[i].node1).highlight = false;
-  				lookup(relations[i].node2).highlight = false;
+  				rm_hl(relations[i]);
   			} else {
-
-  			}
+  				//print(message.time[0]);
+  				if(!check_time(message, relations[i].events[k].time)) { rm_hl(relations[i]); }
+  				if(!check_src_port(message, relations[i].events[k].src_port)) { rm_hl(relations[i]); }
+  				if(!check_dest_port(message, relations[i].events[k].dest_port)) { rm_hl(relations[i]); }
+  				if(!check_priority(message, relations[i].events[k].priority)) { rm_hl(relations[i]); }
+  				if(!check_operation(message, relations[i].events[k].operation)) { rm_hl(relations[i]); }
+  				if(!check_protocol(message, relations[i].events[k].protocol)) { rm_hl(relations[i]); }
+   			}
   		}
   	}
+  }
+
+  public void rm_hl(ForceRels r) {
+  	lookup(r.node1).highlight = false;
+  	lookup(r.node2).highlight = false;
   }
 
   public boolean check_time(Message message, float time) {
@@ -578,6 +739,7 @@ class ForceGraph {
         String label = "IP: " + nodes[i].id;
         text(label, nodes[i].x, nodes[i].y - nodes[i].mass*2);
         textSize(10);
+
         //update message
         message.add_src_ip(nodes[i].id);
   		message.add_dest_ip(nodes[i].id);
