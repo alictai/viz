@@ -129,13 +129,10 @@ class ForceGraph {
   }
 
   void highlighting() {
-    //message.add_dest_port("0-1000");
-    //message.add_time(32270);
     for (int i = 0; i < relations.length; i++) {
       for (int k = 0; k < relations[i].events.length; k++) {
         if (check_heatmap(message, relations[i].events[k].time, relations[i].events[k].dest_port)) {
           add_hl(relations[i]); 
-          print("yeahhhhh\n");
         }
 
         if (check_priority(message, relations[i].events[k].priority)) { 
