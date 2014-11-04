@@ -182,28 +182,7 @@ class Cat_Bar {
           
              hl_count++;
         }
-        
-        /*
-        if (is_in_array_flt(data_big[hl_ind[i]].time, msg.time)) {
-          hl_count++;
-        } else if (is_in_array(data_big[hl_ind[i]].src_ip, msg.src_ip)) {
-          hl_count++;
-        } else if (is_in_array(data_big[hl_ind[i]].src_port, msg.src_port)) {
-          hl_count++;
-        } else if (is_in_array(data_big[hl_ind[i]].dest_ip, msg.dest_ip)) {
-          hl_count++;
-        } else if (is_in_array(data_big[hl_ind[i]].dest_port, msg.dest_port)) {
-          hl_count++;
-        } else if (is_in_array(data_big[hl_ind[i]].priority, msg.priority)) {
-          hl_count++;
-        } else if (is_in_array(data_big[hl_ind[i]].operation, msg.operation)) {
-          hl_count++;
-        } else if (is_in_array(data_big[hl_ind[i]].protocol, msg.protocol)) {
-          hl_count++;
-        }
-        */
       }
-
     }
     return hl_count / chunk_count;
   }
@@ -220,7 +199,7 @@ class Cat_Bar {
     if(src_ip.length == 0 && dest_ip.length == 0) {
       return false;
     } else {
-      return ((is_in_array(e.src_ip, src_ip)) && (is_in_array(e.dest_ip, dest_ip)));
+      return ((is_in_array(e.src_ip, src_ip)) || (is_in_array(e.dest_ip, dest_ip)));
     }
   }
   
