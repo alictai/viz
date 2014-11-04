@@ -36,7 +36,6 @@ class ForceGraph {
 
     total_KE = calc_KE();
     if (total_KE > thresh || start) {
-      //print("updating\n");
       update_with_forces();
       start = false;
       last_h = canv_h;
@@ -48,7 +47,8 @@ class ForceGraph {
     }
 
     draw_edges();
-    draw_nodes(); //highlight if in message
+    highlight_nodes();
+    draw_nodes();
     
     //add to message if in rectangle
     
@@ -82,6 +82,18 @@ class ForceGraph {
 
       relations[k].update_curr(n1.x, n1.y, n2.x, n2.y);
     }
+  }
+
+  void highlight_nodes() {
+  	//int xleft, xright, ytop, ybot;
+  	for(int i = 0; i < rects.length; i++) {
+  		for(int k = 0; k < relations.length; k++) {
+  			//highlighting based on rectangles
+  				//if node one is in the rectangle, highlight
+  				//if node two is in the rectangle, highlight
+  			//highlighting based on message
+  		}
+  	}
   }
 
   void draw_nodes() {
