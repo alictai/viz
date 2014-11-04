@@ -18,91 +18,92 @@ Rect[] rects;
 Rect curr;
 
 void setup() {
-   size(screenWidth, screenHeight);
-   if (frame != null) {
-      frame.setResizable(true);
-    }
-   data = new Data();
-   data.parse("data_aggregate.csv");
-   
-   graph_x1 = 0;
-   graph_x2 = 2 * width/3 - 20;
-   graph_y1 = 0;
-   graph_y2 = 2 * height/3 - 75;
-   
-   graph = new ForceGraph(data, graph_x2 - graph_x1, graph_y2 - graph_y1);
-   heatmap = new Heatmap(data);
-   categ = new Cat_View(data);
-   message = new Message();
-   rects = new Rect[0];
-   press_x = -1;
-   press_y = -1;
+  size(screenWidth, screenHeight);
+  if (frame != null) {
+    frame.setResizable(true);
+  }
+  data = new Data();
+  data.parse("data_aggregate.csv");
+
+  graph_x1 = 0;
+  graph_x2 = 2 * width/3 - 20;
+  graph_y1 = 0;
+  graph_y2 = 2 * height/3 - 75;
+
+  graph = new ForceGraph(data, graph_x2 - graph_x1, graph_y2 - graph_y1);
+  heatmap = new Heatmap(data);
+  categ = new Cat_View(data);
+  message = new Message();
+  rects = new Rect[0];
+  press_x = -1;
+  press_y = -1;
 }
 
 void draw() {
-   background(255, 255, 255);
-   
-   heatmap_x1 = 0;
-   heatmap_x2 = width;
-   heatmap_y1 = 2 * height/3;
-   heatmap_y2 = height;
-   message = heatmap.draw_heatmap(heatmap_x1, heatmap_x2, heatmap_y1, heatmap_y2, message, rects);
-   
-   cat_x1 = 2 * width/3;
-   cat_x2 = width;
-   cat_y1 = height/6;
-   cat_y2 = 2 * height/3;
-   
-   fill(0, 0, 0);
-   categ.draw_cat_view(cat_x1, cat_x2, cat_y1, cat_y2);
+  background(255, 255, 255);
+
+  heatmap_x1 = 0;
+  heatmap_x2 = width;
+  heatmap_y1 = 2 * height/3;
+  heatmap_y2 = height;
+
+  cat_x1 = 2 * width/3;
+  cat_x2 = width;
+  cat_y1 = height/6;
+  cat_y2 = 2 * height/3;
+
+  graph_x1 = 0;
+  graph_x2 = 2 * width/3;
+  graph_y1 = 0;
+  graph_y2 = 2 * height/3;
+  graph.calc_forces();
+
+  message = heatmap.draw_heatmap(heatmap_x1, heatmap_x2, heatmap_y1, heatmap_y2, message, rects);
+  graph.draw_graph(graph_x1, graph_x2, graph_y1, graph_y2, message);
   
-   draw_rects();
-   
-   graph_x1 = 0;
-   graph_x2 = 2 * width/3;
-   graph_y1 = 0;
-   graph_y2 = 2 * height/3;
-   graph.calc_forces();
-   graph.draw_graph(graph_x1, graph_x2, graph_y1, graph_y2);
+  //fill(0, 0, 0);
+  /*message = */categ.draw_cat_view(cat_x1, cat_x2, cat_y1, cat_y2/*, message, rects*/);
+  
+  draw_rects();
 }
 
 void mouseMoved() {
-   graph.intersect(mouseX, mouseY); 
+  graph.intersect(mouseX, mouseY);
 }
 
 void mouseClicked(MouseEvent e) {
-   if (e.getButton() == RIGHT) {
-     rects = new Rect[0];
-   }
+  if (e.getButton() == RIGHT) {
+    rects = new Rect[0];
+  }
 }
 
 void mousePressed(MouseEvent e) {
-    if (e.getButton() == RIGHT) {
-     rects = new Rect[0];
-    }
-    press_x = mouseX;
-    press_y = mouseY;
-    
-    curr = new Rect(press_x, mouseX, press_y, mouseY);
-    rects = (Rect[])append(rects, curr);
+  if (e.getButton() == RIGHT) {
+    rects = new Rect[0];
+  }
+  press_x = mouseX;
+  press_y = mouseY;
+
+  curr = new Rect(press_x, mouseX, press_y, mouseY);
+  rects = (Rect[])append(rects, curr);
 }
 
 void mouseDragged(MouseEvent e) {
-    if (e.getButton() == RIGHT) {
-        rects = new Rect[0];
-        return;
-    }
-    
-    if ((press_x != -1) && (press_y != -1)) {
-        curr.set_dim(press_x, mouseX, press_y, mouseY);
-    }
-    
-    //graph.drag(mouseX, mouseY);
+  if (e.getButton() == RIGHT) {
+    rects = new Rect[0];
+    return;
+  }
+
+  if ((press_x != -1) && (press_y != -1)) {
+    curr.set_dim(press_x, mouseX, press_y, mouseY);
+  }
+
+  //graph.drag(mouseX, mouseY);
 }
 
 void draw_rects() {
-    for (int i = 0; i < rects.length; i++) {
-        rects[i].draw_rect();
-    }
+  for (int i = 0; i < rects.length; i++) {
+    rects[i].draw_rect();
+  }
 }
 

@@ -97,7 +97,6 @@ class Heatmap {
         message = new Message();
     }
     
-    
     buffer_w = 90;
     buffer_h = 50;
     canvas_w = (x2 - x1) - buffer_w;

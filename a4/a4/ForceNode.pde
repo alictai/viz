@@ -1,5 +1,5 @@
 class ForceNode {
-  Event[] events;
+  //Event[] events;
   String id;
   float mass;
   ForceNode parent;
@@ -11,6 +11,7 @@ class ForceNode {
   float ax, ay;
   float KE;
   boolean intersect;
+  boolean highlight;
   boolean drag;
   float radius;
 
@@ -31,7 +32,8 @@ class ForceNode {
     intersect = false;
     drag = false;
     radius = 0;
-    events = new Event[0];
+    highlight = false;
+    //events = new Event[0];
   }
 
   ForceNode(String i, float mas, int canvas_w, int canvas_h) {

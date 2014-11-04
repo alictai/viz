@@ -1,3 +1,6 @@
+//highlight if in message
+//add to message if in rectangle
+
 class ForceGraph {
   ForceNode[] nodes;
   ForceRels[] relations;
@@ -8,6 +11,7 @@ class ForceGraph {
   int canv_h, canv_w;
   float total_KE;
   float x_1, x_2, y_1, y_2;
+  Message message;
 
   ForceGraph(Data data, int canvas_w, int canvas_h) {
     canv_w = canvas_w;
@@ -20,15 +24,16 @@ class ForceGraph {
     k_c = 10000*nodes.length;
     k_damp = .4;
     k_mid = .5;
-    thresh = .01;
+    thresh = 0;
     start = true;
   }
 
-  void draw_graph(int x1, int x2, int y1, int y2) {
+  void draw_graph(int x1, int x2, int y1, int y2, Message msg) {
     x_1 = x1;
     x_2 = x2;
     y_1 = y1;
     y_2 = y2;
+    message = msg;
 
     total_KE = calc_KE();
     if (total_KE > thresh || start) {
@@ -89,6 +94,9 @@ class ForceGraph {
         String label = "IP: " + nodes[i].id;
         text(label, nodes[i].x, nodes[i].y - nodes[i].mass*2);
         textSize(10);
+      } else if (nodes[i].highlight) {
+        fill (200, 200, 255);
+        ellipse(nodes[i].x, nodes[i].y, 2*nodes[i].radius, 2*nodes[i].radius);
       } else {
         fill(nodes[i].KE, 80, 255 - nodes[i].KE);
         ellipse(nodes[i].x, nodes[i].y, 2*nodes[i].radius, 2*nodes[i].radius);
@@ -97,7 +105,7 @@ class ForceGraph {
   }
 
   void draw_edges() {
-    stroke(0, 102, 153);
+    stroke(0, 102, 153, 75);
     ForceNode n1, n2;
     for (int i = 0; i < relations.length; i++) {
       n1 = lookup(relations[i].node1);
