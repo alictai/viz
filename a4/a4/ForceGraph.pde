@@ -89,11 +89,20 @@ class ForceGraph {
   	for(int i = 0; i < rects.length; i++) {
   		for(int k = 0; k < relations.length; k++) {
   			//highlighting based on rectangles
-  				//if node one is in the rectangle, highlight
-  				//if node two is in the rectangle, highlight
+  			if(in_rect(lookup(relations[k].node1), rect[i])) {
+  				lookup(relations[k].node1).highlight = true;
+  			}
+  			if(in_rect(lookup(relations[k].node2), rect[i])) {
+  				lookup(relations[k].node2).highlight = true;
+  			}
+
   			//highlighting based on message
   		}
   	}
+  }
+
+  boolean in_rect(ForceNode node, Rect r) {
+  	return true;
   }
 
   void draw_nodes() {
