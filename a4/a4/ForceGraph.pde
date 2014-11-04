@@ -46,6 +46,7 @@ class ForceGraph {
       }
     }
 
+    refresh_message();
     draw_edges();
     update_message();
     highlighting();
@@ -85,6 +86,11 @@ class ForceGraph {
     }
   }
 
+  void refresh_message() {
+  	message.src_ip = new String[0];
+  	message.dest_ip = new String[0];
+  }
+
   void update_message() {
   	//int xleft, xright, ytop, ybot;
   	for(int i = 0; i < rects.length; i++) {
@@ -119,6 +125,8 @@ class ForceGraph {
   			if(message.is_empty()) {
   				lookup(relations[i].node1).highlight = false;
   				lookup(relations[i].node2).highlight = false;
+  			} else {
+
   			}
   		}
   	}
