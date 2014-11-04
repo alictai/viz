@@ -93,8 +93,9 @@ class Heatmap {
   }
 
   Message draw_heatmap(int x1, int x2, int y1, int y2, Message message, Rect[] rects) {
-    if(intersect(x1, y1, x2, y2)) {
-        message = new Message();
+    if(intersect(x1, y1 - 15, x2, y2)) {
+        message.dest_port = new String[0];
+        message.time = new float[0];
     }
     
     buffer_w = 90;
@@ -119,7 +120,7 @@ class Heatmap {
         c = map(hmap[i][j], min_val, max_val, 0, 255);
             
         if (intersect(curr_x, curr_y, curr_x + interval_w, curr_y + interval_h) || 
-              rect_intersect(rects, curr_x, curr_y, curr_x + interval_w, curr_y + interval_h)) {
+          rect_intersect(rects, curr_x, curr_y, curr_x + interval_w, curr_y + interval_h)) {
           fill(50, 50, 50);
           message.add_time(intervals[j]);
           message.add_dest_port(ports[i]);
