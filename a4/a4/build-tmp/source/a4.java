@@ -425,8 +425,8 @@ class ForceGraph {
       }
     }
 
-    draw_edges();
     refresh_message();
+    draw_edges();
     update_message();
     highlighting();
     draw_nodes();
@@ -504,9 +504,65 @@ class ForceGraph {
   			if(message.is_empty()) {
   				lookup(relations[i].node1).highlight = false;
   				lookup(relations[i].node2).highlight = false;
+  			} else {
+
   			}
   		}
   	}
+  }
+
+  public boolean check_time(Message message, float time) {
+      for (int i = 0; i < message.time.length; i++) {
+         if (time == message.time[i]) {
+             return true;
+         }
+      }
+      return false;
+  }
+
+  public boolean check_src_port(Message message, String src_port) {
+      for (int i = 0; i < message.src_port.length; i++) {
+         if (src_port.equals(message.src_port[i])) {
+             return true;
+         }
+      }
+      return false;
+  }
+  
+  public boolean check_dest_port(Message message, String dest_port) {
+      for (int i = 0; i < message.dest_port.length; i++) {
+         if (dest_port.equals(message.dest_port[i])) {
+             return true;
+         }
+      }
+      return false;
+  }
+  
+  public boolean check_priority(Message message, String priority) {
+      for (int i = 0; i < message.priority.length; i++) {
+         if (priority.equals(message.priority[i])) {
+             return true;
+         }
+      }
+      return false;
+  }
+  
+  public boolean check_operation(Message message, String operation) {
+      for (int i = 0; i < message.operation.length; i++) {
+         if (operation.equals(message.operation[i])) {
+             return true;
+         }
+      }
+      return false;
+  }
+  
+  public boolean check_protocol(Message message, String protocol) {
+      for (int i = 0; i < message.protocol.length; i++) {
+         if (protocol.equals(message.protocol[i])) {
+             return true;
+         }
+      }
+      return false;
   }
 
   public void draw_nodes() {
