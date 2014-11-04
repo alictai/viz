@@ -118,9 +118,9 @@ class Cat_Bar {
       rect(xl, run_top, wid, temp_h);
 
       //draw highlight rectangle on top          
-      if (intersect(xl, xl + wid, run_top, run_top + temp_h)) {
+      if (intersect(mouseX, mouseY, xl, xl + wid, run_top, run_top + temp_h) || rect_touch(rs, xl, xl+wid, run_top, run_top + temp_h)) {
         fill(highlight_mouse);
-        //add to message
+        msg = add_to_msg(msg);
         rect(xl, run_top, wid, temp_h);
       } else {
         fill(highlight_message);
@@ -170,8 +170,15 @@ class Cat_Bar {
     
     //if in chunk, check if in message
     if (hl_ind.length > 0) {
-      /*
       for(int i = 0; i < hl_ind.length; i++) {
+        
+        if(pass_heat(data_big[hl_ind[i]], msg.time, msg.dest_port) || 
+           pass_net(data_big[hl_ind[i]], msg.src_ip, msg.dest_ip)) {
+          
+             hl_count++;
+        }
+        
+        /*
         if (is_in_array_flt(data_big[hl_ind[i]].time, msg.time)) {
           hl_count++;
         } else if (is_in_array(data_big[hl_ind[i]].src_ip, msg.src_ip)) {
@@ -189,10 +196,27 @@ class Cat_Bar {
         } else if (is_in_array(data_big[hl_ind[i]].protocol, msg.protocol)) {
           hl_count++;
         }
+        */
       }
-      */
+
     }
     return hl_count / chunk_count;
+  }
+  
+  boolean pass_heat(Event e, float[] time, String[] dest_port) {
+    if(time.length == 0 && dest_port.length == 0) {
+      return false;
+    } else {
+      return ((is_in_array_flt(e.time, time) && is_in_array(e.dest_port, dest_port)));
+    }
+  }
+  
+  boolean pass_net(Event e, String[] src_ip, String[] dest_ip) {
+    if(src_ip.length == 0 && dest_ip.length == 0) {
+      return false;
+    } else {
+      return ((is_in_array(e.src_ip, src_ip)) && (is_in_array(e.dest_ip, dest_ip)));
+    }
   }
   
   boolean is_in_array_flt(float val, float[] arr) {
@@ -224,14 +248,45 @@ class Cat_Bar {
     return count;
   }
 
-  boolean intersect(float xl, float xr, float yt, float yb) {
-    if ((mouseX > xl) && (mouseX < xr)) {
-      if ((mouseY > yt) && (mouseY < yb)) {
+  boolean intersect(int xp, int yp, float xl, float xr, float yt, float yb) {
+    if ((xp > xl) && (xp < xr)) {
+      if ((yp > yt) && (yp < yb)) {
         return true;
       }
     }
 
     return false;
   }
+  
+  boolean rect_touch(Rect[] rs, float xl, float xr, float yt, float yb) {
+    boolean touching = false;
+    for(int i = 0; i < rs.length; i++) {
+      if(!(rs[i].xleft > xr || rs[i].xright < xl || rs[i].ytop > yb || rs[i].ybot < yt)) {
+        touching = true;
+      }
+    }
+         
+    return touching;
+  }
+  
+  Message add_to_msg(Message msg) {
+    switch(index_key) {
+      case 5: //Syslog priority
+        msg.priority = new String[0];
+        msg.priority = append(msg.priority, title);
+        break;
+      case 6: //Operation
+        msg.operation = new String[0];
+        msg.operation = append(msg.protocol, title);
+        break;
+      case 7: //Protocol
+        msg.protocol = new String[0];
+        msg.protocol = append(msg.protocol, title);
+        break;
+    }
+      
+    return msg;
+  }
+  
 }
 
