@@ -10,28 +10,29 @@ class Heatmap {
   int interval_w, interval_h;
   int min_val, max_val;
   int buffer_w, buffer_h;
+  float[] mess_times;
+  String[] mess_ports;
+  
 
   Heatmap(Data parsed) {
     data = parsed;
     time_min = 100000;
     time_max = 0;
     time_interval = 0;
-    num_intervals = 30;
+    num_intervals = 31;
     ports = new String[0];
-    intervals = new float[num_intervals + 1];
-    find_timebounds();
-    time_interval = (time_max - time_min)/num_intervals;
-    num_intervals++;
-    find_num_ports();
+    intervals = new float[num_intervals];
+    find_fields();
+    time_interval = (time_max - time_min)/(num_intervals-1);
     find_intervals();
     hmap = new int[ports.length][num_intervals];
     fill_hmap();
     find_val_bounds();
-    //print("time_min = ", time_min, " time max: ", time_max, " time interval: ", time_interval,"\n");
-    //print_hmap();
+    mess_times = new float[0];
+    mess_ports = new String[0];
   }
 
-  void find_timebounds() {
+  void find_fields() {
     for (int i = 0; i < data.events.length; i++) {
       if (data.events[i].time < time_min) {
         time_min = data.events[i].time;
@@ -39,9 +40,14 @@ class Heatmap {
       if (data.events[i].time > time_max) {
         time_max = data.events[i].time;
       }
+      if (find_port(data.events[i].dest_port) == -1) {
+        ports = append(ports, data.events[i].dest_port);
+      }
     }
+    
+    ports = sort(ports);
   }
-
+/*
   void find_num_ports() {
     for (int i = 0; i < data.events.length; i++) {
       if (find_port(data.events[i].dest_port) == -1) {
@@ -49,7 +55,7 @@ class Heatmap {
       }
     }
   }
-  
+*/
   void find_intervals() {
     float curr_time = time_min;
     
@@ -93,6 +99,12 @@ class Heatmap {
   }
 
   Message draw_heatmap(int x1, int x2, int y1, int y2, Message message, Rect[] rects) {
+    message.add_src_ip("*.2.130-140");
+    message.add_dest_ip("*.1.0-10");
+    message.add_priority("Info");
+    mess_times = new float[0];
+    mess_ports = new String[0];
+    check_message(message);
     if(intersect(x1, y1 - 15, x2, y2)) {
         message.dest_port = new String[0];
         message.time = new float[0];
@@ -124,8 +136,10 @@ class Heatmap {
           fill(50, 50, 50);
           message.add_time(intervals[j]);
           message.add_dest_port(ports[i]);
-        } else if ((message.in_dest_port(ports[i]) == message.in_time(intervals[j])) && (message.in_time(intervals[j]) != -1)) {
-          fill(50, 50, 50);
+        } else if (in_mess_arrays(intervals[j], ports[i])) {
+        //else if ((message.in_dest_port(ports[i]) == message.in_time(intervals[j])) && (message.in_time(intervals[j]) != -1)) {
+          fill(50, 255, 50);
+          
         } else {
           fill(c, 195 - c, 255 - c);
         }
@@ -140,6 +154,81 @@ class Heatmap {
     }
     
     return message;
+  }
+  
+  void check_message(Message message) {
+     boolean found = false;
+     for (int i = 0; i < data.events.length; i++) {
+        found = false;
+        found = check_priority(message, data.events[i].priority);
+        if (found == false) {found = check_operation(message, data.events[i].operation);}
+        if (found == false) {found = check_protocol(message, data.events[i].protocol);}
+        if (found == false) {found = check_dest_ip(message, data.events[i].dest_ip);}
+        if (found == false) {found = check_src_ip(message, data.events[i].src_ip);}
+        
+        if (found == true) {
+            mess_times = append(mess_times, data.events[i].time);
+            mess_ports = append(mess_ports, data.events[i].dest_port);
+        }
+     }
+  }
+
+  
+  boolean check_src_ip(Message message, String src_ip) {
+      for (int i = 0; i < message.src_ip.length; i++) {
+         if (src_ip.equals(message.src_ip[i])) {
+             return true;
+         }
+      }
+      return false;
+  }
+  
+  boolean check_dest_ip(Message message, String dest_ip) {
+      for (int i = 0; i < message.dest_ip.length; i++) {
+         if (dest_ip.equals(message.dest_ip[i])) {
+             return true;
+         }
+      }
+      return false;
+  }
+  
+  boolean check_priority(Message message, String priority) {
+      for (int i = 0; i < message.priority.length; i++) {
+         if (priority.equals(message.priority[i])) {
+             return true;
+         }
+      }
+      return false;
+  }
+  
+  boolean check_operation(Message message, String operation) {
+      for (int i = 0; i < message.operation.length; i++) {
+         if (operation.equals(message.operation[i])) {
+             return true;
+         }
+      }
+      return false;
+  }
+  
+  boolean check_protocol(Message message, String protocol) {
+      for (int i = 0; i < message.protocol.length; i++) {
+         if (protocol.equals(message.protocol[i])) {
+             return true;
+         }
+      }
+      return false;
+  }
+
+  boolean in_mess_arrays(float time, String dest_port) {
+      for (int i = 0; i < mess_times.length; i++) {
+          if (time == mess_times[i]) {
+              if (dest_port.equals(mess_ports[i])) {
+                  return true;
+              }
+          }
+      }
+      
+      return false;
   }
 
   boolean intersect(int x1, int y1, int x2, int y2) {
@@ -166,7 +255,7 @@ class Heatmap {
       } else {
           return false;
       } 
- }
+  }
 
   void draw_axis_labels(int x1, int x2, int y1, int y2) {
     int curr_x = x1 + buffer_w/3;

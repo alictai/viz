@@ -11,7 +11,7 @@ class Message {
 
 
   Message() {
-  	empty = true;
+    empty = true;
     time = new float[0];
     src_ip = new String[0];
     src_port = new String[0];
