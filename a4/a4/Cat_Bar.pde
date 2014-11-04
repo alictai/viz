@@ -2,48 +2,80 @@ class Cat_Bar {
   String title;
   Event[] data_big;
   String[] data;
+  int num_points;
+  int index_key;
 
   float xl, xr;
   float yt, yb;
   float wid, hgt;
-  int num_points;
-  int index_key;
+  
+  int num_fields;
+  String[] fields;
 
   Cat_Bar(Event[] parsed, String category, int _key) {
+    xl = 0;
+    xr = 0;
+    yt = 0;
+    yb = 0;
+    wid = 0;
+    hgt = 0;
+    
     data_big = parsed;
     title = category;
+    index_key = _key;
+    
     num_points = data_big.length;
     data = new String[num_points];
-    index_key = _key;
     extract_data();
+    
+    num_fields = 0;
+    fields = new String[0];
+    find_fields();
   }
-  
+
   void extract_data() {
     switch(index_key) {
-      case 5: //Syslog priority
-        for(int i = 0; i < num_points; i++) {
-          data[i] = data_big[i].priority;
-        }
-        break;
-      case 6: //Operation
-        for(int i = 0; i < num_points; i++) {
-          data[i] = data_big[i].operation;
-        }
-        break;
-      case 7: //Protocol
-        for(int i = 0; i < num_points; i++) {
-          data[i] = data_big[i].protocol;
-        }
-        break;
-      default:
-        print("ERROR: Data headings not in expected format");
+    case 5: //Syslog priority
+      for (int i = 0; i < num_points; i++) {
+        data[i] = data_big[i].priority;
+      }
+      break;
+    case 6: //Operation
+      for (int i = 0; i < num_points; i++) {
+        data[i] = data_big[i].operation;
+      }
+      break;
+    case 7: //Protocol
+      for (int i = 0; i < num_points; i++) {
+        data[i] = data_big[i].protocol;
+      }
+      break;
+    default:
+      print("ERROR: Data headings not in expected format");
     }
-    
-    
+  }
+  
+  void find_fields() {
+    for(int i = 0; i < num_points; i++) {
+      if(!member(data[i], fields)) {
+        fields = append(fields, data[i]);
+        num_fields++;
+      }
+    }
+  }
+  
+  boolean member(String data, String[] array) {
+    for(int i = 0; i < array.length; i++) {
+      if(data.equals(array[i])) {
+         return true;
+      }
+    } 
+    return false;
   }
 
   void draw_graph(float xl, float xr, float yt, float yb) {
     make_canvas(xl, xr, yt, yb); 
+    print_header();
     draw_bars();
   }
 
@@ -56,6 +88,12 @@ class Cat_Bar {
     wid = xr - xl;
     hgt = yb - yt;
   }
+  
+  void print_header() {
+    textSize(10);
+    fill(200, 0, 0);
+    text(title, ((xl + xr) / 2), (yt - 12));
+  }
 
   void print_data() {
     print(title, '\n');
@@ -64,29 +102,38 @@ class Cat_Bar {
 
 
   void draw_bars() {
-    rect(xl, yt, wid, hgt);
+    float run_top = yt;
+    float temp_h = 0;
+    
+    for(int i = 0; i < num_fields; i++) {
+      if(num_fields == 1) {
+        fill(0, 195, 255);
+      } else {
+        fill(map(i, 0, num_fields - 1, 0, 255), map(i, 0, num_fields - 1, 195, 0), map(i, 0, num_fields - 1, 255, 0));
+      }
+      float percent = (count_occurrence(fields[i], data) / num_points);    
+      
+      temp_h = percent * hgt;
+      rect(xl, run_top, wid, temp_h);
+      
+      //draw message rectangle on top
+      //  go through data_big, maybe use index_key
+      
+      fill(0, 0, 0);
+      text(fields[i], (xl + xr) / 2, run_top + (temp_h / 2));
+      
+      run_top += temp_h;   
+    }
   }
-/*
-    float tot_h = 0;
-   float h_ratio = 0;
-   float curr_y = canvas_y2;
-   y_coords = new float[num_points][data.num_cols];
-   //print("in draw bars, dum width: ", w, "\ngoal: ", x_spacing/2, "\n");
-   for (int i = 0; i < data.name.length; i++) {
-   curr_y = canvas_y2;
-   tot_h = canvas_y2 - max_y_coords[i];
-   for (int j = 0; j < data.num_cols-1; j++) {
-   float fill_clr = map(j, 0, data.num_cols, 0, 255);
-   h_ratio = data.values[j][i]/data.row_totals[i];
-   curr_y -= tot_h*h_ratio;
-   
-   fill(150, fill_clr, 150);
-   // rect(x_coords[i]-(x_spacing/4), y_coords[i], x_spacing/2, canvas_y2 - y_coords[i]);
-   rect(x_coords[i]-(w/4), curr_y, w, tot_h*h_ratio); 
-   y_coords[i][j] = curr_y;
-   }
-   }
-   }
-   */
+
+  float count_occurrence(String s, String[] array) {
+    float count = 0;
+    for(int i = 0; i < num_points; i++) {
+      if(s.equals(array[i])) {count++;}
+    } 
+    
+    return count;
+  }
+
 }
 

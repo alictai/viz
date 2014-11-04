@@ -23,16 +23,14 @@ class Cat_View {
     canvas_h = y2 - y1;
     
     int num_chunks = 2 * num_graphs + 1;
-    float spacing = 1.0 / num_chunks;
-    print(spacing);
-    
+    float spacing = (1.0 / num_chunks) * canvas_w;
+
     for(int i = 0; i < num_graphs; i++) {
       int mag_num = 2 * i + 1;
       graphs[i].draw_graph(x1 + (mag_num * spacing),
                            x1 + ((mag_num * spacing) + spacing),
                            y1 + 20,
-                           y2);
-      //graphs[i].print_data();
+                           y2 );
     } 
   }  
 }
