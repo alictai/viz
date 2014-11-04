@@ -13,7 +13,7 @@ class Rect {
   }
   
   void draw_rect() {
-      fill(color(171,217,233));
+      fill(color(171,217,233), 50);
       stroke(color(171,217,233));
       rect(xleft, ytop, xright-xleft, ybot-ytop);
   }
