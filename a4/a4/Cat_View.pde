@@ -28,11 +28,11 @@ class Cat_View {
     for(int i = 0; i < num_graphs; i++) {
       int mag_num = 2 * i + 1;
       
-      graphs[i].draw_graph(x1 + (mag_num * spacing),
-                           x1 + ((mag_num * spacing) + spacing),
-                           y1 + 20,
-                           y2,
-                           msg, rs );
+      msg = graphs[i].draw_graph(x1 + (mag_num * spacing),
+                                 x1 + ((mag_num * spacing) + spacing),
+                                 y1 + 20,
+                                 y2,
+                                 msg, rs );
     }     
     
     return msg;

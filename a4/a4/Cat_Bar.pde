@@ -78,10 +78,12 @@ class Cat_Bar {
     return false;
   }
 
-  void draw_graph(float xl, float xr, float yt, float yb, Message msg, Rect[] rs) {
+  Message draw_graph(float xl, float xr, float yt, float yb, Message msg, Rect[] rs) {
     make_canvas(xl, xr, yt, yb); 
     print_header();
-    draw_bars(msg, rs);
+    msg = draw_bars(msg, rs);
+
+    return msg;
   }
 
   void make_canvas(float _xl, float _xr, float _yt, float _yb) {
@@ -100,7 +102,7 @@ class Cat_Bar {
     text(title, ((xl + xr) / 2), (yt - 12));
   }
 
-  void draw_bars(Message msg, Rect[] rs) {
+  Message draw_bars(Message msg, Rect[] rs) {
     float run_top = yt;
     float temp_h = 0;
 
@@ -120,10 +122,11 @@ class Cat_Bar {
       //draw highlight rectangle on top          
       if (intersect(mouseX, mouseY, xl, xl + wid, run_top, run_top + temp_h) || rect_touch(rs, xl, xl+wid, run_top, run_top + temp_h)) {
         fill(highlight_mouse);
-        msg = add_to_msg(msg);
+        msg = add_to_msg(fields[i], msg);
         rect(xl, run_top, wid, temp_h);
       } else {
         fill(highlight_message);
+        msg = clear_from_msg(fields[i], msg);
         float highlight_percent = find_highlight(msg, fields[i]);
         float highlight_top = (1 - highlight_percent) * (temp_h) + run_top;
         rect(xl, highlight_top, wid, highlight_percent * temp_h);
@@ -140,6 +143,8 @@ class Cat_Bar {
       //update for next chunk
       run_top += temp_h;
     }
+    
+    return msg;
   }
 
   float find_highlight(Message msg, String field) {
@@ -269,19 +274,53 @@ class Cat_Bar {
     return touching;
   }
   
-  Message add_to_msg(Message msg) {
+  Message add_to_msg(String name, Message msg) {
     switch(index_key) {
       case 5: //Syslog priority
-        msg.priority = new String[0];
-        msg.priority = append(msg.priority, title);
+        //msg.priority = new String[0];
+        msg.priority = append(msg.priority, name);
         break;
       case 6: //Operation
-        msg.operation = new String[0];
-        msg.operation = append(msg.protocol, title);
+        //msg.operation = new String[0];
+        msg.operation = append(msg.operation, name);
         break;
       case 7: //Protocol
-        msg.protocol = new String[0];
-        msg.protocol = append(msg.protocol, title);
+        //msg.protocol = new String[0];
+        msg.protocol = append(msg.protocol, name);
+        break;
+    }
+      
+    return msg;
+  }
+  
+  Message clear_from_msg(String name, Message msg) {
+    switch(index_key) {
+      case 5: //Syslog priority
+        String[] temp = new String[0];
+        for(int i = 0; i < msg.priority.length; i++) {
+          if(msg.priority[i] != name) {
+            temp = append(temp, msg.priority[i]);
+          }
+        }
+        msg.priority = temp;
+        break;
+      case 6: //Operation
+        String[] temp2 = new String[0];
+        for(int i = 0; i < msg.operation.length; i++) {
+          if(msg.operation[i] != name) {
+            temp2 = append(temp2, msg.operation[i]);
+          }
+        }
+        msg.operation = temp2;
+        break;
+      case 7: //Protocol
+        String[] temp3 = new String[0];
+        for(int i = 0; i < msg.protocol.length; i++) {
+          if(msg.protocol[i] != name) {
+            temp3 = append(temp3, msg.protocol[i]);
+          }
+        }
+        msg.protocol = temp3;
         break;
     }
       
