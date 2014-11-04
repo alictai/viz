@@ -54,6 +54,7 @@ class ForceParse {
       int exists_index = rel_exists(data.events[i]);
       if (exists_index != -1) {
         relations[exists_index].weight += 1;
+        relations[exists_index].events = (Event[])append(relations[exists_index].events, data.events[i]);
       } else {
         ForceRels temp = new ForceRels();
         temp.node1 = data.events[i].src_ip;
