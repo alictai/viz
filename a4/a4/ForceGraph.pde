@@ -9,7 +9,7 @@ class ForceGraph {
   float total_KE;
   float x_1, x_2, y_1, y_2;
   Message message;
-  Rect rect;
+  Rect[] rect;
 
   ForceGraph(Data data, int canvas_w, int canvas_h) {
     canv_w = canvas_w;
@@ -26,7 +26,7 @@ class ForceGraph {
     start = true;
   }
 
-  Message draw_graph(int x1, int x2, int y1, int y2, Message msg, Rect r) {
+  Message draw_graph(int x1, int x2, int y1, int y2, Message msg, Rect[] r) {
     x_1 = x1;
     x_2 = x2;
     y_1 = y1;
