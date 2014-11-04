@@ -59,10 +59,9 @@ void draw() {
   graph.calc_forces();
 
   message = heatmap.draw_heatmap(heatmap_x1, heatmap_x2, heatmap_y1, heatmap_y2, message, rects);
-  graph.draw_graph(graph_x1, graph_x2, graph_y1, graph_y2, message);
-  
+  message = graph.draw_graph(graph_x1, graph_x2, graph_y1, graph_y2, message, rects);
   //fill(0, 0, 0);
-  /*message = */categ.draw_cat_view(cat_x1, cat_x2, cat_y1, cat_y2/*, message, rects*/);
+  message = categ.draw_cat_view(cat_x1, cat_x2, cat_y1, cat_y2, message, rects);
   
   draw_rects();
 }
@@ -74,12 +73,14 @@ void mouseMoved() {
 void mouseClicked(MouseEvent e) {
   if (e.getButton() == RIGHT) {
     rects = new Rect[0];
+    message = new Message();
   }
 }
 
 void mousePressed(MouseEvent e) {
   if (e.getButton() == RIGHT) {
     rects = new Rect[0];
+    message = new Message();
   }
   press_x = mouseX;
   press_y = mouseY;
@@ -91,6 +92,7 @@ void mousePressed(MouseEvent e) {
 void mouseDragged(MouseEvent e) {
   if (e.getButton() == RIGHT) {
     rects = new Rect[0];
+    message = new Message();
     return;
   }
 
