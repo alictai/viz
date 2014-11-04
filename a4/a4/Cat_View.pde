@@ -16,7 +16,7 @@ class Cat_View {
     }
   }
   
-  void draw_cat_view(float x1, float x2, float y1, float y2) {
+  Message draw_cat_view(float x1, float x2, float y1, float y2, Message msg, Rect[] rs) {
     xl = x1;
     yt = y1;
     canvas_w = x2 - x1;
@@ -32,6 +32,8 @@ class Cat_View {
                            y1 + 20,
                            y2 );
     } 
+    
+    return msg;
   }  
 }
 
