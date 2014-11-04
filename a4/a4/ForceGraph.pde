@@ -1,6 +1,3 @@
-//highlight if in message
-//add to message if in rectangle
-
 class ForceGraph {
   ForceNode[] nodes;
   ForceRels[] relations;
@@ -12,6 +9,7 @@ class ForceGraph {
   float total_KE;
   float x_1, x_2, y_1, y_2;
   Message message;
+  Rect rect;
 
   ForceGraph(Data data, int canvas_w, int canvas_h) {
     canv_w = canvas_w;
@@ -28,12 +26,13 @@ class ForceGraph {
     start = true;
   }
 
-  void draw_graph(int x1, int x2, int y1, int y2, Message msg) {
+  Message draw_graph(int x1, int x2, int y1, int y2, Message msg, Rect r) {
     x_1 = x1;
     x_2 = x2;
     y_1 = y1;
     y_2 = y2;
     message = msg;
+    rect = r;
 
     total_KE = calc_KE();
     if (total_KE > thresh || start) {
@@ -49,7 +48,11 @@ class ForceGraph {
     }
 
     draw_edges();
-    draw_nodes();
+    draw_nodes(); //highlight if in message
+    
+    //add to message if in rectangle
+    
+    return message;
   }
 
   //finds total coulumb and hooke's forces for all nodes
