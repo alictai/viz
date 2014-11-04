@@ -99,9 +99,9 @@ class Heatmap {
   }
 
   Message draw_heatmap(int x1, int x2, int y1, int y2, Message message, Rect[] rects) {
-    message.add_src_ip("*.2.130-140");
+    /*message.add_src_ip("*.2.130-140");
     message.add_dest_ip("*.1.0-10");
-    message.add_priority("Info");
+    message.add_priority("Info");*/
     mess_times = new float[0];
     mess_ports = new String[0];
     check_message(message);

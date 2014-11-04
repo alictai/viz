@@ -426,7 +426,9 @@ class ForceGraph {
     }
 
     draw_edges();
-    highlight_nodes();
+    refresh_message();
+    update_message();
+    highlighting();
     draw_nodes();
     
     //add to message if in rectangle
@@ -463,27 +465,48 @@ class ForceGraph {
     }
   }
 
-  public void highlight_nodes() {
+  public void refresh_message() {
+  	message.src_ip = new String[0];
+  	message.dest_ip = new String[0];
+  }
+
+  public void update_message() {
   	//int xleft, xright, ytop, ybot;
   	for(int i = 0; i < rects.length; i++) {
   		for(int k = 0; k < relations.length; k++) {
-  			//highlighting based on rectangles
-  				//if node one is in the rectangle, highlight
-  				//if node two is in the rectangle, highlight
+  			//updating message based on rectangles
   			if(in_rect(lookup(relations[k].node1), rect[i])) {
-  				lookup(relations[k].node1).highlight = true;
+  				//lookup(relations[k].node1).highlight = true;
+  				message.add_src_port(relations[k].node1);
+  				message.add_dest_port(relations[k].node1);
   			}
   			if(in_rect(lookup(relations[k].node2), rect[i])) {
-  				lookup(relations[k].node2).highlight = true;
+  				//lookup(relations[k].node2).highlight = true;
+  				message.add_src_port(relations[k].node2);
+  				message.add_dest_port(relations[k].node2);
   			}
-
-  			//highlighting based on message
   		}
   	}
   }
 
   public boolean in_rect(ForceNode node, Rect r) {
-  	return true;
+  	if(node.x > r.xleft && node.x < r.xright) {
+  		if (node.y > r.ytop && node.y < r.ybot) {
+  			return true;
+  		}
+  	}
+  	return false;
+  }
+
+  public void highlighting() {
+  	for (int i = 0; i < relations.length; i++) {
+  		for (int k = 0; k < relations[i].events.length; k++) {
+  			if(message.is_empty()) {
+  				lookup(relations[i].node1).highlight = false;
+  				lookup(relations[i].node2).highlight = false;
+  			}
+  		}
+  	}
   }
 
   public void draw_nodes() {
@@ -499,6 +522,9 @@ class ForceGraph {
         String label = "IP: " + nodes[i].id;
         text(label, nodes[i].x, nodes[i].y - nodes[i].mass*2);
         textSize(10);
+        //update message
+        message.add_src_ip(nodes[i].id);
+  		message.add_dest_ip(nodes[i].id);
       } else if (nodes[i].highlight) {
         fill (200, 200, 255);
         ellipse(nodes[i].x, nodes[i].y, 2*nodes[i].radius, 2*nodes[i].radius);
@@ -660,8 +686,9 @@ class ForceGraph {
   }
 
   public void intersect(int mousex, int mousey) {
+  	boolean isect = false;
     for (int i = 0; i < nodes.length; i++) {
-      nodes[i].intersect(mousex, mousey);
+      isect = nodes[i].intersect(mousex, mousey);
     }
   }
 
@@ -686,7 +713,6 @@ class ForceGraph {
 }
 
 class ForceNode {
-  //Event[] events;
   String id;
   float mass;
   ForceNode parent;
@@ -719,7 +745,7 @@ class ForceNode {
     intersect = false;
     drag = false;
     radius = 0;
-    highlight = false;
+    highlight = true;
     //events = new Event[0];
   }
 
@@ -778,7 +804,7 @@ class ForceNode {
     }
   }
 
-  public void intersect (int mousex, int mousey) {
+  public boolean intersect (int mousex, int mousey) {
     float distance;
     distance = sqrt(((mousex - x) * (mousex - x)) + ((mousey - y) * (mousey - y)));
     if (distance < radius) { 
@@ -786,6 +812,7 @@ class ForceNode {
     } else {
       intersect = false;
     }
+    return intersect;
   }
 
   public boolean drag (int mousex, int mousey) {
@@ -974,28 +1001,29 @@ class Heatmap {
   int interval_w, interval_h;
   int min_val, max_val;
   int buffer_w, buffer_h;
+  float[] mess_times;
+  String[] mess_ports;
+  
 
   Heatmap(Data parsed) {
     data = parsed;
     time_min = 100000;
     time_max = 0;
     time_interval = 0;
-    num_intervals = 30;
+    num_intervals = 31;
     ports = new String[0];
-    intervals = new float[num_intervals + 1];
-    find_timebounds();
-    time_interval = (time_max - time_min)/num_intervals;
-    num_intervals++;
-    find_num_ports();
+    intervals = new float[num_intervals];
+    find_fields();
+    time_interval = (time_max - time_min)/(num_intervals-1);
     find_intervals();
     hmap = new int[ports.length][num_intervals];
     fill_hmap();
     find_val_bounds();
-    //print("time_min = ", time_min, " time max: ", time_max, " time interval: ", time_interval,"\n");
-    //print_hmap();
+    mess_times = new float[0];
+    mess_ports = new String[0];
   }
 
-  public void find_timebounds() {
+  public void find_fields() {
     for (int i = 0; i < data.events.length; i++) {
       if (data.events[i].time < time_min) {
         time_min = data.events[i].time;
@@ -1003,17 +1031,22 @@ class Heatmap {
       if (data.events[i].time > time_max) {
         time_max = data.events[i].time;
       }
+      if (find_port(data.events[i].dest_port) == -1) {
+        ports = append(ports, data.events[i].dest_port);
+      }
     }
+    
+    ports = sort(ports);
   }
-
-  public void find_num_ports() {
+/*
+  void find_num_ports() {
     for (int i = 0; i < data.events.length; i++) {
       if (find_port(data.events[i].dest_port) == -1) {
         ports = append(ports, data.events[i].dest_port);
       }
     }
   }
-  
+*/
   public void find_intervals() {
     float curr_time = time_min;
     
@@ -1057,6 +1090,12 @@ class Heatmap {
   }
 
   public Message draw_heatmap(int x1, int x2, int y1, int y2, Message message, Rect[] rects) {
+    /*message.add_src_ip("*.2.130-140");
+    message.add_dest_ip("*.1.0-10");
+    message.add_priority("Info");*/
+    mess_times = new float[0];
+    mess_ports = new String[0];
+    check_message(message);
     if(intersect(x1, y1 - 15, x2, y2)) {
         message.dest_port = new String[0];
         message.time = new float[0];
@@ -1088,8 +1127,10 @@ class Heatmap {
           fill(50, 50, 50);
           message.add_time(intervals[j]);
           message.add_dest_port(ports[i]);
-        } else if ((message.in_dest_port(ports[i]) == message.in_time(intervals[j])) && (message.in_time(intervals[j]) != -1)) {
-          fill(50, 50, 50);
+        } else if (in_mess_arrays(intervals[j], ports[i])) {
+        //else if ((message.in_dest_port(ports[i]) == message.in_time(intervals[j])) && (message.in_time(intervals[j]) != -1)) {
+          fill(50, 255, 50);
+          
         } else {
           fill(c, 195 - c, 255 - c);
         }
@@ -1104,6 +1145,81 @@ class Heatmap {
     }
     
     return message;
+  }
+  
+  public void check_message(Message message) {
+     boolean found = false;
+     for (int i = 0; i < data.events.length; i++) {
+        found = false;
+        found = check_priority(message, data.events[i].priority);
+        if (found == false) {found = check_operation(message, data.events[i].operation);}
+        if (found == false) {found = check_protocol(message, data.events[i].protocol);}
+        if (found == false) {found = check_dest_ip(message, data.events[i].dest_ip);}
+        if (found == false) {found = check_src_ip(message, data.events[i].src_ip);}
+        
+        if (found == true) {
+            mess_times = append(mess_times, data.events[i].time);
+            mess_ports = append(mess_ports, data.events[i].dest_port);
+        }
+     }
+  }
+
+  
+  public boolean check_src_ip(Message message, String src_ip) {
+      for (int i = 0; i < message.src_ip.length; i++) {
+         if (src_ip.equals(message.src_ip[i])) {
+             return true;
+         }
+      }
+      return false;
+  }
+  
+  public boolean check_dest_ip(Message message, String dest_ip) {
+      for (int i = 0; i < message.dest_ip.length; i++) {
+         if (dest_ip.equals(message.dest_ip[i])) {
+             return true;
+         }
+      }
+      return false;
+  }
+  
+  public boolean check_priority(Message message, String priority) {
+      for (int i = 0; i < message.priority.length; i++) {
+         if (priority.equals(message.priority[i])) {
+             return true;
+         }
+      }
+      return false;
+  }
+  
+  public boolean check_operation(Message message, String operation) {
+      for (int i = 0; i < message.operation.length; i++) {
+         if (operation.equals(message.operation[i])) {
+             return true;
+         }
+      }
+      return false;
+  }
+  
+  public boolean check_protocol(Message message, String protocol) {
+      for (int i = 0; i < message.protocol.length; i++) {
+         if (protocol.equals(message.protocol[i])) {
+             return true;
+         }
+      }
+      return false;
+  }
+
+  public boolean in_mess_arrays(float time, String dest_port) {
+      for (int i = 0; i < mess_times.length; i++) {
+          if (time == mess_times[i]) {
+              if (dest_port.equals(mess_ports[i])) {
+                  return true;
+              }
+          }
+      }
+      
+      return false;
   }
 
   public boolean intersect(int x1, int y1, int x2, int y2) {
@@ -1130,7 +1246,7 @@ class Heatmap {
       } else {
           return false;
       } 
- }
+  }
 
   public void draw_axis_labels(int x1, int x2, int y1, int y2) {
     int curr_x = x1 + buffer_w/3;
@@ -1198,7 +1314,7 @@ class Message {
 
 
   Message() {
-  	empty = true;
+    empty = true;
     time = new float[0];
     src_ip = new String[0];
     src_port = new String[0];
@@ -1209,14 +1325,40 @@ class Message {
     protocol = new String[0];
   }
 
-  public void add_time(float val) { time = append(time, val); }
-  public void add_src_ip(String val) { src_ip = append(src_ip, val); }
-  public void add_src_port (String val) { src_port = append(src_port, val); }
-  public void add_dest_ip (String val) { dest_ip = append(dest_ip, val); }
-  public void add_dest_port(String val) { dest_port = append(dest_port, val); }
-  public void add_priority (String val) { priority = append(priority, val); }
-  public void add_operation (String val) { operation = append(operation, val); }
-  public void add_protocol (String val) { protocol = append(protocol, val); }
+  public boolean is_empty() { return empty; }
+
+  public void add_time(float val) { 
+  	time = append(time, val); 
+  	empty = false;
+  }
+  public void add_src_ip(String val) { 
+  	src_ip = append(src_ip, val); 
+  	empty = false;
+  }
+  public void add_src_port (String val) { 
+  	src_port = append(src_port, val); 
+  	empty = false;
+  }
+  public void add_dest_ip (String val) { 
+  	dest_ip = append(dest_ip, val); 
+  	empty = false;
+  }
+  public void add_dest_port(String val) { 
+  	dest_port = append(dest_port, val); 
+  	empty = false;
+  }
+  public void add_priority (String val) { 
+  	priority = append(priority, val); 
+  	empty = false;
+  }
+  public void add_operation (String val) { 
+  	operation = append(operation, val); 
+  	empty = false;
+  }
+  public void add_protocol (String val) { 
+  	protocol = append(protocol, val); 
+  	empty = false;
+  }
 
   public int in_dest_port(String port) {
     for (int i = 0; i < dest_port.length; i++) {

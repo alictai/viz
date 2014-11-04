@@ -1,5 +1,4 @@
 class ForceNode {
-  //Event[] events;
   String id;
   float mass;
   ForceNode parent;
@@ -32,7 +31,7 @@ class ForceNode {
     intersect = false;
     drag = false;
     radius = 0;
-    highlight = false;
+    highlight = true;
     //events = new Event[0];
   }
 
@@ -91,7 +90,7 @@ class ForceNode {
     }
   }
 
-  void intersect (int mousex, int mousey) {
+  boolean intersect (int mousex, int mousey) {
     float distance;
     distance = sqrt(((mousex - x) * (mousex - x)) + ((mousey - y) * (mousey - y)));
     if (distance < radius) { 
@@ -99,6 +98,7 @@ class ForceNode {
     } else {
       intersect = false;
     }
+    return intersect;
   }
 
   boolean drag (int mousex, int mousey) {

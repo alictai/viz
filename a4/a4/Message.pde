@@ -22,14 +22,40 @@ class Message {
     protocol = new String[0];
   }
 
-  void add_time(float val) { time = append(time, val); }
-  void add_src_ip(String val) { src_ip = append(src_ip, val); }
-  void add_src_port (String val) { src_port = append(src_port, val); }
-  void add_dest_ip (String val) { dest_ip = append(dest_ip, val); }
-  void add_dest_port(String val) { dest_port = append(dest_port, val); }
-  void add_priority (String val) { priority = append(priority, val); }
-  void add_operation (String val) { operation = append(operation, val); }
-  void add_protocol (String val) { protocol = append(protocol, val); }
+  boolean is_empty() { return empty; }
+
+  void add_time(float val) { 
+  	time = append(time, val); 
+  	empty = false;
+  }
+  void add_src_ip(String val) { 
+  	src_ip = append(src_ip, val); 
+  	empty = false;
+  }
+  void add_src_port (String val) { 
+  	src_port = append(src_port, val); 
+  	empty = false;
+  }
+  void add_dest_ip (String val) { 
+  	dest_ip = append(dest_ip, val); 
+  	empty = false;
+  }
+  void add_dest_port(String val) { 
+  	dest_port = append(dest_port, val); 
+  	empty = false;
+  }
+  void add_priority (String val) { 
+  	priority = append(priority, val); 
+  	empty = false;
+  }
+  void add_operation (String val) { 
+  	operation = append(operation, val); 
+  	empty = false;
+  }
+  void add_protocol (String val) { 
+  	protocol = append(protocol, val); 
+  	empty = false;
+  }
 
   int in_dest_port(String port) {
     for (int i = 0; i < dest_port.length; i++) {
