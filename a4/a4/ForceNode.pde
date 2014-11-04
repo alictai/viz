@@ -31,7 +31,7 @@ class ForceNode {
     intersect = false;
     drag = false;
     radius = 0;
-    highlight = true;
+    highlight = false;
     //events = new Event[0];
   }
 

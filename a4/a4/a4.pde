@@ -50,8 +50,8 @@ void draw() {
 
   cat_x1 = 2 * width/3;
   cat_x2 = width;
-  cat_y1 = height/6;
-  cat_y2 = 2 * height/3;
+  cat_y1 = height/15;
+  cat_y2 = 2 * height/3 - 20;
 
   graph_x1 = 0;
   graph_x2 = 2 * width/3;

@@ -642,8 +642,8 @@ class ForceGraph {
   public void refresh_highlight() {
   	for (int i = 0; i < relations.length; i++) {
   		for (int k = 0; k < relations[i].events.length; k++) {
-  			lookup(relations[i].node1).highlight = true;
-  			lookup(relations[i].node2).highlight = true;
+  			lookup(relations[i].node1).highlight = false;
+  			lookup(relations[i].node2).highlight = false;
   		}
   	}
 
@@ -652,54 +652,39 @@ class ForceGraph {
   public void highlighting() {
   	for (int i = 0; i < relations.length; i++) {
   		for (int k = 0; k < relations[i].events.length; k++) {
-  			if(message.is_empty()) {
-  				rm_hl(relations[i]);
+  			if(check_heatmap(message, relations[i].events[k].time, relations[i].events[k].dest_port)) {
+  				add_hl(relations[i]); 
+  				print("yeahhhhh\n");
   			} else {
-  				//print(message.time[0]);
-  				if(!check_time(message, relations[i].events[k].time)) { rm_hl(relations[i]); }
-  				if(!check_src_port(message, relations[i].events[k].src_port)) { rm_hl(relations[i]); }
-  				if(!check_dest_port(message, relations[i].events[k].dest_port)) { rm_hl(relations[i]); }
-  				if(!check_priority(message, relations[i].events[k].priority)) { rm_hl(relations[i]); }
-  				if(!check_operation(message, relations[i].events[k].operation)) { rm_hl(relations[i]); }
-  				if(!check_protocol(message, relations[i].events[k].protocol)) { rm_hl(relations[i]); }
-   			}
+  				print("nah bro\n");
+  			}
+
+  			if(check_priority(message, relations[i].events[k].priority)) { add_hl(relations[i]); }
+  			if(check_operation(message, relations[i].events[k].operation)) { add_hl(relations[i]); }
+  			if(check_protocol(message, relations[i].events[k].protocol)) { add_hl(relations[i]); }
   		}
   	}
   }
 
-  public void rm_hl(ForceRels r) {
-  	lookup(r.node1).highlight = false;
-  	lookup(r.node2).highlight = false;
+  public void add_hl(ForceRels r) {
+  	lookup(r.node1).highlight = true;
+  	lookup(r.node2).highlight = true;
   }
 
-  public boolean check_time(Message message, float time) {
+  public boolean check_heatmap(Message message, float time, String dest_port) {
       for (int i = 0; i < message.time.length; i++) {
          if (time == message.time[i]) {
-             return true;
+         	 if (dest_port.equals(message.dest_port[i])) {
+         	 	return true;
+         	 }
          }
       }
       return false;
   }
 
-  public boolean check_src_port(Message message, String src_port) {
-      for (int i = 0; i < message.src_port.length; i++) {
-         if (src_port.equals(message.src_port[i])) {
-             return true;
-         }
-      }
-      return false;
-  }
-  
-  public boolean check_dest_port(Message message, String dest_port) {
-      for (int i = 0; i < message.dest_port.length; i++) {
-         if (dest_port.equals(message.dest_port[i])) {
-             return true;
-         }
-      }
-      return false;
-  }
-  
+
   public boolean check_priority(Message message, String priority) {
+  	//if(message.priority.length == 0) { return true; }
       for (int i = 0; i < message.priority.length; i++) {
          if (priority.equals(message.priority[i])) {
              return true;
@@ -709,6 +694,7 @@ class ForceGraph {
   }
   
   public boolean check_operation(Message message, String operation) {
+  	//if(message.operation.length == 0) { return true; }
       for (int i = 0; i < message.operation.length; i++) {
          if (operation.equals(message.operation[i])) {
              return true;
@@ -718,6 +704,7 @@ class ForceGraph {
   }
   
   public boolean check_protocol(Message message, String protocol) {
+  	//if(message.protocol.length == 0) { return true; }
       for (int i = 0; i < message.protocol.length; i++) {
          if (protocol.equals(message.protocol[i])) {
              return true;
@@ -963,7 +950,7 @@ class ForceNode {
     intersect = false;
     drag = false;
     radius = 0;
-    highlight = true;
+    highlight = false;
     //events = new Event[0];
   }
 

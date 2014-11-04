@@ -53,7 +53,7 @@ class ForceGraph {
     highlighting();
     update_message();
     draw_nodes();
-    
+
     return message;
   }
 
@@ -87,122 +87,112 @@ class ForceGraph {
   }
 
   void refresh_message() {
-  	message.src_ip = new String[0];
-  	message.dest_ip = new String[0];
+    message.src_ip = new String[0];
+    message.dest_ip = new String[0];
   }
 
   void update_message() {
-  	//int xleft, xright, ytop, ybot;
-  	for(int i = 0; i < rects.length; i++) {
-  		for(int k = 0; k < relations.length; k++) {
-  			//updating message based on rectangles
-  			if(in_rect(lookup(relations[k].node1), rect[i])) {
-  				lookup(relations[k].node1).highlight = true;
-  				message.add_src_ip(relations[k].node1);
-  				message.add_dest_ip(relations[k].node1);
-  			}
-  			if(in_rect(lookup(relations[k].node2), rect[i])) {
-  				lookup(relations[k].node2).highlight = true;
-  				message.add_src_ip(relations[k].node2);
-  				message.add_dest_ip(relations[k].node2);
-  			}
-  		}
-  	}
+    //int xleft, xright, ytop, ybot;
+    for (int i = 0; i < rects.length; i++) {
+      for (int k = 0; k < relations.length; k++) {
+        //updating message based on rectangles
+        if (in_rect(lookup(relations[k].node1), rect[i])) {
+          lookup(relations[k].node1).highlight = true;
+          message.add_src_ip(relations[k].node1);
+          message.add_dest_ip(relations[k].node1);
+        }
+        if (in_rect(lookup(relations[k].node2), rect[i])) {
+          lookup(relations[k].node2).highlight = true;
+          message.add_src_ip(relations[k].node2);
+          message.add_dest_ip(relations[k].node2);
+        }
+      }
+    }
   }
 
   boolean in_rect(ForceNode node, Rect r) {
-  	if(node.x > r.xleft && node.x < r.xright) {
-  		if (node.y > r.ytop && node.y < r.ybot) {
-  			return true;
-  		}
-  	}
-  	return false;
+    if (node.x > r.xleft && node.x < r.xright) {
+      if (node.y > r.ytop && node.y < r.ybot) {
+        return true;
+      }
+    }
+    return false;
   }
 
   void refresh_highlight() {
-  	for (int i = 0; i < relations.length; i++) {
-  		for (int k = 0; k < relations[i].events.length; k++) {
-  			lookup(relations[i].node1).highlight = true;
-  			lookup(relations[i].node2).highlight = true;
-  		}
-  	}
-
+    for (int i = 0; i < relations.length; i++) {
+      for (int k = 0; k < relations[i].events.length; k++) {
+        lookup(relations[i].node1).highlight = false;
+        lookup(relations[i].node2).highlight = false;
+      }
+    }
   }
 
   void highlighting() {
-  	for (int i = 0; i < relations.length; i++) {
-  		for (int k = 0; k < relations[i].events.length; k++) {
-  			if(message.is_empty()) {
-  				rm_hl(relations[i]);
-  			} else {
-  				if(!check_time(message, relations[i].events[k].time)) { rm_hl(relations[i]); }
-  				if(!check_src_port(message, relations[i].events[k].src_port)) { rm_hl(relations[i]); }
-  				if(!check_dest_port(message, relations[i].events[k].dest_port)) { rm_hl(relations[i]); }
-  				if(!check_priority(message, relations[i].events[k].priority)) { rm_hl(relations[i]); }
-  				if(!check_operation(message, relations[i].events[k].operation)) { rm_hl(relations[i]); }
-  				if(!check_protocol(message, relations[i].events[k].protocol)) { rm_hl(relations[i]); }
-   			}
-  		}
-  	}
+    for (int i = 0; i < relations.length; i++) {
+      for (int k = 0; k < relations[i].events.length; k++) {
+        if (check_heatmap(message, relations[i].events[k].time, relations[i].events[k].dest_port)) {
+          add_hl(relations[i]); 
+        }
+
+        if (check_priority(message, relations[i].events[k].priority)) { 
+          add_hl(relations[i]);
+        }
+        if (check_operation(message, relations[i].events[k].operation)) { 
+          add_hl(relations[i]);
+        }
+        if (check_protocol(message, relations[i].events[k].protocol)) { 
+          add_hl(relations[i]);
+        }
+      }
+    }
   }
 
-  void rm_hl(ForceRels r) {
-  	lookup(r.node1).highlight = false;
-  	lookup(r.node2).highlight = false;
+  void add_hl(ForceRels r) {
+    lookup(r.node1).highlight = true;
+    lookup(r.node2).highlight = true;
   }
 
-  boolean check_time(Message message, float time) {
-      for (int i = 0; i < message.time.length; i++) {
-         if (time == message.time[i]) {
-             return true;
-         }
+  boolean check_heatmap(Message message, float time, String dest_port) {
+    for (int i = 0; i < message.time.length; i++) {
+      if (time == message.time[i]) {
+        if (dest_port.equals(message.dest_port[i])) {
+          return true;
+        }
       }
-      return false;
+    }
+    return false;
   }
 
-  boolean check_src_port(Message message, String src_port) {
-      for (int i = 0; i < message.src_port.length; i++) {
-         if (src_port.equals(message.src_port[i])) {
-             return true;
-         }
-      }
-      return false;
-  }
-  
-  boolean check_dest_port(Message message, String dest_port) {
-      for (int i = 0; i < message.dest_port.length; i++) {
-         if (dest_port.equals(message.dest_port[i])) {
-             return true;
-         }
-      }
-      return false;
-  }
-  
+
   boolean check_priority(Message message, String priority) {
-      for (int i = 0; i < message.priority.length; i++) {
-         if (priority.equals(message.priority[i])) {
-             return true;
-         }
+    //if(message.priority.length == 0) { return true; }
+    for (int i = 0; i < message.priority.length; i++) {
+      if (priority.equals(message.priority[i])) {
+        return true;
       }
-      return false;
+    }
+    return false;
   }
-  
+
   boolean check_operation(Message message, String operation) {
-      for (int i = 0; i < message.operation.length; i++) {
-         if (operation.equals(message.operation[i])) {
-             return true;
-         }
+    //if(message.operation.length == 0) { return true; }
+    for (int i = 0; i < message.operation.length; i++) {
+      if (operation.equals(message.operation[i])) {
+        return true;
       }
-      return false;
+    }
+    return false;
   }
-  
+
   boolean check_protocol(Message message, String protocol) {
-      for (int i = 0; i < message.protocol.length; i++) {
-         if (protocol.equals(message.protocol[i])) {
-             return true;
-         }
+    //if(message.protocol.length == 0) { return true; }
+    for (int i = 0; i < message.protocol.length; i++) {
+      if (protocol.equals(message.protocol[i])) {
+        return true;
       }
-      return false;
+    }
+    return false;
   }
 
   void draw_nodes() {
@@ -221,7 +211,7 @@ class ForceGraph {
 
         //update message
         message.add_src_ip(nodes[i].id);
-  		message.add_dest_ip(nodes[i].id);
+        message.add_dest_ip(nodes[i].id);
       } else if (nodes[i].highlight) {
         fill (200, 200, 255);
         ellipse(nodes[i].x, nodes[i].y, 2*nodes[i].radius, 2*nodes[i].radius);
@@ -383,7 +373,7 @@ class ForceGraph {
   }
 
   void intersect(int mousex, int mousey) {
-  	boolean isect = false;
+    boolean isect = false;
     for (int i = 0; i < nodes.length; i++) {
       isect = nodes[i].intersect(mousex, mousey);
     }
