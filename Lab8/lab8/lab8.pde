@@ -19,3 +19,10 @@ void draw() {
   graph.draw_graph(0, 0, width, height);
 }
 
+void mouseClicked() {
+  graph.col_change(mouseX);
+}
+
+void mouseMoved() {
+  graph.hover(mouseX); 
+}

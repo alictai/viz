@@ -1,3 +1,78 @@
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+public class lab8 extends PApplet {
+
+Data data;
+Para_Coord graph;
+int screenWidth = 800;
+int screenHeight = 800;
+
+public void setup() {
+  size(screenWidth, screenHeight);
+  if (frame != null) {
+    frame.setResizable(true);
+  }
+
+  data = new Data();
+  data.parse("iris.csv");
+  graph = new Para_Coord(data);
+}
+
+public void draw() {
+  background(255, 255, 255);
+  graph.draw_graph(0, 0, width, height);
+}
+
+class Data { 
+  String[] header;
+  int num_cols;
+  float[][] vals;
+
+  public void parse(String file) {
+    String[] lines = loadStrings(file);
+    String[] split_line;
+
+    readHeader(lines[0]);
+    num_cols = header.length;
+    vals = new float[num_cols][lines.length - 1];
+
+    //print(lines.length);
+    for (int k = 0; k < num_cols; k++) {
+      for (int i = 1; i < lines.length; i++) {
+        split_line = splitTokens(lines[i], ",");
+        vals[k][i-1] = PApplet.parseFloat(split_line[k]);
+      }
+    }
+
+    //printArray(vals[1]);
+  }
+
+  public void readHeader(String line1) {
+    header = new String[8];
+
+    //given CSV has header delimited by ',' & ' '
+    header = splitTokens(line1, ",");
+    /*print("Headers: \n");
+     printArray(header);
+     print('\n');*/
+  }
+  
+  public int get_num_cols() { return num_cols; }
+  public int get_num_rows() { return vals[0].length; }
+  public String get_header(int index) { return header[index]; };
+}
 class Para_Coord {
   Data data;
   float[] mins;
@@ -12,9 +87,8 @@ class Para_Coord {
   int num_labels;
   PGraphics pg;
   int colored_col;
-  int hover_col;
-  color[][] colors;
-  color[] color_list;
+  int[][] colors;
+  int[] color_list;
 
   Para_Coord (Data d) {
     data = d;
@@ -28,22 +102,19 @@ class Para_Coord {
     label_coords = new float[data.get_num_cols()][num_labels];
     pg = null;
     colored_col = data.get_num_cols() - 1;
-    hover_col = -1;
-    //colored_col = 0;
-
-    colors = new color[data.get_num_cols()][data.get_num_rows()];
+    colors = new int[data.get_num_cols()][data.get_num_rows()];
    
-    color_list = new color[num_labels-1];
-    color_list[0] = color(255, 0, 146);
-    color_list[1] = color(182, 255, 0);
-    color_list[2] = color(34, 141, 255);
-    color_list[3] = color(255, 202, 27);
+    color_list = new int[num_labels-1];
+    color_list[0] = color(0,0,0);
+    color_list[1] = color(255, 0, 0);
+    color_list[2] = color(0, 255, 0);
+    color_list[3] = color(0, 0, 255);
     /*for(int i = 0; i < color_list.length; i++) {
       color_list[i] = color(random(0, 255), random(0, 255), random(0, 255));
     } */ 
   }
 
-  void draw_graph(float x_in, float y_in, float w_in, float h_in) {
+  public void draw_graph(float x_in, float y_in, float w_in, float h_in) {
     x = x_in;
     y = y_in;
     w = w_in;
@@ -60,14 +131,14 @@ class Para_Coord {
     draw_labels();
   }
 
-  void find_bounds() {
+  public void find_bounds() {
     for (int i = 0; i < data.get_num_cols (); i++) {
       mins[i] = min(data.vals[i]);
       maxes[i] = max(data.vals[i]);
     }
   }
 
-  void calculate_axes() {
+  public void calculate_axes() {
     float x_spacing = w/(data.get_num_cols()+1);
     for (int i = 0; i < x_coords.length; i++) {
       x_coords[i] = x_spacing * (i+1);
@@ -77,7 +148,7 @@ class Para_Coord {
     y_bott = y + h - 60;
   }
 
-  void calc_pts() {
+  public void calc_pts() {
     for (int i = 0; i < data.get_num_cols (); i++) {
       for (int k = 0; k < data.get_num_rows (); k++) {
         y_coords[i][k] = map(data.vals[i][k], mins[i], maxes[i], y_bott, y_top);
@@ -85,7 +156,7 @@ class Para_Coord {
     }
   }
 
-  void calc_labels() {
+  public void calc_labels() {
     float y_spacing = (y_bott - y_top)/(num_labels-1);
     for (int i = 0; i < data.get_num_cols (); i++) {
       for (int k = 0; k < num_labels; k++) {
@@ -97,13 +168,13 @@ class Para_Coord {
     }
   }
 
-  void calc_colors() {
+  public void calc_colors() {
     for(int i = 0; i < data.get_num_cols(); i++) {
       for(int k = 0; k < data.get_num_rows(); k++) {
         for(int m = 0; m < num_labels - 1; m++) {
-          //print(labels[colored_col][m]," ", labels[colored_col][m+1],"\n");
-          if (data.vals[colored_col][k] >= labels[colored_col][m] &&
-              data.vals[colored_col][k] <= labels[colored_col][m+1]) {
+          print(labels[colored_col][m], labels[colored_col][m+1]);
+          if (data.vals[colored_col][k] < labels[colored_col][m] &&
+              data.vals[colored_col][k] > labels[colored_col][m+1]) {
             colors[i][k] = color_list[m];
           }
         }
@@ -111,34 +182,17 @@ class Para_Coord {
     }
   }
 
-  void draw_axes() {
+  public void draw_axes() {
     for (int i = 0; i < x_coords.length; i++) {
-      if (i == colored_col) {
-        /*strokeWeight(3);
-        stroke(0);
-        fill(0);*/
-        strokeWeight(2); 
-        stroke(186, 141, 255);
-        fill(186, 141, 255);
-      }
-      if (i == hover_col) {
-        //strokeWeight(2); 
-        stroke(112,249,197);
-        fill(112,249,197);
-      }
-      
+      fill(0, 0, 0);
       line(x_coords[i], y_top, x_coords[i], y_bott);
       textSize(15);
       textAlign(CENTER);
       text(data.get_header(i), x_coords[i], y_bott + 20);
-      
-      strokeWeight(1);
-      stroke(0);
-      fill(0);
     }
   }
 
-  void draw_pts() {
+  public void draw_pts() {
     for (int i = 0; i < data.get_num_cols (); i++) {
       for (int k = 0; k < data.get_num_rows (); k++) {
         fill(0, 0, 0);
@@ -147,7 +201,7 @@ class Para_Coord {
     }
   }
 
-  void draw_lines() {
+  public void draw_lines() {
     for (int i = 0; i < (data.get_num_rows ()); i++) {
       for (int k = 0; k < data.get_num_cols () - 1; k++) {
           stroke(colors[k][i]);
@@ -157,7 +211,7 @@ class Para_Coord {
     }
   }
 
-  void draw_labels() {
+  public void draw_labels() {
     for (int i = 0; i < data.get_num_cols (); i++) {
       for (int k = 0; k < num_labels; k++) {
         fill(0, 0, 0);
@@ -168,22 +222,13 @@ class Para_Coord {
       }
     }
   }
-  
-  void col_change(int mousex) {
-    int num_cols = data.get_num_cols();
-    for(int i = 0; i < num_cols; i++) {
-      if (mousex > (width/num_cols)*i && mousex < (width/num_cols)*(i+1)) {
-        colored_col = i;
-      }
-    }
-  }
-  
-  void hover(int mousex) {
-    int num_cols = data.get_num_cols();
-    for(int i = 0; i < num_cols; i++) {
-      if (mousex > (width/num_cols)*i && mousex < (width/num_cols)*(i+1)) {
-        hover_col = i;
-      }
+}
+  static public void main(String[] passedArgs) {
+    String[] appletArgs = new String[] { "lab8" };
+    if (passedArgs != null) {
+      PApplet.main(concat(appletArgs, passedArgs));
+    } else {
+      PApplet.main(appletArgs);
     }
   }
 }

@@ -36,4 +36,3 @@ class Data {
   int get_num_rows() { return vals[0].length; }
   String get_header(int index) { return header[index]; };
 }
-
