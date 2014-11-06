@@ -30,10 +30,13 @@ void mouseMoved() {
 void keyPressed() {
   if(key == CODED) {
     if (keyCode == LEFT) {
+      //Hitting left arrow shows hacky version of a curved graph
       graph.view_bezier();
     } else if (keyCode == DOWN) {
+      //Hitting down arrow will flip the dimension being hovered over if it was not already flipped
       graph.flip_dim();
     } else if (keyCode == UP) {
+      //Hitting the up arrow will unflip the dimension being hovered over if it is flipped
       graph.unflip(); 
     }
   }
