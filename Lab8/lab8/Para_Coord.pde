@@ -113,18 +113,13 @@ class Para_Coord {
 
   void draw_axes() {
     for (int i = 0; i < x_coords.length; i++) {
-      if (i == colored_col) {
+      if (i == colored_col || i == hover_col) {
         /*strokeWeight(3);
         stroke(0);
         fill(0);*/
         strokeWeight(2); 
         stroke(186, 141, 255);
         fill(186, 141, 255);
-      }
-      if (i == hover_col) {
-        //strokeWeight(2); 
-        stroke(112,249,197);
-        fill(112,249,197);
       }
       
       line(x_coords[i], y_top, x_coords[i], y_bott);
