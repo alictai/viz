@@ -26,3 +26,21 @@ void mouseClicked() {
 void mouseMoved() {
   graph.hover(mouseX); 
 }
+
+void keyPressed() {
+  if(key == CODED) {
+    if (keyCode == UP) {
+      graph.view_bezier();
+    } else if (keyCode == DOWN) {
+      print("your mouse is at ", mouseX,", ", mouseY,"\n"); 
+    }
+  }
+}
+
+void keyReleased() {
+  if(key == CODED) {
+    if (keyCode == UP) {
+      graph.view_line();
+    }
+  }
+}

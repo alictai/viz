@@ -9,12 +9,14 @@ class Para_Coord {
   float x, y;
   float w, h;
   float y_top, y_bott;
+  float x_spacing;
   int num_labels;
   PGraphics pg;
   int colored_col;
   int hover_col;
   color[][] colors;
   color[] color_list;
+  boolean curve;
 
   Para_Coord (Data d) {
     data = d;
@@ -29,18 +31,21 @@ class Para_Coord {
     pg = null;
     colored_col = data.get_num_cols() - 1;
     hover_col = -1;
-    //colored_col = 0;
-
     colors = new color[data.get_num_cols()][data.get_num_rows()];
-   
+    curve = false;
+
+    //generating colors
     color_list = new color[num_labels-1];
-    color_list[0] = color(255, 0, 146);
-    color_list[1] = color(182, 255, 0);
-    color_list[2] = color(34, 141, 255);
-    color_list[3] = color(255, 202, 27);
-    /*for(int i = 0; i < color_list.length; i++) {
-      color_list[i] = color(random(0, 255), random(0, 255), random(0, 255));
-    } */ 
+    if (num_labels - 1 == 4) {
+      color_list[0] = color(255, 0, 146);
+      color_list[1] = color(182, 255, 0);
+      color_list[2] = color(34, 141, 255);
+      color_list[3] = color(255, 202, 27);
+    } else {
+      for (int i = 0; i < color_list.length; i++) {
+        color_list[i] = color(random(0, 255), random(0, 255), random(0, 255));
+      }
+    }
   }
 
   void draw_graph(float x_in, float y_in, float w_in, float h_in) {
@@ -68,7 +73,7 @@ class Para_Coord {
   }
 
   void calculate_axes() {
-    float x_spacing = w/(data.get_num_cols()+1);
+    x_spacing = w/(data.get_num_cols()+1);
     for (int i = 0; i < x_coords.length; i++) {
       x_coords[i] = x_spacing * (i+1);
     }
@@ -98,12 +103,11 @@ class Para_Coord {
   }
 
   void calc_colors() {
-    for(int i = 0; i < data.get_num_cols(); i++) {
-      for(int k = 0; k < data.get_num_rows(); k++) {
-        for(int m = 0; m < num_labels - 1; m++) {
-          //print(labels[colored_col][m]," ", labels[colored_col][m+1],"\n");
+    for (int i = 0; i < data.get_num_cols (); i++) {
+      for (int k = 0; k < data.get_num_rows (); k++) {
+        for (int m = 0; m < num_labels - 1; m++) {
           if (data.vals[colored_col][k] >= labels[colored_col][m] &&
-              data.vals[colored_col][k] <= labels[colored_col][m+1]) {
+            data.vals[colored_col][k] <= labels[colored_col][m+1]) {
             colors[i][k] = color_list[m];
           }
         }
@@ -115,18 +119,18 @@ class Para_Coord {
     for (int i = 0; i < x_coords.length; i++) {
       if (i == colored_col || i == hover_col) {
         /*strokeWeight(3);
-        stroke(0);
-        fill(0);*/
+         stroke(0);
+         fill(0);*/
         strokeWeight(2); 
         stroke(186, 141, 255);
         fill(186, 141, 255);
       }
-      
+
       line(x_coords[i], y_top, x_coords[i], y_bott);
       textSize(15);
       textAlign(CENTER);
       text(data.get_header(i), x_coords[i], y_bott + 20);
-      
+
       strokeWeight(1);
       stroke(0);
       fill(0);
@@ -143,11 +147,65 @@ class Para_Coord {
   }
 
   void draw_lines() {
-    for (int i = 0; i < (data.get_num_rows ()); i++) {
-      for (int k = 0; k < data.get_num_cols () - 1; k++) {
+    if (curve) {
+      noFill();
+      int num_cols = data.get_num_cols();
+      for (int i = 0; i < (data.get_num_rows ()); i++) {
+      //for (int i = 0; i < 1; i++) {
+        stroke(colors[0][i]);
+        for (int k = 0; k < num_cols - 1; k++) {
+          if (y_coords[k][i] > y_coords[k+1][i]) {
+            bezier(x_coords[k], y_coords[k][i], 
+                   x_coords[k]+(x_spacing/4), y_coords[k][i]+((3/4)*(y_coords[k][i]-y_coords[k+1][i])), 
+                   x_coords[k]+3*(x_spacing/4), y_coords[k+1][i]-((1/4)*(y_coords[k][i]-y_coords[k+1][i])), 
+                   x_coords[k+1], y_coords[k+1][i]);
+          } else {
+            /*stroke(0);
+            line(x_coords[k], y_coords[k][i], 
+                 x_coords[k]+(x_spacing/4), y_coords[k][i]+((3/4)*(y_coords[k][i]-y_coords[k+1][i])));
+            line(x_coords[k]+3*(x_spacing/4), y_coords[k+1][i]+((1/4)*(y_coords[k][i]-y_coords[k+1][i])), 
+                 x_coords[k+1], y_coords[k+1][i]);
+            stroke(colors[0][i]);*/
+            bezier(x_coords[k], y_coords[k][i], 
+                   x_coords[k]+3*(x_spacing/4), y_coords[k][i]-((1/4)*(y_coords[k+1][i]-y_coords[k][i])), 
+                   x_coords[k]+(x_spacing/4), y_coords[k+1][i]+((3/4)*(y_coords[k+1][i]-y_coords[k][i])), 
+                   //x_coords[k]+3*(x_spacing/4), y_coords[k][i]-((1/4)*(y_coords[k+1][i]-y_coords[k][i])), 
+                   x_coords[k+1], y_coords[k+1][i]);
+          }
+        }
+      }
+      stroke(0);
+      
+      /*//for (int i = 0; i < (data.get_num_rows ()); i++) {
+      for (int i = 0; i < 1; i++) {
+        stroke(colors[0][i]);
+        for (int k = 0; k < num_cols - 1; k++) {
+        //for(int k = 0; k < 1; k++) {
+          beginShape();
+          curveVertex(x_coords[k], y_coords[k][i]); // the first control point
+          curveVertex(x_coords[k], y_coords[k][i]); // is also the start point of curve
+          if (y_coords[k][i] > y_coords[k+1][i]) {
+            curveVertex(x_coords[k]+(3*x_spacing/4), y_coords[k+1][i]+(y_coords[k][i]-y_coords[k+1][i])/2);
+            //curveVertex(x_coords[k]+(x_spacing/2) + ((w/num_cols)/4), y_coords[k+1][i]+(y_coords[k][i]-y_coords[k+1][i])/4);
+            //curveVertex(x_coords[k]+(x_spacing/2) + (3*w/num_cols/4), y_coords[k+1][i]+(3*(y_coords[k][i]-y_coords[k+1][i])/4));
+          } else {
+            curveVertex(x_coords[k]+(3*x_spacing/4), y_coords[k][i]+(-y_coords[k][i]+y_coords[k+1][i])/2);
+            //curveVertex(x_coords[k]+(x_spacing/2) + (3*w/num_cols/4), y_coords[k][i]+(3*(-y_coords[k][i]+y_coords[k+1][i])/4));
+            //curveVertex(x_coords[k]+(x_spacing/2) + (w/num_cols/4), y_coords[k][i]+(-y_coords[k][i]+y_coords[k+1][i])/4);
+          }
+          curveVertex(x_coords[k+1], y_coords[k+1][i]); // the last point of curve
+          curveVertex(x_coords[k+1], y_coords[k+1][i]); // the last point of curve
+          endShape();
+        }
+        stroke(0);
+      }*/
+    } else {
+      for (int i = 0; i < (data.get_num_rows ()); i++) {
+        for (int k = 0; k < data.get_num_cols () - 1; k++) {
           stroke(colors[k][i]);
           line(x_coords[k], y_coords[k][i], x_coords[k+1], y_coords[k+1][i]);
           stroke(0, 0, 0);
+        }
       }
     }
   }
@@ -163,22 +221,30 @@ class Para_Coord {
       }
     }
   }
-  
+
   void col_change(int mousex) {
     int num_cols = data.get_num_cols();
-    for(int i = 0; i < num_cols; i++) {
+    for (int i = 0; i < num_cols; i++) {
       if (mousex > (width/num_cols)*i && mousex < (width/num_cols)*(i+1)) {
         colored_col = i;
       }
     }
   }
-  
+
   void hover(int mousex) {
     int num_cols = data.get_num_cols();
-    for(int i = 0; i < num_cols; i++) {
-      if (mousex > (width/num_cols)*i && mousex < (width/num_cols)*(i+1)) {
+    for (int i = 0; i < num_cols; i++) {
+      if (mousex > (w/num_cols)*i && mousex < (w/num_cols)*(i+1)) {
         hover_col = i;
       }
     }
   }
+
+  void view_bezier() { 
+    curve = true;
+  }
+  void view_line() { 
+    curve = false;
+  }
 }
+
