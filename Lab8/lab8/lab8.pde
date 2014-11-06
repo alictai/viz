@@ -32,7 +32,7 @@ void keyPressed() {
     if (keyCode == UP) {
       graph.view_bezier();
     } else if (keyCode == DOWN) {
-      print("your mouse is at ", mouseX,", ", mouseY,"\n"); 
+      graph.flip_dim();
     }
   }
 }
@@ -41,6 +41,8 @@ void keyReleased() {
   if(key == CODED) {
     if (keyCode == UP) {
       graph.view_line();
+    } else if (keyCode == DOWN) {
+      graph.unflip();
     }
   }
 }
