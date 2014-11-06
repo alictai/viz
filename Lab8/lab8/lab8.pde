@@ -29,20 +29,22 @@ void mouseMoved() {
 
 void keyPressed() {
   if(key == CODED) {
-    if (keyCode == UP) {
+    if (keyCode == LEFT) {
       graph.view_bezier();
     } else if (keyCode == DOWN) {
       graph.flip_dim();
+    } else if (keyCode == UP) {
+      graph.unflip(); 
     }
   }
 }
 
 void keyReleased() {
   if(key == CODED) {
-    if (keyCode == UP) {
+    if (keyCode == LEFT) {
       graph.view_line();
     } else if (keyCode == DOWN) {
-      graph.unflip();
+      //graph.unflip();
     }
   }
 }

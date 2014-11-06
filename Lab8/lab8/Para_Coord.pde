@@ -18,6 +18,7 @@ class Para_Coord {
   color[] color_list;
   boolean curve;
   boolean flip;
+  boolean[] flipped_cols;
 
   Para_Coord (Data d) {
     data = d;
@@ -35,6 +36,10 @@ class Para_Coord {
     colors = new color[data.get_num_cols()][data.get_num_rows()];
     curve = false;
     flip = false;
+    flipped_cols = new boolean[data.get_num_cols()];
+    for(int i = 0; i < flipped_cols.length; i++) {
+      flipped_cols[i] = false;
+    }
 
     //generating colors
     color_list = new color[num_labels-1];
@@ -90,8 +95,9 @@ class Para_Coord {
         y_coords[i][k] = map(data.vals[i][k], mins[i], maxes[i], y_bott, y_top);
       }
     }
-    //print("unflipped: ", y_coords[colored_col][0], "\n");
-    if(flip) { flip_pts(colored_col); }
+    for(int i = 0; i < flipped_cols.length; i++) {
+      if(flipped_cols[i]) { flip_pts(i); }
+    }
   }
 
   void calc_labels() {
@@ -104,16 +110,25 @@ class Para_Coord {
         label_coords[i][k] = y_bott - (y_spacing*k);
       }
     }
-    if(flip) { flip_labels(colored_col); }
+    for(int i = 0; i < flipped_cols.length; i++) {
+      if(flipped_cols[i]) { flip_labels(i); }
+    }
   }
 
   void calc_colors() {
     for (int i = 0; i < data.get_num_cols (); i++) {
       for (int k = 0; k < data.get_num_rows (); k++) {
         for (int m = 0; m < num_labels - 1; m++) {
-          if (data.vals[colored_col][k] >= labels[colored_col][m] &&
-            data.vals[colored_col][k] <= labels[colored_col][m+1]) {
-            colors[i][k] = color_list[m];
+          if(!flipped_cols[colored_col]) {
+            if (data.vals[colored_col][k] >= labels[colored_col][m] &&
+              data.vals[colored_col][k] <= labels[colored_col][m+1]) {
+              colors[i][k] = color_list[m];
+            }
+          } else {
+            if (data.vals[colored_col][k] <= labels[colored_col][m] &&
+              data.vals[colored_col][k] >= labels[colored_col][m+1]) {
+              colors[i][k] = color_list[m];
+            }
           }
         }
       }
@@ -122,13 +137,17 @@ class Para_Coord {
 
   void draw_axes() {
     for (int i = 0; i < x_coords.length; i++) {
-      if (i == colored_col || i == hover_col) {
+      if (i == colored_col) {
         /*strokeWeight(3);
          stroke(0);
          fill(0);*/
         strokeWeight(2); 
         stroke(186, 141, 255);
         fill(186, 141, 255);
+      } else if (i == hover_col) {
+        strokeWeight(1); 
+        stroke(0, 255, 173);
+        fill(0, 255, 173);
       }
 
       line(x_coords[i], y_top, x_coords[i], y_bott);
@@ -174,7 +193,6 @@ class Para_Coord {
             bezier(x_coords[k], y_coords[k][i], 
             x_coords[k]+3*(x_spacing/4), y_coords[k][i]-((1/4)*(y_coords[k+1][i]-y_coords[k][i])), 
             x_coords[k]+(x_spacing/4), y_coords[k+1][i]+((3/4)*(y_coords[k+1][i]-y_coords[k][i])), 
-            //x_coords[k]+3*(x_spacing/4), y_coords[k][i]-((1/4)*(y_coords[k+1][i]-y_coords[k][i])), 
             x_coords[k+1], y_coords[k+1][i]);
           }
         }
@@ -221,8 +239,8 @@ class Para_Coord {
     }
   }
 
-  void flip_dim() { flip = true; }
-  void unflip() { flip = false; }
+  void flip_dim() { flipped_cols[hover_col] = true; }
+  void unflip() { flipped_cols[hover_col] = false; }
 
   void flip_pts(int i) {
     //print("flipping points\n");
