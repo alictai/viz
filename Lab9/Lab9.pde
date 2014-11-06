@@ -7,7 +7,7 @@ Graph graph;
 
 void setup() {
     // PUT INPUT FILE NAME HERE
-    String file = "data.csv";
+    String file = "data1.csv";
     
     frameRate(30);
     
@@ -21,9 +21,9 @@ void setup() {
 }
 
 void draw() {
-    background(255);
+   /* background(255);
     graph.calc_forces();
-    graph.draw_graph();
+    graph.draw_graph(); */
 }
 
 void mouseMoved() {

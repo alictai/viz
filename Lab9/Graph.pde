@@ -69,8 +69,8 @@ class Graph {
                 ellipse(nodes[i].x, nodes[i].y, 2*nodes[i].radius, 2*nodes[i].radius);
           	fill(0);
           	textAlign(CENTER);
-          	String label = "ID: " + nodes[i].id + ", MASS: " + nodes[i].mass;
-          	text(label, nodes[i].x, nodes[i].y - nodes[i].mass);
+          	String label = "ID: " + nodes[i].id + ", num_names: " + nodes[i].num_names;
+          	text(label, nodes[i].x, nodes[i].y - nodes[i].num_names);
           } else {
           	fill(nodes[i].KE, 80, 255 - nodes[i].KE);
                 ellipse(nodes[i].x, nodes[i].y, 2*nodes[i].radius, 2*nodes[i].radius);

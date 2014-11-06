@@ -2,27 +2,86 @@ class Parser {
   Node[] nodes;
   Rels[] relations;
   Graph graph;
-  int f_place;
+  int curr_line;
   int ult_root;
+  int num_nodes;
   
  Graph parse(String file) {
        String[] lines = loadStrings(file);
        String[] split_line;
+       
+       curr_line = 0;
        graph = new Graph();
        
-       find_nodes(lines);
-       find_rels(lines);
+       num_nodes = int(lines[curr_line++]);
+       print("num nodes ", num_nodes, "\n");
+       nodes = new Node[num_nodes];
+       
+       
+       
+       for (int i = 0; i < num_nodes; i++) {
+           split_line = splitTokens(lines[curr_line++], ",");
+           //printArray(split_line);
+           nodes[i] = new Node(int(split_line[0]), int(split_line[1]));
+           int num_links = int(split_line[2]);
+           read_names(lines, i);
+           read_intern_links(lines, i, num_links);
+       }
+       
+       read_extern_links(lines);
+        for (int i = 0; i < nodes[2].extern_links.length; i++) {
+             nodes[2].extern_links[i].print_link();
+        }
+            
        //attach_nodes();
        
        //print_rels();
        
-       graph.nodes = nodes;
-       graph.relations = relations;
+       //graph.nodes = nodes;
+       //graph.relations = relations;
        
        return graph;
   }
   
+  void read_names (String[] lines, int index) {
+      nodes[index].names = new String[nodes[index].num_names];
+      for (int i = 0; i < nodes[index].num_names; i++) {
+          nodes[index].names[i] = lines[curr_line++];
+      }
+  }
+  
+  void read_intern_links (String[] lines, int index, int num_links) {
+      String[] split_line;
+      nodes[index].intern_links = new int[nodes[index].num_names][nodes[index].num_names];
+      
+      
+      for (int i = 0; i < num_links; i++) {
+          split_line = splitTokens(lines[curr_line++], ",");
+         
+          int name1 = nodes[index].which_index(split_line[0]);
+          int name2 = nodes[index].which_index(split_line[1]);
+          
+          nodes[index].intern_links[name1][name2] = int(split_line[2]);
+          nodes[index].intern_links[name2][name1] = int(split_line[2]);
+      }
+  }
+  
+  void read_extern_links(String[] lines) {
+      String[] split_line;
+      for (; curr_line < lines.length; curr_line++) {
+         split_line = splitTokens(lines[curr_line], ",");
+         int node1 = int(split_line[1]);
+         int node2 = int(split_line[3]);
+         String name1 = split_line[0];
+         String name2 = split_line[2];
+         
+         nodes[node1].add_extern(node2, name1, name2);
+         nodes[node2].add_extern(node1, name2, name1);
+      }
     
+  }
+  
+ /*   
     void find_nodes(String[] lines) {
       String[] split_line;
       split_line = splitTokens(lines[0], ",");
@@ -63,7 +122,7 @@ class Parser {
        }
        return toret;
     }
-  /*  
+    
     void attach_nodes() {
        for (int i = 0; i < relations.length; i++) {
           for (int j = 0; j < nodes.length; j++) {

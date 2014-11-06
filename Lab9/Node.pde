@@ -1,9 +1,9 @@
 class Node {
    int id;
-   float mass;
+   int num_names;
    Node parent;
    float dist_to_parent;
-   int num_children;
+   //int num_children;
    float x, y;
    float fx, fy;
    float vx, vy;
@@ -12,12 +12,14 @@ class Node {
    boolean intersect;
    boolean drag;
    float radius;
+   String[] names;
+   int[][] intern_links;
+   Extern_link[] extern_links;
    
    Node() {
        id = 0;
-       mass = 0;
+       num_names = 0;
        dist_to_parent = 0;
-       num_children = 0;
        x = random(10, width-10);
        y = random(10, height-10);
        fx = 0;
@@ -30,13 +32,13 @@ class Node {
        intersect = false;
        drag = false;
        radius = 0;
+       extern_links = new Extern_link[0];
    }
    
-   Node(int i, float mas) {
+   Node(int i, int mas) {
        id = i;
-       mass = mas;
+       num_names = mas;
        dist_to_parent = 0;
-       num_children = 0;
        x = random(10, width-10);
        y = random(10, height-10);
        fx = 0;
@@ -49,10 +51,26 @@ class Node {
        intersect = false;
        drag = false;
        radius = crunch();
+       extern_links = new Extern_link[0];
+   }
+   
+   int which_index(String name) {
+       for (int i = 0; i < num_names; i++) {
+           if (name.equals(names[i])) {
+              return i; 
+           }
+       }
+       
+       return -1;
+   }
+   
+   void add_extern(int for_node, String loc_name, String for_name) {
+       Extern_link temp = new Extern_link(for_node, loc_name, for_name);
+       extern_links = (Extern_link[])append(extern_links, temp);
    }
    
    float crunch() {
-       return (map(mass, 1, 10, 5, 20));
+       return (map(num_names, 1, 10, 5, 20));
    }
    
    void update_position(float damp_const) {
@@ -61,16 +79,16 @@ class Node {
                     
         if (!drag) {
             //x
-            ax = fx/mass;
+            ax = fx/num_names;
             x = x + vx*t + .5*ax*(t*t);
             vx = damp_const * (vx + ax*t);
     
             //y
-            ay = fy/mass;
+            ay = fy/num_names;
             y = y + vy*t + .5*ay*(t*t);
             vy = damp_const * (vy + ay*t);
       
-            KE = .5 * mass * ((vx*vx) + (vy*vy));
+            KE = .5 * num_names * ((vx*vx) + (vy*vy));
         }
             
         if (x < 10) { x = 10; }
