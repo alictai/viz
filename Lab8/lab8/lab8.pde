@@ -20,10 +20,12 @@ void draw() {
 }
 
 void mouseClicked() {
+  //Coloring of graph will change to dimension being hovered over
   graph.col_change(mouseX);
 }
 
 void mouseMoved() {
+  //Axis being hovered over/near will turn green
   graph.hover(mouseX); 
 }
 
