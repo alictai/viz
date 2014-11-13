@@ -21,7 +21,7 @@ void setup() {
    size(screenWidth, screenHeight);
    background(255, 255, 255);
    data = new Data();
-   data.parse("dataset.csv");
+   data.parse("dataset1.csv");
    if (frame!=null) { frame.setResizable(true); }
    buttons_set();
    curr_chart = "Line Graph";
@@ -66,7 +66,6 @@ void mouseClicked() {
 }
 
 void draw_transition() {
-    //REMEMBER TO REMOVE CURR_CHART = NEXT_CHART <-- JUST FOR RUNNING CODE
     if (curr_chart == "Line Graph") {
         if (next_chart == "Bar Chart") {
             //print("line to bar\n");

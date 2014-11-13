@@ -197,9 +197,9 @@ class Pie_Chart {
     int boxH = canvas_y2 - canvas_y1;
     
     if (boxW > boxH) {
-      diameter = boxW/2;
+      diameter = 3*boxW/4;
     } else {
-      diameter = boxH/2;
+      diameter = 3*boxH/4;
     }
   }
    
