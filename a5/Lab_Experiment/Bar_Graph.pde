@@ -158,8 +158,11 @@ class Bar_Graph {
               stroke(0);
               rect(x_coords[i]-(w/2), y_coords[i], w, hgt);
               if(data.isMarked(i)) {
-                 fill(0);
+                 fill(255, 0, 0);
+                 stroke(255, 0, 0);
                  ellipse(x_coords[i], canvas_y2 - (hgt / 2), 5, 5);
+                 fill(255);
+                 stroke(0);
               } 
         }
   }

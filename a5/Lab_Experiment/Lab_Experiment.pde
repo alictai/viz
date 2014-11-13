@@ -6,8 +6,9 @@ final int DECIDE_YOURSELF = -1; // This is a placeholder for variables you will 
  * This is a global variable for the dataset in your visualization. You'll be overwriting it each trial.
  */
 Data d = null;
-int chartType = 0;
+int chartType = int(random(9));
 int num_trials = 20;
+int size_offset = 75;
 
 void setup() {
   totalWidth = displayWidth;
@@ -30,8 +31,8 @@ void setup() {
   
   d = new Data();
 
-  partipantID = 2;
-  //partipantID = int(random(100000));
+  //partipantID = 2;
+  partipantID = int(random(100000));
 }
 
 void draw() {
@@ -69,8 +70,8 @@ void draw() {
       fill(255);
       rectMode(CORNER);
       
-      rect(chartLeftX + 75, chartLeftY + 150, chartSize - 150, chartSize - 150);
-      Bar_Graph bar1 = new Bar_Graph(d, int(chartLeftX + 75), int(chartLeftY + 150), int(chartLeftX + chartSize - 75), int(chartLeftY + chartSize) );
+      rect(chartLeftX + size_offset, chartLeftY + 2*size_offset, chartSize - 2*size_offset, chartSize - 2*size_offset);
+      Bar_Graph bar1 = new Bar_Graph(d, int(chartLeftX + size_offset), int(chartLeftY + 2*size_offset), int(chartLeftX + chartSize - size_offset), int(chartLeftY + chartSize) );
       bar1.draw_graph();
       
       break;
@@ -93,21 +94,81 @@ void draw() {
       fill(255);
       rectMode(CORNER);
       
-      rect(chartLeftX - 75, chartLeftY - 150, chartSize + 150, chartSize + 150);
-      Bar_Graph bar3 = new Bar_Graph(d, int(chartLeftX - 75), int(chartLeftY - 150), int(chartLeftX + chartSize + 75), int(chartLeftY + chartSize) );
+      rect(chartLeftX - size_offset, chartLeftY - 2*size_offset, chartSize + 2*size_offset, chartSize + 2*size_offset);
+      Bar_Graph bar3 = new Bar_Graph(d, int(chartLeftX - size_offset), int(chartLeftY - 2*size_offset), int(chartLeftX + chartSize + size_offset), int(chartLeftY + chartSize) );
       bar3.draw_graph();
       
       break;
     
-    case 3:  //Pie Graph
+    case 3:  //Tiny Pie Graph
+      stroke(0);
+      strokeWeight(1);
+      fill(255);
+      rectMode(CORNER);
+
+      rect(chartLeftX + size_offset, chartLeftY + 2*size_offset, chartSize - 2*size_offset, chartSize - 2*size_offset);
+      Pie_Chart pie1 = new Pie_Chart(d, int(chartLeftX + size_offset), int(chartLeftY + 2*size_offset), int(chartLeftX + chartSize - size_offset), int(chartLeftY + chartSize) );
+      pie1.draw_graph();
+      
+      break;
+      
+    case 4:  //Regular Pie Graph
       stroke(0);
       strokeWeight(1);
       fill(255);
       rectMode(CORNER);
 
       rect(chartLeftX, chartLeftY, chartSize, chartSize);
-      Pie_Chart pie = new Pie_Chart(d, int(chartLeftX), int(chartLeftY), int(chartLeftX + chartSize), int(chartLeftY + chartSize) );
-      pie.draw_graph();
+      Pie_Chart pie2 = new Pie_Chart(d, int(chartLeftX), int(chartLeftY), int(chartLeftX + chartSize), int(chartLeftY + chartSize) );
+      pie2.draw_graph();
+      
+      break;
+      
+    case 5:  //Bigger Bar Graph
+      stroke(0);
+      strokeWeight(1);
+      fill(255);
+      rectMode(CORNER);
+      
+      rect(chartLeftX - size_offset, chartLeftY - 2*size_offset, chartSize + 2*size_offset, chartSize + 2*size_offset);
+      Pie_Chart pie3 = new Pie_Chart(d, int(chartLeftX - size_offset), int(chartLeftY - 2*size_offset), int(chartLeftX + chartSize + size_offset), int(chartLeftY + chartSize) );
+      pie3.draw_graph();
+      
+      break;
+      
+    case 6:  //Tiny Line Graph
+      stroke(0);
+      strokeWeight(1);
+      fill(255);
+      rectMode(CORNER);
+
+      rect(chartLeftX + size_offset, chartLeftY + 2*size_offset, chartSize - 2*size_offset, chartSize - 2*size_offset);
+      Line_Graph line1 = new Line_Graph(d, int(chartLeftX + size_offset - 10), int(chartLeftY + 2*size_offset), int(chartLeftX + chartSize - size_offset - 10), int(chartLeftY + chartSize) );
+      line1.draw_graph();
+      
+      break;
+      
+    case 7:  //Regular Line Graph
+      stroke(0);
+      strokeWeight(1);
+      fill(255);
+      rectMode(CORNER);
+      
+      rect(chartLeftX, chartLeftY, chartSize, chartSize);
+      Line_Graph line2 = new Line_Graph(d, int(chartLeftX), int(chartLeftY), int(chartLeftX + chartSize), int(chartLeftY + chartSize) );
+      line2.draw_graph();
+      
+      break;
+      
+    case 8:  //Bigger Line Graph
+      stroke(0);
+      strokeWeight(1);
+      fill(255);
+      rectMode(CORNER);
+      
+      rect(chartLeftX - size_offset, chartLeftY - 2*size_offset, chartSize + 2*size_offset, chartSize + 2*size_offset);
+      Line_Graph line3 = new Line_Graph(d, int(chartLeftX - size_offset), int(chartLeftY - 2*size_offset), int(chartLeftX + chartSize + size_offset), int(chartLeftY + chartSize) );
+      line3.draw_graph();
       
       break;
 /*
@@ -206,7 +267,7 @@ public void next() {
 
     cp5.get(Textfield.class, "answer").clear();
     index++;
-    chartType = int(random(3));
+    chartType = int(random(9));
     if (index == num_trials - 1) {
       pagelast = true;
     }

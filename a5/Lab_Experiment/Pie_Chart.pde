@@ -152,7 +152,8 @@ class Pie_Chart {
           }
           
           if(data.isMarked(i)) {
-              fill(0);
+              fill(255, 0, 0);
+              stroke(255, 0, 0);
               
               translate(center_x, center_y);
               rotate(lastAngle + radians(angles[i]/2));
@@ -164,6 +165,8 @@ class Pie_Chart {
               rotate(-lastAngle - radians(angles[i]/2));
               translate(-center_x, -center_y);
               
+              fill(255);
+              stroke(0);
           } 
           
           lastAngle += radians(angles[i]);

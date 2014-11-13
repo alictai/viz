@@ -18,7 +18,7 @@ Table expData = null;
  */
 
 String[] vis = {
-    "BarChart", "PieChart", "TreeMap"
+    "tinyBarChart", "mediumBarChart", "largeBarChart", "tinyPieChart", "mediumPieChart", "largePieChart", "tinyLineGraph", "mediumLineGraph", "largeLineGraph" 
 };
 
 /**
