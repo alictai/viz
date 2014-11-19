@@ -15,6 +15,7 @@ class Graph {
       start = true;
    }
    void draw_graph() {
+       k_c = 10000*nodes.length;
        total_KE = calc_KE(); 
        if(total_KE > thresh || start) {
            update_with_forces();
@@ -63,31 +64,59 @@ class Graph {
    void draw_nodes() {
        int size = 0;
        for (int i = 0; i < nodes.length; i++) {
-          stroke(0, 102, 153);
-          if (nodes[i].intersect) {
-                fill (200, 200, 255);
-                ellipse(nodes[i].x, nodes[i].y, 2*nodes[i].radius, 2*nodes[i].radius);
-          	fill(0);
-          	textAlign(CENTER);
-          	String label = "ID: " + nodes[i].id + ", num_names: " + nodes[i].num_names;
-          	text(label, nodes[i].x, nodes[i].y - nodes[i].num_names);
-          } else {
-          	fill(nodes[i].KE, 80, 255 - nodes[i].KE);
-                ellipse(nodes[i].x, nodes[i].y, 2*nodes[i].radius, 2*nodes[i].radius);
-          }
-          
+          nodes[i].draw_node();
        }
      
    }
    
    void draw_edges() {
      stroke(0, 102, 153);
-     Node n1, n2;
+     int name1_ind, name2_ind;
+     int n1, n2;
+     int quad1, quad2;
+     Coord pt1, pt2;
      for (int i = 0; i < relations.length; i++) {
-           n1 = lookup(relations[i].node1);
-           n2 = lookup(relations[i].node2);
-           line(n1.x, n1.y, n2.x, n2.y);
+         n1 = relations[i].node1;
+         n2 = relations[i].node2;
+         quad1 = which_quad(nodes[n1], nodes[n2]);
+         quad2 = which_quad(nodes[n2], nodes[n1]);
+         // need to look up the index for that name within both nodes for that edge
+         name1_ind = nodes[n1].which_index(relations[i].n1_name);
+         name2_ind = nodes[n2].which_index(relations[i].n2_name);
+         
+         pt1 = nodes[n1].get_name_coord(name1_ind, quad1);
+         pt2 = nodes[n2].get_name_coord(name2_ind, quad2);
+         
+         line(pt1.x, pt1.y, pt2.x, pt2.y);
        }
+   }
+   
+   int which_quad(Node n1, Node n2) {
+       float[] dist = new float[16];
+       int counter = 0;
+       float side1, side2;
+       float min = 1000000;
+       int quadrant = 5;
+       
+       side1 = n1.x + n1.wid/2;
+       side2 = n2.x + n2.wid/2;
+       for (int i = 0; i < 4; i++) {
+         for (int j = 0; j < 4; j++) {
+            dist[counter] = sqrt(((n2.sides[j].y - n1.sides[i].y) * (n2.sides[j].y - n1.sides[i].y)) 
+                                  +((n2.sides[j].x - n1.sides[i].x) * (n2.sides[j].x - n1.sides[i].x)));
+            if (dist[counter] < min) {
+              min = dist[counter];
+              quadrant = i;
+            }
+            counter++;
+         }
+       }
+       
+       
+            
+       //print(n1.id, " ", n2.id);
+       //printArray(dist);
+       return quadrant;
    }
    
    Node lookup(int id) {

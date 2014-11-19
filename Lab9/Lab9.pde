@@ -21,9 +21,9 @@ void setup() {
 }
 
 void draw() {
-   /* background(255);
+   background(255);
     graph.calc_forces();
-    graph.draw_graph(); */
+    graph.draw_graph(); 
 }
 
 void mouseMoved() {
