@@ -70,7 +70,8 @@ class Graph {
    }
    
    void draw_edges() {
-     stroke(0, 102, 153);
+     //stroke(0, 102, 153);
+     stroke(252, 218, 168);
      int name1_ind, name2_ind;
      int n1, n2;
      int quad1, quad2;
