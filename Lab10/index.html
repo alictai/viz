@@ -23,13 +23,27 @@ tutorial();
 // You can delete the code below, it is just a primer on d3.
 function tutorial() {
 
+var width = 400;
+var height = 300;
+
+var T1 = "this is label 1"
+
 // Right now our body is almost empty so let's add three paragraphs to play with.
 
 // Append is a common operation in d3. Let's add a paragraph by selecting our body and appending a <p> with some text inside and assign it the CSS class of 'test'.
-d3.select('body')
-  .append('p')
-  .text('One: Here is some text for our paragraph')
-  .attr('class', 'test');
+var svgA = d3.select('body')
+  .append('svg')
+  .attr('class', 'test')
+  .attr("height", height)
+  .attr("width", width);
+
+var rectA = svgA.append("rect")
+	 .attr("width", width/2)
+	 .attr("height", height/2)
+
+svgA.append('p')
+	 .text(T1)
+	 .attr("color", "steelblue");
 
 d3.select('body')
   .append('p')
