@@ -1,0 +1,63 @@
+<html>
+
+<!-- This loads d3 from the web. This could also be a local file -->
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+<!-- This is our HTML body. D3 works by manipulating the tags in here. -->
+<body>
+
+  <p> Insert d3 visualization below! </p>
+
+</body>
+
+<!-- This is our main script for executing d3 commands. This could also be a local file. -->
+<script>
+
+// Open up your console (More Tools -> Javascript Console in Chrome) to see the printed output below. It should look like "> Object {ver...". Click on the > to explore the attributs of the object.
+console.log( d3 );
+
+
+// Remove this line and the tutorial function when you are ready to build your rectangle.
+tutorial();
+
+// You can delete the code below, it is just a primer on d3.
+function tutorial() {
+
+// Right now our body is almost empty so let's add three paragraphs to play with.
+
+// Append is a common operation in d3. Let's add a paragraph by selecting our body and appending a <p> with some text inside and assign it the CSS class of 'test'.
+d3.select('body')
+  .append('p')
+  .text('One: Here is some text for our paragraph')
+  .attr('class', 'test');
+
+d3.select('body')
+  .append('p')
+  .text('Two: Here is some text for our paragraph')
+  .attr('class', 'test');
+
+d3.select('body')
+  .append('p')
+  .text('Three: Here is some text for our paragraph')
+  .attr('class', 'test');
+
+// Selection is one of the coolest features of d3. Let's select all the paragraphs we just made (through the CSS class common to all of them) and print the resulting array to console.
+console.log( d3.selectAll('.test') );
+
+// Now let's make the same selection but add it to a variable.
+var paragraphs = d3.selectAll('.test');
+
+// We can use this variable to apply transformations to all the paragraphs at once.
+paragraphs
+  .style('color', 'steelblue')
+  .style('font-size', '2em');
+
+// We can also delete DOM elements based on selections. To delete the paragraphs we've made you would use:
+//paragraphs.remove();
+}
+
+
+</script>
+
+
+</html>
