@@ -238,13 +238,13 @@ public void next() {
       }
       
       if (val1 < val2) {
-        truePerc = val1/val2;
+        truePerc = (val1/val2) * 100;
       } else {
-        truePerc = val2/val1;
+        truePerc = (val2/val1) * 100;
       }
-      print("vals = ", val1, " ", val2, " percentage = ", truePerc, "\n");
+//      print("vals = ", val1, " ", val2, " percentage = ", truePerc, "\n");
 
-      reportPerc = ans / 100.0; // this is the participant's response
+      reportPerc = ans; // this is the participant's response
 
       /**
        ** Finish this: decide how to compute the log error from Cleveland and McGill (see the handout for details)

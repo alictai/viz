@@ -50,11 +50,6 @@ class Data {
         for (int i = 0; i < NUM; i++) {
           data[i] = new DataPoint(int(random(100)), (marked1==i)||(marked2==i));
         }
-        
-        for (int i = 0; i < NUM; i++) {
-          print(data[i].getValue(), " ", data[i].isMarked(), "\n");
-        }
-        
     }
     
         /**
