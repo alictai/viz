@@ -3,6 +3,20 @@
 <!-- This loads d3 from the web. This could also be a local file -->
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
+<style>
+
+rect {
+  fill: steelblue;
+}
+
+text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: end;
+}
+
+</style>
+
 <!-- This is our HTML body. D3 works by manipulating the tags in here. -->
 <body>
 
@@ -34,16 +48,18 @@ var T1 = "this is label 1"
 var svgA = d3.select('body')
   .append('svg')
   .attr('class', 'test')
-  .attr("height", height)
-  .attr("width", width);
+  .attr("width", width)
+  .attr("height", height);
 
 var rectA = svgA.append("rect")
-	 .attr("width", width/2)
-	 .attr("height", height/2)
+	.attr("width", width/2)
+	.attr("height", height/2)
 
-svgA.append('p')
-	 .text(T1)
-	 .attr("color", "steelblue");
+svgA.append('text')
+	.attr("x", width/4)
+	.attr("y", height/4)
+	.attr("dy", ".35em")
+	.text(T1);
 
 d3.select('body')
   .append('p')
