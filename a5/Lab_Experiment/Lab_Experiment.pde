@@ -6,15 +6,20 @@ final int DECIDE_YOURSELF = -1; // This is a placeholder for variables you will 
  * This is a global variable for the dataset in your visualization. You'll be overwriting it each trial.
  */
 Data d = null;
-int chartType = int(random(9));
-int num_trials = 20;
+int chartType = int(random(6));
+int num_trials = 12;
 int size_offset = 75;
+int[] counter;
 
 void setup() {
   totalWidth = displayWidth;
   totalHeight = displayHeight;
   chartLeftX = totalWidth / 2.0 - chartSize / 2.0;
   chartLeftY = totalHeight / 2.0 - chartSize / 2.0 - margin_top;
+  counter = new int[6];
+  for(int i = 0; i < 6; i++) {
+      counter[i] = 0;
+  }
 
   size((int) totalWidth, (int) totalHeight);
   //if you have a Retina display, use the line below (looks better)
@@ -52,7 +57,8 @@ void draw() {
     }
 
     clearCanvas();
-
+    
+    
     switch (chartType) {
     case -1: // This is a placeholder, you can remove it and use the other cases for the final version
       stroke(0);
@@ -264,12 +270,17 @@ public void next() {
      fill(0);
      */
 
-
+    counter[chartType] += 1;
     cp5.get(Textfield.class, "answer").clear();
     index++;
-    chartType = int(random(9));
-    if (index == num_trials - 1) {
-      pagelast = true;
+    
+    if (index == num_trials) {
+            pagelast = true;    
+    } else {
+        chartType = int(random(6));
+        while (counter[chartType] >= 2) {
+          chartType = int(random(6));
+        }
     }
   }
 }
