@@ -7,7 +7,7 @@ final int DECIDE_YOURSELF = -1; // This is a placeholder for variables you will 
  */
 Data d = null;
 int chartType = int(random(6));
-int num_trials = 12;
+int num_trials = 180;
 int size_offset = 75;
 int[] counter;
 
@@ -278,7 +278,7 @@ public void next() {
             pagelast = true;    
     } else {
         chartType = int(random(6));
-        while (counter[chartType] >= 2) {
+        while (counter[chartType] >= 30) {
           chartType = int(random(6));
         }
     }
