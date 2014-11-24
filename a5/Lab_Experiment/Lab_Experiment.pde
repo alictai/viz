@@ -282,6 +282,8 @@ public void next() {
           chartType = int(random(6));
         }
     }
+    
+    print(index, "\n");
   }
 }
 
