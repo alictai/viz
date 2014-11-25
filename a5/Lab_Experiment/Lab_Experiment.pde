@@ -273,7 +273,7 @@ public void next() {
     counter[chartType] += 1;
     cp5.get(Textfield.class, "answer").clear();
     index++;
-    
+    print(index, "\n");
     if (index == num_trials) {
             pagelast = true;    
     } else {
@@ -282,8 +282,6 @@ public void next() {
           chartType = int(random(6));
         }
     }
-    
-    print(index, "\n");
   }
 }
 
