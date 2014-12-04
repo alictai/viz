@@ -1,16 +1,25 @@
-x <- numeric(n)
+# PUT POPULATION SIZE HERE
+n <- 6
 
-#PUT REAL DATA HERE (Log Errors of each Visualization)
-x[1] = 1		# small bar
-x[2] = 1.5	# medium bar
-x[3] = 3		# large bar
-x[4] = 2.0	# small pie
-x[5] = 1.3	# medium pie
-x[6] = 1.4	# large pie
+labels <- array(1:n)
+labels[1] = "large bar chart"
+labels[2] = "medium bar chart"
+labels[3] = "tiny bar chart"
+labels[4] = "large pie chart"
+labels[5] = "medium pie chart"
+labels[6] = "tiny pie chart"
+
+x <- numeric(n)
+# PUT REAL DATA HERE (Log Errors of each Visualization)
+x[1] = 1.24	# large bar
+x[2] = 1.62	# tiny bar
+x[3] = 0.95	# medium bar
+x[4] = 2.05	# large pie
+x[5] = 1.90	# medium pie
+x[6] = 2.21	# tiny pie
 
 mu <- mean(x)
 sig <- sd(x)
-n <- 6
 
 z <- qnorm(.975)  
 hits <- 0  
@@ -25,17 +34,19 @@ for (i in 1:n) {
     hits <- hits + (mu <= ucl[i] & lcl[i] <= mu)
    }
 
-plot(1,1,xlim=c(min(lcl), max(ucl)),ylim=c(1,n),type='n', main = "100 95% Confidence Intervals of Log Error", xlab="Log Error", ylab="Trial")
+plot(1,1,xlim=c(min(lcl), max(ucl)),ylim=c(1,n+1),type='n', main = "100 95% Confidence Intervals of Log Error", xlab="Log Error", ylab="Trial")
 
-legend('bottomright', c("Hit", "Miss"), bg="white", fill=c("coral", "cornflowerblue"))
+#legend('bottomright', c("Hit", "Miss"), bg="white", fill=c("coral", "cornflowerblue"))
 
 for (i in 1:n) {
-	if (mu <= ucl[i] & lcl[i] <= mu) {
-		lines(c(lcl[i],ucl[i]),c(i,i), col="coral")
-    } else {
-    		lines(c(lcl[i],ucl[i]),c(i,i), col="cornflowerblue")
-    }   
-    points(x[i],i,pch=16,cex=.5,) 
+	#if (mu <= ucl[i] & lcl[i] <= mu) {
+	#	lines(c(lcl[i],ucl[i]),c(i,i), col="coral")
+    #} else {
+    	#	lines(c(lcl[i],ucl[i]),c(i,i), col="cornflowerblue")
+    #}   
+    lines(c(lcl[i],ucl[i]),c(i,i), col="cornflowerblue")
+    points(x[i],i,pch=16,cex=.5) 
+    text(x[i],i, labels[i], 3, 3)
 }
-abline(v=mu,lty=2, col="black")
+#abline(v=mu,lty=2, col="black")
 hits
