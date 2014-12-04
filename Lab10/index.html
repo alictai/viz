@@ -20,8 +20,6 @@ text {
 <!-- This is our HTML body. D3 works by manipulating the tags in here. -->
 <body>
 
-  <p> Insert d3 visualization below! </p>
-
 </body>
 
 <!-- This is our main script for executing d3 commands. This could also be a local file. -->
@@ -30,7 +28,48 @@ text {
 // Open up your console (More Tools -> Javascript Console in Chrome) to see the printed output below. It should look like "> Object {ver...". Click on the > to explore the attributs of the object.
 console.log( d3 );
 
+lab10();
 
+function lab10() {
+	var width = [400/2, 400/3, 400/4];
+	var height = [300/2, 300/3, 300/4];
+	var colors = ["steelblue", "magenta", "lightblue"];
+	var texts = ["T1", "T2", "T3"];
+	var curr_rect = 0;
+	var max_rect = 3;
+
+	var svg = d3.select("body").append("svg")
+		.attr("width", width[curr_rect])
+		.attr("height", height[curr_rect]);
+
+	var rect = svg.append("rect")
+		.attr("width", width[curr_rect])
+		.attr("height", height[curr_rect])
+		.style('color', colors[curr_rect])
+		.on('click', function() {
+			curr_rect = curr_rect + 1;
+			if (curr_rect >= 3) {
+				curr_rect = 0;
+			}
+			d3.select(rect.style("fill", colors[curr_rect]));
+			d3.select(rect.attr("width", width[curr_rect]));
+			d3.select(rect.attr("height", height[curr_rect]));
+			d3.select(text.text(texts[curr_rect]));
+			d3.select(text.attr("x", width[curr_rect]/2));
+			d3.select(text.attr("y", height[curr_rect]/2));
+		});
+
+	var text = svg.append("text")
+		.attr("class", "message")
+		.attr("x", width[curr_rect]/2)
+		.attr("y", height[curr_rect]/2)
+		.text(texts[curr_rect])
+		.style("color", "white")
+		.attr("dy", ".35em");
+
+}
+
+/*
 // Remove this line and the tutorial function when you are ready to build your rectangle.
 tutorial();
 
@@ -84,7 +123,8 @@ paragraphs
 
 // We can also delete DOM elements based on selections. To delete the paragraphs we've made you would use:
 //paragraphs.remove();
-}
+
+}*/
 
 
 </script>
