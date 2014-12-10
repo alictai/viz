@@ -1,0 +1,14 @@
+Matt Long, Kirk Jackson, Ali Tai
+Plan for Vis final project
+
+1. FIELDS OF OUR CMV
+    - Word cloud of words used to describe music based on age range
+        * Maybe problematic w/ jumping around
+        * Try bubble chart if word cloud == failure
+    - Some graph depicting that age range's answers to the 20Q's
+        * X-axis represent age range highlighted. Increment by tens?
+            ^ If range = 20-30, then 2 entries/20-50, then 4 entries?
+            ^ Cool transitions (bars flying away, growing) when range changes
+        * How do we represent it?
+            ^ Stacked bar
+            ^ Overlapping line
