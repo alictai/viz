@@ -1,0 +1,11 @@
+//ideally by single ages,                   - double ageID
+//can be done by range if single is too big - double min, double max
+
+class age_group {
+        bool    contains_data
+        double  ageID;
+        int[]   word_freqs;         //size 80, each index = same word
+        float[] running_avg_for_qs;
+        int[]   num_users_for_qs;   //if performance issues, fix this
+
+}
