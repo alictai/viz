@@ -13,8 +13,9 @@ X ALI: clean data with python script (merge CSVs)
 ======================
 - design dynamic multiview thing
 - set up slider & filters
-- stacked bar graph of question responses
-- word cloud (http://wordcram.org/)
+- stacked bar graph of question responses view
+- word cloud (http://wordcram.org/) view
+- parallel coordinates view
 
 ======================
 3. FANCY STUFF
