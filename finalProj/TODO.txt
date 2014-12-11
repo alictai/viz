@@ -3,7 +3,7 @@ TODO
 ======================
 1. DATA & SETUP
 ======================
-- ALI: clean data with python script (merge CSV)
+X ALI: clean data with python script (merge CSVs)
 - KIRK & MATT: design data structure for... data
 - KIRK & MATT: figure out & set up message passing (slider to views)
 - parsing the combined data
