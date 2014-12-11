@@ -1,0 +1,18 @@
+TODO
+================
+- ALI: clean data with python script (merge CSV)
+- KIRK & MATT: design data structure for... data
+- KIRK & MATT: figure out & set up message passing (slider to views)
+- parsing the combined data
+- set up slider & filters
+- bar graph of question responses
+- word cloud (http://wordcram.org/)
+
+FANCY STUFF
+================
+- animations 
+- mouse overs
+- on click events 
+- visually impactful stupid things 
+	-> changing the color scheme based on chosen gender (colors that challenge normativity only)
+	-> allowing user to change color scheme
