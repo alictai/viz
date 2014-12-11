@@ -18,8 +18,9 @@ class User:
 		self.qs = [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s]
 	def get_id(self):
 		return int(self.respid)
-	def add_words(self, word_id):
-		self.words[word_id] = self.words[word_id] + 1
+	def add_words(self, word_id, val):
+		if val == "1":
+			self.words[word_id] = self.words[word_id] + 1
 
 def zero(value):
 	if value == "":
@@ -51,7 +52,7 @@ def parse_file(filename):
 				parse_id = int(row[1])
 				for i in range (5, 87):
 					if users[parse_id] != {}:
-						users[parse_id].add_words(i-5)
+						users[parse_id].add_words(i-5, row[i])
 			else:
 				header = False
 	print("words added")
