@@ -1,6 +1,7 @@
 import csv
+#import array for efficiency?
 
-
+users = []
 
 class User:
 	def __init__(self, rid, g, a, w, r, m, lo, lb):
@@ -12,74 +13,70 @@ class User:
 		self.music = m
 		self.listown = lo
 		self.listback = lb
-		self.words = []
+		self.words = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 	def set_questions(self, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s):
 		self.qs = [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s]
-	def get_q_len(self):
-		return len(self.qs[18])
-	def add_word(self, word):
-		self.words.append(word)
+	def get_id(self):
+		return int(self.respid)
+	def add_words(self, word_id):
+		self.words[word_id] = self.words[word_id] + 1
+
+def zero(value):
+	if value == "":
+		return -1
+	else:
+		return value
 
 def get_users(filename):
-	userz = []
+	global users
 	with open(filename, 'rU') as csvfile:
 		rdr = csv.reader(csvfile, delimiter=',', quotechar='|')
 		for row in rdr:
-			userz.append(User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]))
-			userz[len(userz) - 1].set_questions(row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19], row[20], row[21], row[22], row[23], row[24], row[25], row[26])
-			print(row[26])
-			print(len(userz))
-	return userz
+			if row[0] != "RESPID":
+				users.append(User(zero(row[0]), zero(row[1]), zero(row[2]), zero(row[3]), zero(row[4]), zero(row[5]), zero(row[6]), zero(row[7])))
+				users[len(users) - 1].set_questions(zero(row[8]), zero(row[9]), zero(row[10]), zero(row[11]), zero(row[12]), zero(row[13]), zero(row[14]), zero(row[15]), zero(row[16]), zero(row[17]), zero(row[18]), zero(row[19]), zero(row[20]), zero(row[21]), zero(row[22]), zero(row[23]), zero(row[24]), zero(row[25]), zero(row[26]))
+	print()
+	print("global users has been set")
 
+def parse_file(filename):
+	global users
+	header = True
+	place = 0
+	with open(filename, 'rU') as csvfile:
+		rdr = csv.reader(csvfile, delimiter=',', quotechar='|')
+		for row in rdr:
+			print("PROCESSED ROW: " + str(place))
+			place = place + 1
+			if header == False:
+				parse_id = int(row[1])
+				for u in users:
+					if u.get_id() == parse_id:
+						for i in range (5, 87):
+							u.add_words(i-5)
+						break
+			else:
+				header = False
+	print("words added")
 
-# def parse_file(filename, bcodes, pulleddate):
-# 	output = []
-# 	curr_building = ""
-# 	with open(filename, 'rU') as csvfile:
-# 		rdr = csv.reader(csvfile, delimiter=',', quotechar='|')
-# 		possible_caps = []
-# 		for row in rdr:
-# 			#set the room/building header
-# 			if (row[1] == '' and row[2] == '' and row[3] == '' and row[4] == '' and row[5] == '' and row[6] == '' and row[7] == '' and row[8] == '' and row[9] == '' and row[10] == ''):
-# 				curr_building = row[0]
-# 			elif (row[0] == '' and row [8]):
-# 				possible_caps.append(int(row[9]))
-# 			else:
-# 				# updating previous capacity based on the additional configurations
-# 				if (len(possible_caps) > 0):
-# 					output[len(output) - 1].cap = max(possible_caps)
-# 					possible_caps = []
-
-# 				# ignoring the random header lines everywhere
-# 				if (row[0] != 'Tufts University' and row[0] != 'Room' and row[0] != pulleddate and row[0] != ''):
-# 					# room description has a fucking comma in it
-# 					cap = ''
-# 					if (row[8] != '0'):
-# 						#print row
-# 						description = row[2] + row[3]
-# 						description = description.strip('"')
-# 						cap = Room(curr_building, row[0], description, row[7], int(row[10]))
-# 					#room description does not have a comma in it
-# 					else:
-# 						cap = Room(curr_building, row[0], row[2], row[7], int(row[9]))
-# 					cap.set_code(bcodes[curr_building])
-# 					output.append(cap)
-# 	#for obj in output:
-# 	#	obj.print_self()
-# 	return output
-
-# def write_new(newfilename, data):
-# 	with open(newfilename, 'wb') as csvfile:
-# 		wrtr = csv.writer(csvfile, delimiter=',') #, quotechar=' ', quoting=csv.QUOTE_ALL)
-# 		wrtr.writerow(["Building", "Code", "Room", "Room_Code", "Description", "Capacity"])
-# 		for obj in data:
-# 			room_code = obj.building_code + " " + obj.room
-# 			wrtr.writerow([obj.building, obj.building_code, obj.room, room_code, obj.descrip, obj.cap])
+def write_new(newfilename):
+	place = 0
+	with open(newfilename, 'wb') as csvfile:
+		wrtr = csv.writer(csvfile, delimiter=',') #, quotechar=' ', quoting=csv.QUOTE_ALL)
+		wrtr.writerow(["RESPID", "GENDER", "AGE", "WORKING", "REGION", "MUSIC", "LIST_OWN", "LIST_BACK", "Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "Q7", "Q8", "Q9", "Q10", "Q11", "Q12", "Q13", "Q14", "Q15", "Q16", "Q17", "Q18", "Q19","Uninspired","Sophisticated","Aggressive","Edgy","Sociable","Laid back","Wholesome","Uplifting","Intriguing","Legendary","Free","Thoughtful","Outspoken","Serious","Good lyrics","Unattractive","Confident","Old","Youthful","Boring","Current","Colourful","Stylish","Cheap","Irrelevant","Heartfelt","Calm","Pioneer","Outgoing","Inspiring","Beautiful","Fun","Authentic","Credible","Way out","Cool","Catchy","Sensitive","Mainstream","Superficial","Annoying","Dark","Passionate","Not authentic","Good Lyrics","Background","Timeless","Depressing","Original","Talented","Worldly","Distinctive","Approachable","Genius","Trendsetter","Noisy","Upbeat","Relatable","Energetic","Exciting","Emotional","Nostalgic","None of these","Progressive","Sexy","Over","Rebellious","Fake","Cheesy","Popular","Superstar","Relaxed","Intrusive","Unoriginal","Dated","Iconic","Unapproachable","Classic","Playful","Arrogant","Warm","Soulful"])
+		for user in output:
+			new_row = [user.respid, user.gender, user.age, user.working, user.region, user.music, user.listown, user.listback]
+			for ansr in user.qs:
+				new_row.append(ansr)
+			for times_said in words:
+				new_row.append(times_said)
+			wrtr.writerow(new_row)
+			print("WRITTEN ROW: " + str(test))
+			place = place + 1
 
 def main():
-	users = get_users('users.csv')
-	# parsed = parse_file('Room_Capacities_Computer_Science_Project.csv', codes, '10/30/2014 2:43 PM NR')
-	# write_new('Rooms.csv', parsed)
+	get_users('users.csv')
+	parse_file('words.csv')
+	write_new('merged.csv')
 
 if __name__ == '__main__':
 	main()
