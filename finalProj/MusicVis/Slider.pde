@@ -49,7 +49,7 @@ class Slider {
     float xloc;
     for(int i = 0; i < 94; i++) {
       xloc = lerp(xl, xr, (i / 94.0));
-      print(xloc, "\n");
+      //print(xloc, "\n");
     }
   }
   
