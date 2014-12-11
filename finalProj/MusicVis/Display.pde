@@ -11,7 +11,7 @@ class Display {
   Display() {
     ud = new UserData();
     cloud = new Cloud();
-    par_graph = new ParGraph();
+    //par_graph = new ParGraph(data);
   }
 
   
