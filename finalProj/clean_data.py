@@ -1,5 +1,7 @@
 import csv
 
+
+
 class User:
 	def __init__(self, rid, g, a, w, r, m, lo, lb):
 		self.respid = rid
@@ -13,15 +15,20 @@ class User:
 		self.words = []
 	def set_questions(self, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s):
 		self.qs = [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s]
+	def get_q_len(self):
+		return len(self.qs[18])
 	def add_word(self, word):
 		self.words.append(word)
 
-def get_users(filename, pulleddate):
+def get_users(filename):
 	userz = []
 	with open(filename, 'rU') as csvfile:
 		rdr = csv.reader(csvfile, delimiter=',', quotechar='|')
 		for row in rdr:
 			userz.append(User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]))
+			userz[len(userz) - 1].set_questions(row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19], row[20], row[21], row[22], row[23], row[24], row[25], row[26])
+			print(row[26])
+			print(len(userz))
 	return userz
 
 

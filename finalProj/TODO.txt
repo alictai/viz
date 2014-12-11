@@ -1,15 +1,24 @@
 TODO
-================
+
+======================
+1. DATA & SETUP
+======================
 - ALI: clean data with python script (merge CSV)
 - KIRK & MATT: design data structure for... data
 - KIRK & MATT: figure out & set up message passing (slider to views)
 - parsing the combined data
+
+======================
+2. VIEWS
+======================
+- design dynamic multiview thing
 - set up slider & filters
-- bar graph of question responses
+- stacked bar graph of question responses
 - word cloud (http://wordcram.org/)
 
-FANCY STUFF
-================
+======================
+3. FANCY STUFF
+======================
 - animations 
 - mouse overs
 - on click events 
