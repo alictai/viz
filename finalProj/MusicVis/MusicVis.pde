@@ -32,3 +32,15 @@ void draw() {
 }
 
 /* events */
+
+void mousePressed() {
+  slider.check_brackets();
+}
+
+void mouseReleased() {
+  slider.unactivate(); 
+}
+
+void mouseDragged() {
+  slider.move_brackets();
+}
