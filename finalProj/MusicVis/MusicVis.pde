@@ -6,7 +6,10 @@ Display  toShow;
 Slider   slider;
 
 void setup() {
+  
   parser = new Parser();
+  parser.parse("../merged.csv");
+  
   toShow = new Display();
   slider = new Slider(0, 650, 1200, 50);
   

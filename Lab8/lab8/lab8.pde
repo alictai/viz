@@ -10,7 +10,7 @@ void setup() {
   }
 
   data = new Data();
-  data.parse("iris.csv");
+  data.parse("iris2.csv");
   graph = new Para_Coord(data);
 }
 
@@ -26,11 +26,11 @@ void mouseClicked() {
 
 void mouseMoved() {
   //Axis being hovered over/near will turn green
-  graph.hover(mouseX); 
+  graph.hover(mouseX);
 }
 
 void keyPressed() {
-  if(key == CODED) {
+  if (key == CODED) {
     if (keyCode == LEFT) {
       //Hitting left arrow shows hacky version of a curved graph
       graph.view_bezier();
@@ -39,13 +39,13 @@ void keyPressed() {
       graph.flip_dim();
     } else if (keyCode == UP) {
       //Hitting the up arrow will unflip the dimension being hovered over if it is flipped
-      graph.unflip(); 
+      graph.unflip();
     }
   }
 }
 
 void keyReleased() {
-  if(key == CODED) {
+  if (key == CODED) {
     if (keyCode == LEFT) {
       graph.view_line();
     } else if (keyCode == DOWN) {
@@ -53,3 +53,4 @@ void keyReleased() {
     }
   }
 }
+

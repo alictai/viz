@@ -82,11 +82,11 @@ class Para_Coord {
   void calculate_axes() {
     x_spacing = w/(data.get_num_cols()+1);
     for (int i = 0; i < x_coords.length; i++) {
-      x_coords[i] = x_spacing * (i+1);
+      x_coords[i] = x + x_spacing * (i+1);
     }
 
-    y_top = y + 20;
-    y_bott = y + h - 60;
+    y_top = y+20;
+    y_bott = y + h - 40;
   }
 
   void calc_pts() {
@@ -151,7 +151,7 @@ class Para_Coord {
       }
 
       line(x_coords[i], y_top, x_coords[i], y_bott);
-      textSize(15);
+      textSize(10);
       textAlign(CENTER);
       text(data.get_header(i), x_coords[i], y_bott + 20);
 
@@ -184,12 +184,6 @@ class Para_Coord {
             x_coords[k]+3*(x_spacing/4), y_coords[k+1][i]-((1/4)*(y_coords[k][i]-y_coords[k+1][i])), 
             x_coords[k+1], y_coords[k+1][i]);
           } else {
-            /*stroke(0);
-             line(x_coords[k], y_coords[k][i], 
-             x_coords[k]+(x_spacing/4), y_coords[k][i]+((3/4)*(y_coords[k][i]-y_coords[k+1][i])));
-             line(x_coords[k]+3*(x_spacing/4), y_coords[k+1][i]+((1/4)*(y_coords[k][i]-y_coords[k+1][i])), 
-             x_coords[k+1], y_coords[k+1][i]);
-             stroke(colors[0][i]);*/
             bezier(x_coords[k], y_coords[k][i], 
             x_coords[k]+3*(x_spacing/4), y_coords[k][i]-((1/4)*(y_coords[k+1][i]-y_coords[k][i])), 
             x_coords[k]+(x_spacing/4), y_coords[k+1][i]+((3/4)*(y_coords[k+1][i]-y_coords[k][i])), 

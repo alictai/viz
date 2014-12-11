@@ -48,7 +48,6 @@ class Bracket {
   void check_click() {
     if((mouseX > int_l && mouseX < int_r) && (mouseY > int_t && mouseY < int_b)) {
       active = true;
-      print("set active ", isLeft, "\n");
     } 
   }
   
@@ -70,9 +69,7 @@ class Bracket {
         curr = map(val, 0, 93, l_bound, r_bound);
         l    = map(val - 1, 0, 93, l_bound, r_bound);
         r    = map(val + 1, 0, 93, l_bound, r_bound);
-        
-        print ("left: ", l, " curr: ", curr, " right: ", r, "\n");
-        
+                
         //while (! (abs(mouseX - l) < abs(mouseX - curr)) || (abs(mouseX - r) < abs(mouseX - curr))) {
           if (abs(mouseX - l) < abs(mouseX - curr)) {
              val--;
