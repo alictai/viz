@@ -4,6 +4,7 @@ int screenHeight = 700;
 Parser   parser;
 Display  toShow;
 Slider   slider;
+Range    range;
 
 void setup() {
   
@@ -28,6 +29,8 @@ void setup() {
 void draw() {
   background(230);
   slider.draw_slider();
+  range = slider.get_range();
+  print("Range: ", range.low, " to ", range.high, "\n");
   //find range from slider
   //pass range into Display's draw
   //display has range, pulls data, updates vizs

@@ -1,3 +1,8 @@
+class Range {
+  int low;
+  int high;
+}
+
 /*************************************************************************/
 /*                            BRACKET CLASS                              */
 /*************************************************************************/
@@ -43,6 +48,22 @@ class Bracket {
     line(x, y - (h/2), x,  y + (h/2)); //vert part of bracket
     line(x, y - (h/2), x2, y - (h/2)); //top horiz of bracket
     line(x, y + (h/2), x2, y + (h/2)); //bot horiz of bracket
+  }
+  
+  void draw_val() {
+    float rect_x = x - (2 * w);
+    float rect_y = y - (1.5 * h);
+    float rect_w = 4 * w;
+    float rect_h = .75 * h;
+    strokeWeight(0);
+    noStroke();
+    fill(255);
+    rect(rect_x, rect_y, rect_w, rect_h, 4); 
+    //triangle(rect_x + (.25 * rect_w), rect_y + rect_h, rect_x + (.5 * rect_w), rect_y + rect_h + 3, rect_x + (.75 * rect_w), rect_y + rect_h);
+    textAlign(CENTER, CENTER);
+    fill(200, 0, 0);
+    text(val, x, (y - 1.125 * h));
+    
   }
   
   void check_click() {
@@ -142,17 +163,31 @@ class Slider {
       
       if(i == l_id) {
         left.draw_self(); 
+        if (left.active) {
+          left.draw_val();
+        }
         stroke(200);
         strokeWeight(4);
       }
       
       if(i == r_id) {
         right.draw_self(); 
+        if (right.active) {
+          right.draw_val();
+        }
         stroke(70);
         strokeWeight(4);
       }
     }
   }
+  
+  Range get_range() {
+    Range toRet = new Range();
+    toRet.low = left.val;
+    toRet.high = right.val;
+    
+    return toRet;
+  } 
   
   void check_brackets() {
     left.check_click();
