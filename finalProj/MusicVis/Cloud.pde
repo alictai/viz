@@ -27,7 +27,7 @@ class Cloud {
   
   void set_weights(WordCram w, Range range, String gender) {
     wc = w;
-    wc.withColors(color(134, 56, 57), color(32, 68, 110), color(187, 5, 100));
+    //wc.withColors(color(134, 56, 57), color(32, 68, 110), color(187, 5, 100));
     int[] freqs;
     
     if (gender.equals("female")) {
@@ -38,12 +38,34 @@ class Cloud {
       freqs = data.get_both_freqs(range);
     }
     
+    int freq_range = max(freqs) - min(freqs);
+    
     Word[] wordArray = new Word[words.length];
     for (int i = 0; i < words.length; i++) {
       wordArray[i] = new Word(words[i], freqs[i]);
+      if (freqs[i] < freq_range/3) {
+        wordArray[i].setProperty("value", "low");
+      } else if (freqs[i] > 2*freq_range/3) {
+        wordArray[i].setProperty("value", "high");
+      } else {
+        wordArray[i].setProperty("value", "medium");
+      }
     }
     
     wc.fromWords(wordArray);
+    wc.withColorer( new WordColorer() {
+      public int colorFor(Word w) {
+         if (w.getProperty("value") == "low") {
+           return color(134, 56, 57);
+         } else if (w.getProperty("value") == "medium") {
+           return color(32, 68, 110);
+         } else if (w.getProperty("value") == "high") {
+           return color(187, 5, 100);
+         }
+         
+         return 0;
+      } 
+    });
   }
   
   void draw_cloud() {

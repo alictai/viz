@@ -46,7 +46,6 @@ class Parser {
          data.girls[age].word_freqs[i] += int(split_line[word_index + i]);
       }
     } else {
-      print("male ");
       data.boys[age].contains_data = true;
       
       for (int i = 0; i < num_quest; i++) {

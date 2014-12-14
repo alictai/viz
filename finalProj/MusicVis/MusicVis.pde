@@ -20,6 +20,7 @@ ShapeBasedPlacer placer = new ShapeBasedPlacer(imageShape);
 
 void setup() {
   size(screenWidth, screenHeight);
+  background(255);
   frameRate(30);
 
   parser = new Parser();
