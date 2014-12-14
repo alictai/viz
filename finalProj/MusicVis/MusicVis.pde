@@ -59,9 +59,10 @@ void draw() {
     rect(0, 0, 1200, 650);
   }
   
-  
   toShow.draw_graphs(wc);
-  print("Range: ", range.low, " to ", range.high, "\n");
+  
+  
+  //print("Range: ", range.low, " to ", range.high, "\n");
   //find range from slider
   //pass range into Display's draw
   //display has range, pulls data, updates vizs
@@ -77,6 +78,10 @@ boolean range_changed() {
 }
 
 /* events */
+
+void mouseClicked() {
+  toShow.check_click();
+}
 
 void mousePressed() {
   slider.check_brackets();

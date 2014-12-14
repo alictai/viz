@@ -17,38 +17,46 @@ class UserData {
     }
   }
   
-  int[] get_girl_freqs(Range range) {
+  int[] get_freqs(Range range, String gender) {
     int[] total = new int[NUM_WORDS];
     for (int i = range.low; i < range.high; i++) {
       for (int j = 0; j < NUM_WORDS; j++) {
-        total[j] += girls[i].word_freqs[j];
+        if (gender.equals("female")) {
+          total[j] += girls[i].word_freqs[j];
+        } else if (gender.equals("male")) {
+          total[j] += boys[i].word_freqs[j];
+        } else {
+          total[j] += girls[i].word_freqs[j];
+          total[j] += boys[i].word_freqs[j];
+        }
       }
     }
     
     return total;
   }
   
-  int[] get_boy_freqs(Range range) {
-    int[] total = new int[NUM_WORDS];
-    for (int i = range.low; i < range.high; i++) {
-      for (int j = 0; j < NUM_WORDS; j++) {
-        total[j] += boys[i].word_freqs[j];
+  int[] get_bar_stats(int word, Range range, String gender) {
+     int[] age_intervals = new int[5];
+     int[] toret = new int[5];
+     int freq_range = range.high - range.low;
+     
+     int index = 0;
+     for(int i = 0; j < range.high; i+=freq_range/5) {
+         age_intervals[index] = i;
+         index++;
+     }
+     
+     for (int i = range.low; i < range.high; i++) {
+        if (gender.equals("female")) {
+          total[j] += girls[i].word_freqs[j];
+        } else if (gender.equals("male")) {
+          total[j] += boys[i].word_freqs[j];
+        } else {
+          total[j] += girls[i].word_freqs[j];
+          total[j] += boys[i].word_freqs[j];
+        }
       }
     }
-    
-    return total;
-  }
-  
-  int[] get_both_freqs(Range range) {
-    int[] total = new int[NUM_WORDS];
-    for (int i = range.low; i < range.high; i++) {
-      for (int j = 0; j < NUM_WORDS; j++) {
-        total[j] += girls[i].word_freqs[j];
-        total[j] += boys[i].word_freqs[j];
-      }
-    }
-    
-    return total;
   }
   
 }

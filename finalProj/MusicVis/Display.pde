@@ -26,6 +26,10 @@ class Display {
       cloud.draw_cloud();
   }
   
+  void check_click() {
+      cloud.check_click();
+  }
+  
   
   
   

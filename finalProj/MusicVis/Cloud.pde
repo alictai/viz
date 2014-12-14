@@ -28,15 +28,7 @@ class Cloud {
   }
   
   int[] get_freqs(Range range, String gender) {
-    int[] freqs;
-    
-    if (gender.equals("female")) {
-      freqs = data.get_girl_freqs(range);
-    } else if (gender.equals("male")) {
-      freqs = data.get_boy_freqs(range);
-    } else {
-      freqs = data.get_both_freqs(range);
-    }
+    int[] freqs = data.get_freqs(range, gender);
     
     freq_range = max(freqs) - min(freqs);
     
@@ -79,10 +71,12 @@ class Cloud {
       if (freq_range != 0) {
           wc.drawAll();
           if (wc.hasMore()) {
+            print("drawing more\n");
              wc.drawNext();
           }
           prev_freq_range = freq_range;
       }
+      
   }
   
   boolean freq_changed() {
@@ -93,4 +87,29 @@ class Cloud {
     }
   }
   
+  //code below for generating bar graphs
+  
+  void check_click() {
+    Word clicked = wc.getWordAt(mouseX, mouseY);
+    
+    if (clicked == null) {
+      print("no word hovered\n");
+    } else {
+      print(clicked, "\n");
+      String[] split_line = splitTokens(clicked.toString(), " ");
+      String word = split_line[0];
+      int index = get_word_index(word);
+      
+      
+    }
+  }
+  
+  int get_word_index(String w) {
+      for (int i = 0; i < words.length; i++) {
+        if (w.equals(words[i])) {
+          return i;
+        }
+      }
+      return -1;
+  }
 }
