@@ -139,6 +139,9 @@ class Slider {
     strokeWeight(0);
     fill(100);
     rect(x, y, wid, hgt); 
+    if(mousePressed) {
+      move_brackets();
+    }
     draw_range();
     
   }
