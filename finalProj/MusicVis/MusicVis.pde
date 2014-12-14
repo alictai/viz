@@ -47,11 +47,17 @@ void draw() {
   slider.draw_slider();
   
   range = slider.get_range();
+  if (range.low >= range.high) {
+    range.high = range.low + 1;
+  }
+  
   if (range_changed() == true) {
     wc = new WordCram(this);
     fill(255);
     rect(0, 0, 1200, 650);
   }
+  
+  
   toShow.draw_graphs(wc, range);
   print("Range: ", range.low, " to ", range.high, "\n");
   //find range from slider
@@ -62,7 +68,7 @@ void draw() {
 boolean range_changed() {
   if((range.low == prev_range.low) && (range.high == prev_range.high)) {
       return false;
-  } else {
+  } {
       prev_range = range;
       return true;
   }
