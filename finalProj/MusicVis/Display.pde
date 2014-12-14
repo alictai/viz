@@ -6,17 +6,27 @@ class Display {
   Cloud    cloud; 
   //ParGraph par_graph;
   /* more to be added */
+  
+  int[] word_freqs;
 
   Display(WordCram wc, UserData d) {
     data = d;
     cloud = new Cloud(wc, data);
     //par_graph = new ParGraph(data);
   }
+  
+  //returns true if frequencies change
+  boolean get_freqs(Range range) {
+      word_freqs = cloud.get_freqs(range, "female");
+      return cloud.freq_changed();
+  }
 
-  void draw_graphs(WordCram wc, Range range) {
-      cloud.set_weights(wc, range, "female");
+  void draw_graphs(WordCram wc) {
+      cloud.set_weights(wc, word_freqs);
       cloud.draw_cloud();
   }
+  
+  
   
   
 }
