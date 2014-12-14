@@ -13,7 +13,7 @@ class Parser {
     word_index = 27;
   }
   
-  void parse(String file) {
+  UserData parse(String file) {
     String[] lines = loadStrings(file);
     String[] split_line;
     
@@ -25,6 +25,8 @@ class Parser {
     }
     
     printtest();
+    
+    return data;
   }
   
   void getUser(String[] split_line) {

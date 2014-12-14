@@ -1,18 +1,21 @@
 class Display {
   //data for visualizations
-  UserData ud;      //contains an array of AgeGroups for m & f
+  UserData data;      //contains an array of AgeGroups for m & f
   
   //list of visualizations, may be active or nah
   Cloud    cloud; 
   //ParGraph par_graph;
   /* more to be added */
 
-
-  Display() {
-    ud = new UserData();
-    cloud = new Cloud();
+  Display(WordCram wc, UserData d) {
+    data = d;
+    cloud = new Cloud(wc, data);
     //par_graph = new ParGraph(data);
   }
 
+  void draw_graphs() {
+      cloud.draw_cloud();
+  }
+  
   
 }
