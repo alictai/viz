@@ -24,7 +24,7 @@ class Parser {
       
     }
     
-    printtest();
+    //printtest();
     
     return data;
   }
@@ -34,10 +34,7 @@ class Parser {
     int age = int(split_line[2]);
     if (age == -1) {return;}
     
-    print(split_line[1]);
-    
     if (gender.equals("Female")) {
-      print("female ");
       data.girls[age].contains_data = true;
       
       for (int i = 0; i < num_quest; i++) {

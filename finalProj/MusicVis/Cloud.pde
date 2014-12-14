@@ -7,11 +7,9 @@ class Cloud {
   float wid; 
   
   WordCram wc;
+  UserData data;
   
-  Cloud(WordCram w, UserData data) {
-    wc = w;
-      
-    String[] words = {"Uninspired","Sophisticated","Aggressive","Edgy","Sociable","Laid back","Wholesome",
+  String[] words = {"Uninspired","Sophisticated","Aggressive","Edgy","Sociable","Laid back","Wholesome",
     "Uplifting","Intriguing","Legendary","Free","Thoughtful","Outspoken","Serious","Good lyrics",
     "Unattractive","Confident","Old","Youthful","Boring","Current","Colourful","Stylish","Cheap",
     "Irrelevant","Heartfelt","Calm","Pioneer","Outgoing","Inspiring","Beautiful","Fun","Authentic",
@@ -21,20 +19,38 @@ class Cloud {
     "Relatable","Energetic","Exciting","Emotional","Nostalgic","None of these","Progressive","Sexy",
     "Over","Rebellious","Fake","Cheesy","Popular","Superstar","Relaxed","Intrusive","Unoriginal",
     "Dated","Iconic","Unapproachable","Classic","Playful","Arrogant","Warm","Soulful"};
+  
+  Cloud(WordCram w, UserData d) {
+    wc = w;
+    data = d;
+  }
+  
+  void set_weights(WordCram w, Range range, String gender) {
+    wc = w;
+    wc.withColors(color(134, 56, 57), color(32, 68, 110), color(187, 5, 100));
+    int[] freqs;
+    
+    if (gender.equals("female")) {
+      freqs = data.get_girl_freqs(range);
+    } else if (gender.equals("male")) {
+      freqs = data.get_boy_freqs(range);
+    } else {
+      freqs = data.get_both_freqs(range);
+    }
     
     Word[] wordArray = new Word[words.length];
     for (int i = 0; i < words.length; i++) {
-      wordArray[i] = new Word(words[i], i);
+      wordArray[i] = new Word(words[i], freqs[i]);
     }
     
     wc.fromWords(wordArray);
-    wc.withColors(color(134, 56, 57), color(32, 68, 110), color(187, 5, 100));
   }
-  
-  //void setRange()
   
   void draw_cloud() {
       wc.drawAll();
+      if (wc.hasMore()) {
+         wc.drawNext();
+      }
   }
   
 }

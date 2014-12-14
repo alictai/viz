@@ -9,7 +9,9 @@ int screenHeight = 700;
 Parser   parser;
 Display  toShow;
 Slider   slider;
+WordCram wc;
 Range    range;
+Range    prev_range;
 
 //PGraphics canvas = this.createGraphics(screenWidth - 100, screenHeight - 100, P2D\\);
 PImage image = createImage(1000, 650, RGB);
@@ -22,11 +24,13 @@ void setup() {
 
   parser = new Parser();
   UserData data = parser.parse("../merged.csv");
-  WordCram wc = new WordCram(this);
+  wc = new WordCram(this);
   //wc.withCustomCanvas(this.canvas);
   toShow = new Display(wc, data);
   slider = new Slider(0, 650, 1200, 50);
-
+  prev_range = new Range();
+  prev_range.low = 0;
+  prev_range.high = 93;
 
 
 
@@ -39,16 +43,28 @@ void setup() {
 
 
 void draw() {
-  //canvas.beginDraw();
-  //canvas.background(0, 0);
-  //canvas.endDraw();
   slider.draw_slider();
-  toShow.draw_graphs();
+  
   range = slider.get_range();
+  if (range_changed() == true) {
+    wc = new WordCram(this);
+    fill(255);
+    rect(0, 0, 1200, 650);
+  }
+  toShow.draw_graphs(wc, range);
   print("Range: ", range.low, " to ", range.high, "\n");
   //find range from slider
   //pass range into Display's draw
   //display has range, pulls data, updates vizs
+}
+
+boolean range_changed() {
+  if((range.low == prev_range.low) && (range.high == prev_range.high)) {
+      return false;
+  } else {
+      prev_range = range;
+      return true;
+  }
 }
 
 /* events */

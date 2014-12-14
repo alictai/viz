@@ -13,7 +13,8 @@ class Display {
     //par_graph = new ParGraph(data);
   }
 
-  void draw_graphs() {
+  void draw_graphs(WordCram wc, Range range) {
+      cloud.set_weights(wc, range, "female");
       cloud.draw_cloud();
   }
   
