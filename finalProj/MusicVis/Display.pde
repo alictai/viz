@@ -23,7 +23,9 @@ class Display {
       //return cloud.freq_changed();
   }
 
-  void draw_graphs(WordCram wc, Range range, String gender) {
+  // pass gender from Musicvis
+  void draw_graphs(WordCram wc, Range range) {
+      String gender = "both";
       cloud.set_weights(wc, word_freqs);
       //cloud.draw_cloud(range);
       pies.draw_pies(range, gender);
