@@ -1,5 +1,3 @@
-/*
-
 //Needs UserData to have:
 //  int get_num_rows() { return vals[0].length; }
 //  String get_header(int index) { return header[index]; };
@@ -9,6 +7,9 @@ class ParGraph {
   boolean active;
   int num_cols;
   int num_rows;
+  Range range;
+  String gender;
+  int[] vals;
 
   //default initializations
   UserData data;
@@ -34,17 +35,17 @@ class ParGraph {
 
   ParGraph (UserData d) {
     //initializations for final project
-    num_cols = 19;
-    num_rows = 100000;
+    num_cols = data.NUM_QS;
+    num_rows = 0;
 
     //default initializations
-    data = d;
-    mins = new float[num_cols];
-    maxes = new float[num_cols];
-    find_bounds();
-    x_coords = new float[num_cols];
-    y_coords = new float[num_cols][num_rows];
-    num_labels = 5;
+    // data = d;
+    // mins = new float[num_cols];
+    // maxes = new float[num_cols];
+    // find_bounds();
+    // x_coords = new float[num_cols];
+    // y_coords = new float[num_cols][num_rows];
+    num_labels = 20;
     labels = new float[num_cols][num_labels];
     label_coords = new float[num_cols][num_labels];
     pg = null;
@@ -72,12 +73,13 @@ class ParGraph {
     }
   }
 
-  void draw_graph(float x_in, float y_in, float w_in, float h_in) {
+  void draw_graph(int x_in, int y_in, int w_in, int h_in, Range r, String g) {
     x = x_in;
     y = y_in;
     w = w_in;
     h = h_in;
 
+    calculate_data(r,g);
     calculate_axes();
     calc_pts();
     calc_labels();
@@ -89,10 +91,25 @@ class ParGraph {
     draw_labels();
   }
 
+  void calculate_data(Range r, String g) {
+  	range = r;
+  	gender = g;
+  	num_rows = range.high - range.low;
+
+    vals = data.get_qs_avg(range, gender);
+
+	mins = new float[num_cols];
+    maxes = new float[num_cols];
+    find_bounds();
+    
+    x_coords = new float[num_cols];
+    y_coords = new float[num_cols][num_rows];
+  }
+
   void find_bounds() {
     for (int i = 0; i < num_cols; i++) {
-      mins[i] = min(data.vals[i]);
-      maxes[i] = max(data.vals[i]);
+      mins[i] = min(vals);
+      maxes[i] = max(vals);
     }
   }
 
@@ -283,5 +300,3 @@ class ParGraph {
     curve = false;
   }
 }
-
-*/
