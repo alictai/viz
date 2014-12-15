@@ -34,7 +34,7 @@ class UserData {
     
     return total;
   }
-  
+  /*
   int[] get_bar_stats(int word, Range range, String gender) {
      int[] age_intervals = new int[5];
      int[] toret = new int[5];
@@ -56,7 +56,7 @@ class UserData {
           total[j] += boys[i].word_freqs[j];
         }
       }
-    }
-  }
+   }
+  */
   
 }
