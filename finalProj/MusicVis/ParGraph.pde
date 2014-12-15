@@ -1,7 +1,7 @@
 //Needs UserData to have:
 //  int get_num_rows() { return vals[0].length; }
 //  String get_header(int index) { return header[index]; };
-/*
+
 class ParGraph {
   //initializations for final project
   boolean active;
@@ -32,11 +32,14 @@ class ParGraph {
   boolean curve;
   boolean flip;
   boolean[] flipped_cols;
+  String[] headers;
 
   ParGraph (UserData d) {
     //initializations for final project
-    num_cols = data.NUM_QS;
-    num_rows = 0;
+    num_cols = d.NUM_QS;
+    num_rows = 93;
+    headers = new String[num_cols];
+    data = d;
 
     //default initializations
     // data = d;
@@ -45,32 +48,22 @@ class ParGraph {
     // find_bounds();
     // x_coords = new float[num_cols];
     // y_coords = new float[num_cols][num_rows];
-    num_labels = 20;
+    for(int i = 0; i < num_cols; i++) {
+    	headers[i] = "Q" + str(i);
+    }
+    num_labels = 19;
     labels = new float[num_cols][num_labels];
     label_coords = new float[num_cols][num_labels];
     pg = null;
     colored_col = num_cols - 1;
     hover_col = -1;
-    colors = new color[num_cols][num_rows];
     curve = false;
     flip = false;
     flipped_cols = new boolean[num_cols];
     for (int i = 0; i < flipped_cols.length; i++) {
       flipped_cols[i] = false;
     }
-
-    //generating colors
-    color_list = new color[num_labels-1];
-    if (num_labels - 1 == 4) {
-      color_list[0] = color(255, 0, 146);
-      color_list[1] = color(182, 255, 0);
-      color_list[2] = color(34, 141, 255);
-      color_list[3] = color(255, 202, 27);
-    } else {
-      for (int i = 0; i < color_list.length; i++) {
-        color_list[i] = color(random(0, 255), random(0, 255), random(0, 255));
-      }
-    }
+    generate_colors();
   }
 
   void draw_graph(int x_in, int y_in, int w_in, int h_in, Range r, String g) {
@@ -106,10 +99,26 @@ class ParGraph {
     y_coords = new float[num_cols][num_rows];
   }
 
+  void generate_colors() {
+  	//generating colors
+  	colors = new color[num_cols][num_rows];
+    color_list = new color[num_labels-1];
+    if (num_labels - 1 == 4) {
+      color_list[0] = color(255, 0, 146);
+      color_list[1] = color(182, 255, 0);
+      color_list[2] = color(34, 141, 255);
+      color_list[3] = color(255, 202, 27);
+    } else {
+      for (int i = 0; i < color_list.length; i++) {
+        color_list[i] = color(random(0, 255), random(0, 255), random(0, 255));
+      }
+    }
+  }
+
   void find_bounds() {
     for (int i = 0; i < num_cols; i++) {
-      mins[i] = min(vals);
-      maxes[i] = max(vals);
+      mins[i] = min(vals[i]);
+      maxes[i] = max(vals[i]);
     }
   }
 
@@ -126,7 +135,7 @@ class ParGraph {
   void calc_pts() {
     for (int i = 0; i < num_cols; i++) {
       for (int k = 0; k < num_rows; k++) {
-        y_coords[i][k] = map(data.vals[i][k], mins[i], maxes[i], y_bott, y_top);
+        y_coords[i][k] = map(vals[i][k], mins[i], maxes[i], y_bott, y_top);
       }
     }
     for (int i = 0; i < flipped_cols.length; i++) {
@@ -158,13 +167,13 @@ class ParGraph {
       for (int k = 0; k < num_rows; k++) {
         for (int m = 0; m < num_labels - 1; m++) {
           if (!flipped_cols[colored_col]) {
-            if (data.vals[colored_col][k] >= labels[colored_col][m] &&
-              data.vals[colored_col][k] <= labels[colored_col][m+1]) {
+            if (vals[colored_col][k] >= labels[colored_col][m] &&
+              vals[colored_col][k] <= labels[colored_col][m+1]) {
               colors[i][k] = color_list[m];
             }
           } else {
-            if (data.vals[colored_col][k] <= labels[colored_col][m] &&
-              data.vals[colored_col][k] >= labels[colored_col][m+1]) {
+            if (vals[colored_col][k] <= labels[colored_col][m] &&
+              vals[colored_col][k] >= labels[colored_col][m+1]) {
               colors[i][k] = color_list[m];
             }
           }
@@ -188,7 +197,7 @@ class ParGraph {
       line(x_coords[i], y_top, x_coords[i], y_bott);
       textSize(10);
       textAlign(CENTER);
-      text(data.get_header(i), x_coords[i], y_bott + 20);
+      text(headers[i], x_coords[i], y_bott + 20);
 
       strokeWeight(1);
       stroke(0);
@@ -208,7 +217,7 @@ class ParGraph {
   void draw_lines() {
     if (curve) {
       noFill();
-      int num_cols = num_cols;
+      // int num_cols = num_cols;
       for (int i = 0; i < (num_rows); i++) {
         //for (int i = 0; i < 1; i++) {
         stroke(colors[0][i]);
@@ -228,7 +237,7 @@ class ParGraph {
       }
       stroke(0);
     } else {
-      for (int i = 0; i < (num_rows); i++) {
+      for (int i = 0; i < num_rows; i++) {
         for (int k = 0; k < num_cols - 1; k++) {
           stroke(colors[k][i]);
           line(x_coords[k], y_coords[k][i], x_coords[k+1], y_coords[k+1][i]);
@@ -251,7 +260,7 @@ class ParGraph {
   }
 
   void col_change(int mousex) {
-    int num_cols = num_cols;
+    // int num_cols = num_cols;
     for (int i = 0; i < num_cols; i++) {
       if (mousex > (width/num_cols)*i && mousex < (width/num_cols)*(i+1)) {
         colored_col = i;
@@ -260,7 +269,7 @@ class ParGraph {
   }
 
   void hover(int mousex) {
-    int num_cols = num_cols;
+    // int num_cols = num_cols;
     for (int i = 0; i < num_cols; i++) {
       if (mousex > (w/num_cols)*i && mousex < (w/num_cols)*(i+1)) {
         hover_col = i;
@@ -278,7 +287,7 @@ class ParGraph {
   void flip_pts(int i) {
     //print("flipping points\n");
     for (int k = 0; k < num_rows; k++) {
-      y_coords[i][k] = map(data.vals[i][k], maxes[i], mins[i], y_bott, y_top);
+      y_coords[i][k] = map(vals[i][k], maxes[i], mins[i], y_bott, y_top);
       //print("flipped: ", y_coords[i][0], "\n");
     }
   }
@@ -300,4 +309,3 @@ class ParGraph {
     curve = false;
   }
 }
-*/

@@ -1,6 +1,6 @@
 class UserData {
   final int MAXAGE = 95;
-  final int NUM_QS = 20;
+  final int NUM_QS = 19;
   final int NUM_WORDS = 82;
   
   AgeGroup[] boys;
@@ -56,5 +56,42 @@ class UserData {
       return toret;
    }
   
-  
+  //ADDED THIS LINE ON  
+  float[][] get_qs_avg(Range range, String gender) {
+    float[][] total = new float[NUM_QS][range.high-range.low];
+    for (int i = range.low; i < range.high; i++) {
+      for (int j = 0; j < NUM_QS; j++) {
+        if (gender.equals("female")) {
+          if(girls[i].num_per_q[j] == 0) {
+            total[j][i] = 0;
+          } else {
+            total[j][i] = girls[i].total_q_score[j]/girls[i].num_per_q[j];
+          }
+        } else if (gender.equals("male")) {
+          if(boys[i].num_per_q[j] == 0) {
+            total[j][i] = 0;
+          } else {
+            total[j][i] = boys[i].total_q_score[j]/boys[i].num_per_q[j];
+          }
+        } else {
+          if(girls[i].num_per_q[j] == 0) {
+            total[j][i] = 0;
+          } else {
+            total[j][i] = girls[i].total_q_score[j]/girls[i].num_per_q[j];
+          }
+
+          if(boys[i].num_per_q[j] == 0) {
+            total[j][i] += 0;
+          } else {
+            total[j][i] += boys[i].total_q_score[j]/boys[i].num_per_q[j];
+          }
+          total[j][i] = total[j][i]/2;
+        }
+        //printArray(girls[i].num_per_q);
+      }
+    }
+    
+    return total;
+  }
+  //END ADDING
 }
