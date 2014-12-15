@@ -38,6 +38,9 @@ class UserData {
   int[] get_bar_stats(int word_index, String gender) {
      int[] toret = new int[MAXAGE];
      
+     //just for testing
+     gender = "both";
+     
      for (int i = 0; i < MAXAGE; i++) {
         if (gender.equals("female")) {
           toret[i] = girls[i].word_freqs[word_index];
@@ -47,6 +50,7 @@ class UserData {
           toret[i] += girls[i].word_freqs[word_index];
           toret[i] += boys[i].word_freqs[word_index];
         }
+        print(toret[i], "\n");
       }
       
       return toret;
