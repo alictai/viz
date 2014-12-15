@@ -120,6 +120,9 @@ class Bracket {
 class Slider {
   float x, y;
   float wid, hgt;
+  
+  float range_l_buf = 20;
+  float range_r_buf = 400;
   float range_buf = 100;
  
   Bracket left, right;
@@ -130,8 +133,8 @@ class Slider {
     wid = w;
     hgt = h;
     
-    left  = new Bracket(x + range_buf,   y + h/2, x + range_buf, wid - range_buf, 0,  true);
-    right = new Bracket(wid - range_buf, y + h/2, x + range_buf, wid - range_buf, 93, false); 
+    left  = new Bracket(x + range_l_buf,   y + h/2, x + range_l_buf, wid - range_r_buf, 0,  true);
+    right = new Bracket(wid - range_r_buf, y + h/2, x + range_l_buf, wid - range_r_buf, 93, false); 
   } 
   
   void draw_slider() {
@@ -149,8 +152,8 @@ class Slider {
   void draw_range() {
     stroke(70);
     strokeWeight(4);
-    float x1 = x + range_buf;
-    float x2 = wid - range_buf;
+    float x1 = x + range_l_buf;
+    float x2 = wid - range_r_buf;
     float yn  = y + (hgt / 2);
     line(x1, yn, x2, yn);
     draw_notches(x1, x2, yn);

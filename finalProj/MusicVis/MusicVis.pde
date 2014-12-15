@@ -56,7 +56,9 @@ void draw() {
   if ((range_changed() == true) && (freqs_changed == true)) {
     wc = new WordCram(this);
     fill(255);
-    rect(0, 0, 1200, 650);
+    noStroke();
+    rect(0, 0, 1200, 600);
+    //delete this line and change 650 to 600 before pulling
   }
   
   toShow.draw_graphs(wc);
