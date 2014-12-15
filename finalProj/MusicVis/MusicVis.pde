@@ -9,6 +9,7 @@ int screenHeight = 700;
 Parser   parser;
 Display  toShow;
 Slider   slider;
+Filter   filter;
 WordCram wc;
 Range    range;
 Range    prev_range;
@@ -21,14 +22,14 @@ ShapeBasedPlacer placer = new ShapeBasedPlacer(imageShape);
 void setup() {
   size(screenWidth, screenHeight);
   background(255);
-  frameRate(30);
+  frameRate(60);
 
   parser = new Parser();
   UserData data = parser.parse("../merged.csv");
   wc = new WordCram(this);
   //wc.withCustomCanvas(this.canvas);
   toShow = new Display(wc, data);
-  slider = new Slider(0, 600, 1200, 100);
+  filter = new Filter(0, 600, 1200, 100);
   prev_range = new Range();
   prev_range.low = 0;
   prev_range.high = 93;
@@ -44,9 +45,10 @@ void setup() {
 
 
 void draw() {
-  slider.draw_slider();
+  //slider.draw_slider();
+  filter.draw_filter();
   
-  range = slider.get_range();
+  range = filter.get_range();
   if (range.low >= range.high) {
     range.high = range.low + 1;
   }
@@ -86,14 +88,10 @@ void mouseClicked() {
 }
 
 void mousePressed() {
-  slider.check_brackets();
+  filter.check_brackets();
 }
 
 void mouseReleased() {
-  slider.unactivate();
-}
-
-void mouseDragged() {
-  slider.move_brackets();
+  filter.unactivate();
 }
 

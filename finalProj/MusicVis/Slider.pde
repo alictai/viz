@@ -1,6 +1,7 @@
 class Range {
   int low;
   int high;
+  String gender; //can be male, female, or both
 }
 
 /*************************************************************************/
@@ -119,47 +120,38 @@ class Bracket {
 
 class Slider {
   float x, y;
-  float wid, hgt;
+  float wid;
   
-  float range_l_buf = 20;
-  float range_r_buf = 400;
-  float range_buf = 100;
- 
   Bracket left, right;
  
-  Slider(float _x, float _y, float w, float h) {
+  Slider(float _x, float _y, float w) {
     x = _x;
     y = _y;
     wid = w;
-    hgt = h;
     
-    left  = new Bracket(x + range_l_buf,   y + h/2, x + range_l_buf, wid - range_r_buf, 0,  true);
-    right = new Bracket(wid - range_r_buf, y + h/2, x + range_l_buf, wid - range_r_buf, 93, false); 
+    left  = new Bracket(x,       y, x, x + wid, 0,  true);
+    right = new Bracket(x + wid, y, x, x + wid, 93, false); 
   } 
   
   void draw_slider() {
-    stroke(100);
-    strokeWeight(0);
-    fill(100);
-    rect(x, y, wid, hgt); 
     if(mousePressed) {
       move_brackets();
     }
-    draw_range();
-    
+
+    draw_range();    
   }
   
   void draw_range() {
     stroke(70);
     strokeWeight(4);
-    float x1 = x + range_l_buf;
-    float x2 = wid - range_r_buf;
-    float yn  = y + (hgt / 2);
-    line(x1, yn, x2, yn);
-    draw_notches(x1, x2, yn);
+    float x1 = x;
+    float x2 = x + wid;
+    //float yn  = y + (hgt / 2);
+    line(x1, y, x2, y);
+    draw_notches(x1, x2);
   }
   
-  void draw_notches(float xl, float xr, float y) {
+  void draw_notches(float xl, float xr) {
     float xloc;
     int l_id = left.val;
     int r_id = right.val;
@@ -191,6 +183,7 @@ class Slider {
     Range toRet = new Range();
     toRet.low = left.val;
     toRet.high = right.val;
+    toRet.gender = "both";
     
     return toRet;
   } 
