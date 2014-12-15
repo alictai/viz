@@ -26,7 +26,7 @@ class Filter {
     male   = new Gen_Check(wid - 470, y + 60, 30, 10, true, "Male");
     female = new Gen_Check(x + 70,    y + 60, 45, 10, true, "Female");   
     
-    cloud = new VisLabel(835, y + 25, 85, 50, "HistoricGoat.jpg", false);
+    cloud = new VisLabel(835, y + 25, 85, 50, "HistoricGoat.jpg", true);
     par   = new VisLabel(925, y + 25, 85, 50, "SadGoat.jpg", false);
     pie  = new VisLabel(1015, y + 25, 85, 50, "PattyGoat.jpg", false);
     tbd2  = new VisLabel(1105, y + 25, 85, 50, "VikingsGoat.jpg", false);
@@ -84,10 +84,17 @@ class Filter {
       }
     }
     
-    toRet.cloud = cloud.active;
-    toRet.par   = par.active;
-    toRet.pie   = pie.active;
-    toRet.tbd2  = tbd2.active;
+    if(cloud.active) {
+      toRet.curVis = "cloud";
+    } else if(par.active) {
+      toRet.curVis = "par";
+    } else if(pie.active) {
+      toRet.curVis = "pie";
+    } else if(tbd2.active) {
+      toRet.curVis = "tbd2";
+    } else {
+      toRet.curVis = "";
+    }
     
     return toRet;
   }
@@ -96,10 +103,44 @@ class Filter {
     slider.check_brackets(); 
     male.check_activate();
     female.check_activate();
-    cloud.check_activate();
-    par.check_activate();
-    pie.check_activate();
-    tbd2.check_activate();
+    
+    String visp = which();
+    
+    if(visp.equals("cloud")) {
+      cloud.activate();
+      par.deactivate();
+      pie.deactivate();
+      tbd2.deactivate();
+    } else if(visp.equals("par")) {
+      cloud.deactivate();
+      par.activate();
+      pie.deactivate();
+      tbd2.deactivate();
+    } else if(visp.equals("pie")) {
+      cloud.deactivate();
+      par.deactivate();
+      pie.activate();
+      tbd2.deactivate();
+    } else if(visp.equals("tbd2")) {
+      cloud.deactivate();
+      par.deactivate();
+      pie.deactivate();
+      tbd2.activate();
+    }
+  }
+  
+  String which() {
+    if(cloud.was_pressed()) {
+      return "cloud";
+    } else if(par.was_pressed()) {
+      return "par";
+    } else if(pie.was_pressed()) {
+      return "pie";
+    } else if(tbd2.was_pressed()) {
+      return "tbd2";
+    } else {
+      return "";
+    }
   }
 
   void released() {
@@ -112,10 +153,7 @@ class Range {
   int low;
   int high;
   String gender; //can be male, female, or both
-  boolean cloud;
-  boolean par;
-  boolean pie;
-  boolean tbd2;
+  String curVis; //can be cloud, par, pie, or tbd2
 }
 
 class Gen_Check {
@@ -249,6 +287,20 @@ class VisLabel {
     image(img, x, y, wid, hgt);
   }
   
+  void activate() {
+    if(!active) {
+      active = true;
+      reac = true; 
+    }
+  }
+  
+  void deactivate() {
+    if(active) {
+      active = false;
+      deac = true;
+    }
+  }
+  
   void check_activate() {
     if(mouseX > x && mouseX < x + wid) {
       if(mouseY > y && mouseY < y + hgt) {
@@ -261,6 +313,16 @@ class VisLabel {
         }
       }
     }
+  }
+  
+  boolean was_pressed() {
+    if (mouseX > x && mouseX < x + wid) {
+      if(mouseY > y && mouseY < y + hgt) {
+        return true;
+      }
+    }
+    
+    return false;
   }
 }
 
