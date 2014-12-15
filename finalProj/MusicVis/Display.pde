@@ -19,20 +19,17 @@ class Display {
   void get_freqs(Range range) {
       word_freqs = cloud.get_freqs(range, "female");
       //return cloud.freq_changed();
-      //par_graph.draw_graph(0,0,width,height,range,"female");
   }
 
   void draw_graphs(WordCram wc, Range range) {
       cloud.set_weights(wc, word_freqs);
       cloud.draw_cloud();
-      //par_graph.draw_graph(0,0,width,height,range,"female");
+      
   }
   
-  void check_click() {
+  void set_click() {
       cloud.check_click();
   }
   
-  
-  
-  
+ 
 }

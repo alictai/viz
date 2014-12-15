@@ -50,7 +50,7 @@ class UserData {
           toret[i] += girls[i].word_freqs[word_index];
           toret[i] += boys[i].word_freqs[word_index];
         }
-        print(toret[i], "\n");
+        //print(toret[i], "\n");
       }
       
       return toret;

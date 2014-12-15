@@ -13,6 +13,7 @@ Filter   filter;
 WordCram wc;
 Range    range;
 Range    prev_range;
+boolean clicked;
 
 //PGraphics canvas = this.createGraphics(screenWidth - 100, screenHeight - 100, P2D\\);
 PImage image = createImage(1000, 650, RGB);
@@ -33,7 +34,7 @@ void setup() {
   prev_range = new Range();
   prev_range.low = 0;
   prev_range.high = 93;
-
+  clicked = false;
 
 
   /*
@@ -86,7 +87,7 @@ boolean range_changed() {
 /* events */
 
 void mouseClicked() {
-  toShow.check_click();
+  toShow.set_click();
 }
 
 void mousePressed() {
