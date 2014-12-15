@@ -30,6 +30,7 @@ class PieControl {
      noStroke();
      rect(piex1, piey1, piex2 - piex1, piey2 - piey1);
      pie_stats = data.get_pie_stats(range, gender);
+     print_header();
      print_statements();
      MusicPref todraw;
      if (clicked == 5) {
@@ -52,10 +53,19 @@ class PieControl {
      pie.draw_graph();
   }
   
+  void print_header() {
+     fill(0);
+     stroke(0);
+     textAlign(LEFT, TOP);
+     textSize(17);
+     text("Filter based on respondents' statements:", statements_x1, statements_y1 - 30);
+     line(statements_x1, statements_y1 - 12, statements_x2 - 135, statements_y1 - 12 );
+  }
+  
   void print_statements() {
      fill(255);
      noStroke();
-     rect(statements_x1, statements_y1, statements_x2-statements_x1, statements_y2-statements_y1);
+     //rect(statements_x1, statements_y1, statements_x2-statements_x1, statements_y2-statements_y1);
      int curr_y = statements_y1;
      stroke(0);
      textSize(10);

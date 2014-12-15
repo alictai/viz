@@ -58,35 +58,35 @@ class PieChart {
          //float gray = map(i, 0, data.values[0].length, 0, 255);
          fill(200, 100, 200);
          arc(width/2, height/2, diameter, diameter, 0, 0 + radians(list_own_angle), PIE);
+         draw_words(lastAngle, radians(list_own_angle), "Listening to own music");
          lastAngle += radians(list_own_angle);
          fill(150, 0, 150);
          arc(width/2, height/2, diameter, diameter, lastAngle, lastAngle + radians(list_back_angle), PIE);
+         draw_words(lastAngle, radians(list_back_angle), "Listening to background music");
          lastAngle += radians(list_back_angle);
          fill(220, 220, 255);
          arc(width/2, height/2, diameter, diameter, lastAngle, lastAngle + radians(rem_angle), PIE);
-         //draw_words(text_c, lastAngle, i);
+         //draw_words(lastAngle, radians(rem_angle));
           
   }
-  /*
-  void draw_words(color c, float lastAngle, int i) {
+  
+  void draw_words(float lastAngle, float ownAngle, String message) {
       //translate
       translate(width/2, height/2);
-      rotate(lastAngle + radians(angles[i]/2));
+      rotate(lastAngle + ownAngle/2);
       translate(diameter/2 + 10, 0);
 
       //print words
-      fill(c);
       textSize(15);
       textAlign(BASELINE);
-      String label = data.name[i] + ", " + str(data.values[0][i]);
-      text(label, 0, 0); 
+      text(message, 0, 0); 
 
       //un-translate
       translate(-diameter/2 - 10, 0);
-      rotate(-lastAngle - radians(angles[i]/2));
+      rotate(-lastAngle - ownAngle/2);
       translate(-width/2, -height/2);
   }
-  */
+
   
   void find_diameter() {
     if (width > height) {
