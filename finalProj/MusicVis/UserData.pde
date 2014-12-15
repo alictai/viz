@@ -20,6 +20,7 @@ class UserData {
   int[] get_freqs(Range range, String gender) {
     int[] total = new int[NUM_WORDS];
     for (int i = range.low; i < range.high; i++) {
+      if (i < 0) {i = 0;}
       for (int j = 0; j < NUM_WORDS; j++) {
         if (gender.equals("female")) {
           total[j] += girls[i].word_freqs[j];

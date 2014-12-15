@@ -23,7 +23,7 @@ class Display {
 
   void draw_graphs(WordCram wc, Range range) {
       cloud.set_weights(wc, word_freqs);
-      cloud.draw_cloud();
+      cloud.draw_cloud(range);
       
   }
   

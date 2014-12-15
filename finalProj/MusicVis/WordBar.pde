@@ -23,14 +23,14 @@ class WordBar {
     canvas_y2 = y2;
     canvas_w = x2 - x1;
     canvas_h = y2 - y1;
-    interval = canvas_w/num_ages;
+    interval = canvas_w/(num_ages);
     x_spacing = 2;
     bar_width = interval - 2*x_spacing;
   }
   
-  void draw_graph() {
+  void draw_graph(Range range) {
     get_coords();
-    draw_bars();
+    draw_bars(range);
   }
   
   void get_coords() {
@@ -46,11 +46,14 @@ class WordBar {
     }
   }
   
-  void draw_bars() {
+  void draw_bars(Range range) {
      for (int i = 0; i < num_ages; i++) {
-         float gray = map(i, 0, num_ages, 0, 255);
-         fill(150, gray, 150);
-         rect(x_coords[i]+x_spacing, y_coords[i], bar_width, canvas_y2 - y_coords[i]);
+        if((i >= range.low) && (i <= range.high)) {
+            fill(0);
+        } else {
+            fill(125);
+        }
+        rect(x_coords[i]+x_spacing, y_coords[i], bar_width, canvas_y2 - y_coords[i]);
      }
     
   }

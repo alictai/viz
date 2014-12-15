@@ -34,7 +34,7 @@ class Cloud {
     clicked = false;
     barx1 = 20;
     bary1 = 525;
-    barx2 = 820;
+    barx2 = 860;
     bary2 = 595;
   }
   
@@ -79,7 +79,7 @@ class Cloud {
     });
   }
   
-  void draw_cloud() {
+  void draw_cloud(Range range) {
       print(clicked, "\n");
       if (freq_range != 0) {
           wc.drawAll();
@@ -95,7 +95,7 @@ class Cloud {
           noStroke();
           rect(barx1, bary1, barx2 - barx1, bary2 - bary1);
           print("drawing bars\n");
-          draw_bars();
+          draw_bars(range);
       }
       
   }
@@ -135,9 +135,9 @@ class Cloud {
       return -1;
   }
   
-  void draw_bars() {
+  void draw_bars(Range range) {
      int[] bar_stats = data.get_bar_stats(clicked_index, gender);
      bar = new WordBar(bar_stats, barx1, bary1, barx2, bary2);
-     bar.draw_graph();
+     bar.draw_graph(range);
   }
 }
