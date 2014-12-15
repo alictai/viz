@@ -53,14 +53,16 @@ void draw() {
     range.high = range.low + 1;
   }
   
-  boolean freqs_changed = toShow.get_freqs(range);
+  toShow.get_freqs(range);
   
-  if ((range_changed() == true) && (freqs_changed == true)) {
-    wc = new WordCram(this);
-    fill(255);
-    noStroke();
-    rect(0, 0, 1200, 600);
-    //delete this line and change 650 to 600 before pulling
+  if(!mousePressed) {
+    if (range_changed() == true) {
+      if(range_changed() == true) {print("changed\n");}
+      wc = new WordCram(this);
+      fill(255);
+      noStroke();
+      rect(0, 0, 1200, 600);
+    }
   }
   
   toShow.draw_graphs(wc);

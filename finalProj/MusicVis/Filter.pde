@@ -16,7 +16,7 @@ class Filter {
     float s_x = x + 20;
     float s_y = y + 75; 
     float s_w = wid - 400;
-    slider = new Slider(x + 20, y + 75, w - 400);
+    slider = new Slider(x + 20, y + 25, w - 400);
     //gencheck = new Gen_Check();
    
   } 
@@ -37,12 +37,12 @@ class Filter {
   void pressed() {
     slider.check_brackets(); 
   }
-  
+  /*
   //rename
   void move_brackets() {
     slider.move_brackets();
   }
-  
+  */
   void released() {
     slider.unactivate(); 
   }

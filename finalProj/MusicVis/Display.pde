@@ -16,9 +16,9 @@ class Display {
   }
   
   //returns true if frequencies change
-  boolean get_freqs(Range range) {
+  void get_freqs(Range range) {
       word_freqs = cloud.get_freqs(range, "female");
-      return cloud.freq_changed();
+      //return cloud.freq_changed();
   }
 
   void draw_graphs(WordCram wc) {

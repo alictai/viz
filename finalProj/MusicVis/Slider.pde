@@ -189,8 +189,14 @@ class Slider {
   } 
   
   void check_brackets() {
-    left.check_click();
-    if (left.val != right.val) {
+    if(left.val == right.val) {
+      if(left.val == 0) {
+        right.check_click();
+      } else {
+        left.check_click();
+      }
+    } else {
+      left.check_click();
       right.check_click();
     }
   }
