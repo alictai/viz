@@ -1,9 +1,3 @@
-class Range {
-  int low;
-  int high;
-  String gender; //can be male, female, or both
-}
-
 /*************************************************************************/
 /*                            BRACKET CLASS                              */
 /*************************************************************************/
@@ -183,12 +177,10 @@ class Slider {
     }
   }
   
-  Range get_range() {
-    Range toRet = new Range();
+  Range get_range(Range toRet) {
     toRet.low = left.val;
     toRet.high = right.val;
-    toRet.gender = "both";
-    
+
     return toRet;
   } 
   
