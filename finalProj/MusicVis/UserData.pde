@@ -2,7 +2,7 @@ class UserData {
   final int MAXAGE = 95;
   final int NUM_QS = 19;
   final int NUM_WORDS = 82;
-  final int NUM_STATEMENTS = 6;
+  final int NUM_STATEMENTS = 5;
   
   AgeGroup[] boys;
   AgeGroup[] girls;
@@ -60,7 +60,38 @@ class UserData {
    
   MusicPref[] get_pie_stats(Range range, String gender) {
       MusicPref[] toret = new MusicPref[NUM_STATEMENTS];
-        for (int i = range.low; i < range.high; i++)
+      
+      for (int i = range.low; i < range.high; i++) {
+        for (int j = 0; j < NUM_STATEMENTS; j++) {
+           if(gender.equals("female")) {
+              toret[j].listen_own += girls[i].prefs[j].listen_own;
+              toret[j].num_listen_own += girls[i].prefs[j].num_listen_own;
+              toret[j].listen_back += girls[i].prefs[j].listen_back;
+              toret[j].num_listen_back += girls[i].prefs[j].num_listen_back;
+           } else if(gender.equals("male")) {
+              toret[j].listen_own += boys[i].prefs[j].listen_own;
+              toret[j].num_listen_own += boys[i].prefs[j].num_listen_own;
+              toret[j].listen_back += boys[i].prefs[j].listen_back;
+              toret[j].num_listen_back += boys[i].prefs[j].num_listen_back;
+           } else {
+              toret[j].listen_own += girls[i].prefs[j].listen_own;
+              toret[j].num_listen_own += girls[i].prefs[j].num_listen_own;
+              toret[j].listen_back += girls[i].prefs[j].listen_back;
+              toret[j].num_listen_back += girls[i].prefs[j].num_listen_back;
+              toret[j].listen_own += boys[i].prefs[j].listen_own;
+              toret[j].num_listen_own += boys[i].prefs[j].num_listen_own;
+              toret[j].listen_back += boys[i].prefs[j].listen_back;
+              toret[j].num_listen_back += boys[i].prefs[j].num_listen_back;
+           }
+        } 
+      }
+      
+      for (int j = 0; j < NUM_STATEMENTS; j++) {
+          toret[j].listen_own_avg = toret[j].listen_own / toret[j].num_listen_own;
+          toret[j].listen_back_avg = toret[j].listen_back / toret[j].num_listen_back;
+      }
+      
+      return toret;
   }
   
   float[][] get_qs_avg(Range range, String gender) {

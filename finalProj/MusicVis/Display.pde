@@ -5,6 +5,7 @@ class Display {
   //list of visualizations, may be active or nah
   Cloud    cloud; 
   //ParGraph par_graph;
+  Pie_Chart pie;
   /* more to be added */
   
   int[] word_freqs;
@@ -12,6 +13,7 @@ class Display {
   Display(WordCram wc, UserData d) {
     data = d;
     cloud = new Cloud(wc, data);
+    pie = new PieControl(data);
     //par_graph = new ParGraph(data);
   }
   

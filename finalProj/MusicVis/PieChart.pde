@@ -1,6 +1,5 @@
-/*class Pie_Chart {
-  boolean visible;  
-  Data data;
+class PieChart {
+  boolean visible;
   String x_axis;
   String y_axis;
   float y_max;
@@ -17,9 +16,8 @@
   float avg_ang;
   
 
-  Pie_Chart(Data parsed) {
-    data = parsed;
-    y_max = max(data.values[0]);
+  PieChart() {
+    UserData = d;
     num_points = data.name.length;
     isect = -1;
     text_color = color(200, 150, 200);

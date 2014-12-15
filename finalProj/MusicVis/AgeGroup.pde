@@ -1,8 +1,10 @@
 class MusicPref {
     float   listen_own;
     int     num_listen_own;
+    float   listen_own_avg;
     float   listen_back;
     int     num_listen_back;
+    float   listen_back_avg;
 }
 
 class AgeGroup {
@@ -23,7 +25,7 @@ class AgeGroup {
                 "I like music but it does not feature heavily in my life",
                 "Music has no particular interest for me",
                 "Music is important to me but not necessarily more important than other hobbies or interests"};
-  Music_Pref[]  prefs; 
+  MusicPref[]  prefs; 
   
   AgeGroup() {
      word_freqs    = new int[NUM_WORDS];
@@ -32,11 +34,13 @@ class AgeGroup {
      
      num_per_q = new int[NUM_QS];
      
-     prefs
-     
      contains_data = false; //handle this differently?
      
-     prefs = new Music_Pref[NUM_STATEMENTS];
+     prefs = new MusicPref[NUM_STATEMENTS];
+     
+     for (int i = 0; i < NUM_STATEMENTS; i++) {
+       prefs[i] = new MusicPref();
+     }
      
   }
   
