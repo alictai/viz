@@ -56,7 +56,6 @@ class UserData {
       return toret;
    }
   
-  //ADDED THIS LINE ON  
   float[][] get_qs_avg(Range range, String gender) {
     float[][] total = new float[NUM_QS][range.high-range.low];
     for (int i = range.low; i < range.high; i++) {
@@ -93,5 +92,4 @@ class UserData {
     
     return total;
   }
-  //END ADDING
 }
