@@ -26,10 +26,10 @@ class Filter {
     male   = new Gen_Check(wid - 470, y + 60, 30, 10, true, "Male");
     female = new Gen_Check(x + 70,    y + 60, 45, 10, true, "Female");   
     
-    cloud = new VisLabel(835, y + 25, 85, 50, "HistoricGoat.jpg");
-    par   = new VisLabel(925, y + 25, 85, 50, "SadGoat.jpg");
-    pie  = new VisLabel(1015, y + 25, 85, 50, "PattyGoat.jpg");
-    tbd2  = new VisLabel(1105, y + 25, 85, 50, "VikingsGoat.jpg");
+    cloud = new VisLabel(835, y + 25, 85, 50, "HistoricGoat.jpg", false);
+    par   = new VisLabel(925, y + 25, 85, 50, "SadGoat.jpg", false);
+    pie  = new VisLabel(1015, y + 25, 85, 50, "PattyGoat.jpg", false);
+    tbd2  = new VisLabel(1105, y + 25, 85, 50, "VikingsGoat.jpg", false);
   } 
   
   void draw_filter() {
@@ -84,21 +84,24 @@ class Filter {
       }
     }
     
+    toRet.cloud = cloud.active;
+    toRet.par   = par.active;
+    toRet.pie   = pie.active;
+    toRet.tbd2  = tbd2.active;
+    
     return toRet;
   }
   
-  //rename
   void pressed() {
     slider.check_brackets(); 
     male.check_activate();
     female.check_activate();
+    cloud.check_activate();
+    par.check_activate();
+    pie.check_activate();
+    tbd2.check_activate();
   }
-  /*
-  //rename
-  void move_brackets() {
-    slider.move_brackets();
-  }
-  */
+
   void released() {
     slider.unactivate(); 
   }
@@ -109,6 +112,10 @@ class Range {
   int low;
   int high;
   String gender; //can be male, female, or both
+  boolean cloud;
+  boolean par;
+  boolean pie;
+  boolean tbd2;
 }
 
 class Gen_Check {
@@ -192,29 +199,69 @@ class Gen_Check {
 class VisLabel {
   float x, y;
   float wid, hgt;
-  String imgPath;
   PImage img;
+  boolean active;
+  boolean deac;
+  boolean reac;
+  int transNum;
  
-  VisLabel(float _x, float _y, float w, float h, String path) {
+  VisLabel(float _x, float _y, float w, float h, String path, boolean act) {
     x = _x;
     y = _y;
     wid = w;
     hgt = h;
-    imgPath = path;
-    if(!(imgPath.equals("blah"))) {
-      img = loadImage(path);
-    } 
+    img = loadImage(path);
+    active = act;
+    reac = false;
+    deac = false;
+    transNum = 0;
   }
   
   void draw_label() {
-    if((imgPath.equals("blah"))) {
-      fill(200, 0, 200);
-      rect(x, y, wid, hgt);
+    if (!active) {
+      if(deac) {
+        float col = map(transNum, 0, 20, 255, 100);
+        tint(col);
+        
+        transNum++;
+        if(transNum == 20) {
+          transNum = 0;
+          deac = false; 
+        }
+      } else {
+        tint(100);
+      } 
     } else {
-       image(img, x, y, wid, hgt);
+      if(reac) {
+        float col = map(transNum, 0, 20, 100, 255);
+        tint(col);
+        
+        transNum++;
+        if(transNum == 20) {
+          transNum = 0;
+          reac = false; 
+        }
+      } else {
+        tint(255);
+      }
     }
+
+    image(img, x, y, wid, hgt);
   }
   
+  void check_activate() {
+    if(mouseX > x && mouseX < x + wid) {
+      if(mouseY > y && mouseY < y + hgt) {
+        if(active) {
+          active = false;
+          deac = true;
+        } else {
+          active = true;
+          reac = true;
+        }
+      }
+    }
+  }
 }
 
 
