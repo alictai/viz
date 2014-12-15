@@ -25,7 +25,8 @@ class Display {
 
   void draw_graphs(WordCram wc, Range range) {
       cloud.set_weights(wc, word_freqs);
-      cloud.draw_cloud(range);
+      //cloud.draw_cloud(range);
+      pies.draw_pies(range, gender);
       
   }
   

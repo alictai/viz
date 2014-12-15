@@ -25,7 +25,7 @@ class PieControl {
      fill(0);
      stroke(0);
      for (int i = 0; i < NUM_STATEMENTS; i++) {
-       text();
+       text(data.girls[0].music_statements[i], statements_x1, curr_y);
        curr_y += statement_yinterval;
      }
     
