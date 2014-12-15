@@ -1,10 +1,13 @@
 class PieControl {
   final int NUM_STATEMENTS = 6;
   UserData   data;
-  MusicPref[]  statements;
+  MusicPref[]  pie_stats;
+  PieChart pie;
   int statements_x1, statements_x2;
   int statements_y1, statements_y2;
   int statement_yinterval;
+  int piex1, piex2;
+  int piey1, piey2;
   int clicked;
   
   PieControl(UserData d) {
@@ -15,11 +18,38 @@ class PieControl {
     statements_y2 = 600;
     statement_yinterval = 20;
     clicked = 5;
+    
+    piex1 = 0;
+    piey1 = 0;
+    piex2 = width;
+    piey2 = height - 100;
   }
   
   void draw_pies(Range range, String gender) {
-     statements = data.get_pie_stats(range, gender);
+     fill(255);
+     noStroke();
+     rect(piex1, piey1, piex2 - piex1, piey2 - piey1);
+     pie_stats = data.get_pie_stats(range, gender);
      print_statements();
+     MusicPref todraw;
+     if (clicked == 5) {
+       todraw = new MusicPref();
+       for (int i = 0; i < NUM_STATEMENTS - 1; i++) {
+          todraw.listen_own_avg += pie_stats[i].listen_own_avg;
+          todraw.listen_back_avg += pie_stats[i].listen_back_avg;
+       } 
+       
+       todraw.listen_own_avg = todraw.listen_own_avg/5;
+       todraw.listen_back_avg = todraw.listen_back_avg/5;
+       
+     } else {
+       todraw = pie_stats[clicked];
+       print(todraw.num_listen_own, "\n");
+     }
+     
+     
+     pie = new PieChart(todraw);
+     pie.draw_graph();
   }
   
   void print_statements() {
