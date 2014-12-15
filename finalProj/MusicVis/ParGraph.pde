@@ -1,7 +1,7 @@
 //Needs UserData to have:
 //  int get_num_rows() { return vals[0].length; }
 //  String get_header(int index) { return header[index]; };
-
+/*
 class ParGraph {
   //initializations for final project
   boolean active;
@@ -300,3 +300,4 @@ class ParGraph {
     curve = false;
   }
 }
+*/
