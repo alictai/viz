@@ -74,14 +74,16 @@ public void draw() {
     range.high = range.low + 1;
   }
   
-  boolean freqs_changed = toShow.get_freqs(range);
+  toShow.get_freqs(range);
   
-  if ((range_changed() == true) && (freqs_changed == true)) {
-    wc = new WordCram(this);
-    fill(255);
-    noStroke();
-    rect(0, 0, 1200, 600);
-    //delete this line and change 650 to 600 before pulling
+  if(!mousePressed) {
+    if (range_changed() == true) {
+      if(range_changed() == true) {print("changed\n");}
+      wc = new WordCram(this);
+      fill(255);
+      noStroke();
+      rect(0, 0, 1200, 600);
+    }
   }
   
   toShow.draw_graphs(wc);
@@ -109,11 +111,11 @@ public void mouseClicked() {
 }
 
 public void mousePressed() {
-  filter.check_brackets();
+  filter.pressed();
 }
 
 public void mouseReleased() {
-  filter.unactivate();
+  filter.released();
 }
 
 class AgeGroup {
@@ -146,6 +148,7 @@ class Cloud {
   
   WordCram wc;
   UserData data;
+  WordBar bar;
   int freq_range;
   int prev_freq_range = 0;
   String gender = "female";
@@ -240,7 +243,7 @@ class Cloud {
       String word = split_line[0];
       int index = get_word_index(word);
       int[] bar_stats = data.get_bar_stats(index, gender);
-      
+      bar = new WordBar(bar_stats, 200, 300, 500, 900);
     }
   }
   
@@ -271,15 +274,14 @@ class Display {
   }
   
   //returns true if frequencies change
-  public boolean get_freqs(Range range) {
+  public void get_freqs(Range range) {
       word_freqs = cloud.get_freqs(range, "female");
-      return cloud.freq_changed();
+      //return cloud.freq_changed();
   }
 
   public void draw_graphs(WordCram wc) {
       cloud.set_weights(wc, word_freqs);
-      //cloud.draw_cloud();
-      //uncomment b4 pull
+      cloud.draw_cloud();
   }
   
   public void check_click() {
@@ -294,7 +296,8 @@ class Filter {
   float x, y;
   float wid, hgt;
   
-  Slider slider;
+  Slider    slider;
+  //Gen_Check gencheck;
  
  
  
@@ -307,7 +310,8 @@ class Filter {
     float s_x = x + 20;
     float s_y = y + 75; 
     float s_w = wid - 400;
-    slider = new Slider(x + 20, y + 75, w - 400);
+    slider = new Slider(x + 20, y + 25, w - 400);
+    //gencheck = new Gen_Check();
    
   } 
   
@@ -315,6 +319,7 @@ class Filter {
     fill(100);
     strokeWeight(0);
     rect(x, y, wid, hgt); 
+    
     slider.draw_slider(); 
   }
   
@@ -322,15 +327,17 @@ class Filter {
     return slider.get_range(); 
   }
   
-  public void check_brackets() {
+  //rename
+  public void pressed() {
     slider.check_brackets(); 
   }
-  
-  public void move_brackets() {
+  /*
+  //rename
+  void move_brackets() {
     slider.move_brackets();
   }
-  
-  public void unactivate() {
+  */
+  public void released() {
     slider.unactivate(); 
   }
   
@@ -346,7 +353,7 @@ class ParGraph {
   int num_rows;
   Range range;
   String gender;
-  int[] vals;
+  float[][] vals;
 
   //default initializations
   UserData data;
@@ -369,11 +376,14 @@ class ParGraph {
   boolean curve;
   boolean flip;
   boolean[] flipped_cols;
+  String[] headers;
 
   ParGraph (UserData d) {
     //initializations for final project
-    num_cols = data.NUM_QS;
-    num_rows = 0;
+    num_cols = d.NUM_QS;
+    num_rows = 93;
+    headers = new String[num_cols];
+    data = d;
 
     //default initializations
     // data = d;
@@ -382,32 +392,22 @@ class ParGraph {
     // find_bounds();
     // x_coords = new float[num_cols];
     // y_coords = new float[num_cols][num_rows];
-    num_labels = 20;
+    for(int i = 0; i < num_cols; i++) {
+    	headers[i] = "Q" + str(i);
+    }
+    num_labels = 19;
     labels = new float[num_cols][num_labels];
     label_coords = new float[num_cols][num_labels];
     pg = null;
     colored_col = num_cols - 1;
     hover_col = -1;
-    colors = new int[num_cols][num_rows];
     curve = false;
     flip = false;
     flipped_cols = new boolean[num_cols];
     for (int i = 0; i < flipped_cols.length; i++) {
       flipped_cols[i] = false;
     }
-
-    //generating colors
-    color_list = new int[num_labels-1];
-    if (num_labels - 1 == 4) {
-      color_list[0] = color(255, 0, 146);
-      color_list[1] = color(182, 255, 0);
-      color_list[2] = color(34, 141, 255);
-      color_list[3] = color(255, 202, 27);
-    } else {
-      for (int i = 0; i < color_list.length; i++) {
-        color_list[i] = color(random(0, 255), random(0, 255), random(0, 255));
-      }
-    }
+    generate_colors();
   }
 
   public void draw_graph(int x_in, int y_in, int w_in, int h_in, Range r, String g) {
@@ -443,10 +443,26 @@ class ParGraph {
     y_coords = new float[num_cols][num_rows];
   }
 
+  public void generate_colors() {
+  	//generating colors
+  	colors = new int[num_cols][num_rows];
+    color_list = new int[num_labels-1];
+    if (num_labels - 1 == 4) {
+      color_list[0] = color(255, 0, 146);
+      color_list[1] = color(182, 255, 0);
+      color_list[2] = color(34, 141, 255);
+      color_list[3] = color(255, 202, 27);
+    } else {
+      for (int i = 0; i < color_list.length; i++) {
+        color_list[i] = color(random(0, 255), random(0, 255), random(0, 255));
+      }
+    }
+  }
+
   public void find_bounds() {
     for (int i = 0; i < num_cols; i++) {
-      mins[i] = min(vals);
-      maxes[i] = max(vals);
+      mins[i] = min(vals[i]);
+      maxes[i] = max(vals[i]);
     }
   }
 
@@ -463,7 +479,7 @@ class ParGraph {
   public void calc_pts() {
     for (int i = 0; i < num_cols; i++) {
       for (int k = 0; k < num_rows; k++) {
-        y_coords[i][k] = map(data.vals[i][k], mins[i], maxes[i], y_bott, y_top);
+        y_coords[i][k] = map(vals[i][k], mins[i], maxes[i], y_bott, y_top);
       }
     }
     for (int i = 0; i < flipped_cols.length; i++) {
@@ -495,13 +511,13 @@ class ParGraph {
       for (int k = 0; k < num_rows; k++) {
         for (int m = 0; m < num_labels - 1; m++) {
           if (!flipped_cols[colored_col]) {
-            if (data.vals[colored_col][k] >= labels[colored_col][m] &&
-              data.vals[colored_col][k] <= labels[colored_col][m+1]) {
+            if (vals[colored_col][k] >= labels[colored_col][m] &&
+              vals[colored_col][k] <= labels[colored_col][m+1]) {
               colors[i][k] = color_list[m];
             }
           } else {
-            if (data.vals[colored_col][k] <= labels[colored_col][m] &&
-              data.vals[colored_col][k] >= labels[colored_col][m+1]) {
+            if (vals[colored_col][k] <= labels[colored_col][m] &&
+              vals[colored_col][k] >= labels[colored_col][m+1]) {
               colors[i][k] = color_list[m];
             }
           }
@@ -525,7 +541,7 @@ class ParGraph {
       line(x_coords[i], y_top, x_coords[i], y_bott);
       textSize(10);
       textAlign(CENTER);
-      text(data.get_header(i), x_coords[i], y_bott + 20);
+      text(headers[i], x_coords[i], y_bott + 20);
 
       strokeWeight(1);
       stroke(0);
@@ -545,7 +561,7 @@ class ParGraph {
   public void draw_lines() {
     if (curve) {
       noFill();
-      int num_cols = num_cols;
+      // int num_cols = num_cols;
       for (int i = 0; i < (num_rows); i++) {
         //for (int i = 0; i < 1; i++) {
         stroke(colors[0][i]);
@@ -565,7 +581,7 @@ class ParGraph {
       }
       stroke(0);
     } else {
-      for (int i = 0; i < (num_rows); i++) {
+      for (int i = 0; i < num_rows; i++) {
         for (int k = 0; k < num_cols - 1; k++) {
           stroke(colors[k][i]);
           line(x_coords[k], y_coords[k][i], x_coords[k+1], y_coords[k+1][i]);
@@ -588,7 +604,7 @@ class ParGraph {
   }
 
   public void col_change(int mousex) {
-    int num_cols = num_cols;
+    // int num_cols = num_cols;
     for (int i = 0; i < num_cols; i++) {
       if (mousex > (width/num_cols)*i && mousex < (width/num_cols)*(i+1)) {
         colored_col = i;
@@ -597,7 +613,7 @@ class ParGraph {
   }
 
   public void hover(int mousex) {
-    int num_cols = num_cols;
+    // int num_cols = num_cols;
     for (int i = 0; i < num_cols; i++) {
       if (mousex > (w/num_cols)*i && mousex < (w/num_cols)*(i+1)) {
         hover_col = i;
@@ -615,7 +631,7 @@ class ParGraph {
   public void flip_pts(int i) {
     //print("flipping points\n");
     for (int k = 0; k < num_rows; k++) {
-      y_coords[i][k] = map(data.vals[i][k], maxes[i], mins[i], y_bott, y_top);
+      y_coords[i][k] = map(vals[i][k], maxes[i], mins[i], y_bott, y_top);
       //print("flipped: ", y_coords[i][0], "\n");
     }
   }
@@ -896,8 +912,14 @@ class Slider {
   } 
   
   public void check_brackets() {
-    left.check_click();
-    if (left.val != right.val) {
+    if(left.val == right.val) {
+      if(left.val == 0) {
+        right.check_click();
+      } else {
+        left.check_click();
+      }
+    } else {
+      left.check_click();
       right.check_click();
     }
   }
@@ -916,7 +938,7 @@ class Slider {
 }
 class UserData {
   final int MAXAGE = 95;
-  final int NUM_QS = 20;
+  final int NUM_QS = 19;
   final int NUM_WORDS = 82;
   
   AgeGroup[] boys;
@@ -954,6 +976,9 @@ class UserData {
   public int[] get_bar_stats(int word_index, String gender) {
      int[] toret = new int[MAXAGE];
      
+     //just for testing
+     gender = "both";
+     
      for (int i = 0; i < MAXAGE; i++) {
         if (gender.equals("female")) {
           toret[i] = girls[i].word_freqs[word_index];
@@ -963,10 +988,101 @@ class UserData {
           toret[i] += girls[i].word_freqs[word_index];
           toret[i] += boys[i].word_freqs[word_index];
         }
+        print(toret[i], "\n");
       }
       
       return toret;
    }
+  
+  public float[][] get_qs_avg(Range range, String gender) {
+    float[][] total = new float[NUM_QS][range.high-range.low];
+    for (int i = range.low; i < range.high; i++) {
+      for (int j = 0; j < NUM_QS; j++) {
+        if (gender.equals("female")) {
+          if(girls[i].num_per_q[j] == 0) {
+            total[j][i] = 0;
+          } else {
+            total[j][i] = girls[i].total_q_score[j]/girls[i].num_per_q[j];
+          }
+        } else if (gender.equals("male")) {
+          if(boys[i].num_per_q[j] == 0) {
+            total[j][i] = 0;
+          } else {
+            total[j][i] = boys[i].total_q_score[j]/boys[i].num_per_q[j];
+          }
+        } else {
+          if(girls[i].num_per_q[j] == 0) {
+            total[j][i] = 0;
+          } else {
+            total[j][i] = girls[i].total_q_score[j]/girls[i].num_per_q[j];
+          }
+
+          if(boys[i].num_per_q[j] == 0) {
+            total[j][i] += 0;
+          } else {
+            total[j][i] += boys[i].total_q_score[j]/boys[i].num_per_q[j];
+          }
+          total[j][i] = total[j][i]/2;
+        }
+        //printArray(girls[i].num_per_q);
+      }
+    }
+    
+    return total;
+  }
+}
+class WordBar {
+  int[] vals;
+  int num_ages = 95;
+  int canvas_x1, canvas_x2;
+  int canvas_y1, canvas_y2;
+  int canvas_w, canvas_h;
+  float[] x_coords;
+  float[] y_coords;
+  float max_val;
+  int interval;
+  int x_spacing;
+  int bar_width;
+  
+  WordBar(int[] vs, int x1, int y1, int x2, int y2) {
+    max_val = 700;
+    canvas_x1 = x1;
+    canvas_x2 = x2;
+    canvas_y1 = y1;
+    canvas_y2 = y2;
+    canvas_w = x2 - x1;
+    canvas_h = y2 - y1;
+    interval = canvas_w/num_ages;
+    x_spacing = 5;
+    bar_width = interval - 2*x_spacing;
+  }
+  
+  public void draw_graph() {
+    get_coords();
+    draw_bars();
+  }
+  
+  public void get_coords() {
+    y_coords = new float[num_ages];
+    x_coords = new float[num_ages];
+    int curr_x = canvas_x1;
+    
+    for (int i = 0; i < num_ages; i++) {
+       float ratio = vals[i]/max_val;
+       y_coords[i] = (PApplet.parseFloat(canvas_h) - PApplet.parseFloat(canvas_h)*ratio) + canvas_y1;
+       x_coords[i] = curr_x;
+       curr_x += interval;
+    }
+  }
+  
+  public void draw_bars() {
+     for (int i = 0; i < num_ages; i++) {
+         float gray = map(i, 0, num_ages, 0, 255);
+         fill(150, gray, 150);
+         rect(x_coords[i]+x_spacing, y_coords[i], bar_width, canvas_y2 - y_coords[i]);
+     }
+    
+  }
   
   
 }
