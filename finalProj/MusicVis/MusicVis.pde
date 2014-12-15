@@ -66,7 +66,7 @@ void draw() {
     }
   }
   
-  toShow.draw_graphs(wc, range);
+  toShow.draw_graphs(wc, range, gender);
   
   
   //print("Range: ", range.low, " to ", range.high, "\n");
