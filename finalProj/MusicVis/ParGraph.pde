@@ -9,7 +9,7 @@ class ParGraph {
   int num_rows;
   Range range;
   String gender;
-  int[] vals;
+  float[][] vals;
 
   //default initializations
   UserData data;
