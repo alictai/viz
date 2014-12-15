@@ -65,7 +65,7 @@ void draw() {
     }
   }
   
-  toShow.draw_graphs(wc);
+  toShow.draw_graphs(wc, range);
   
   
   //print("Range: ", range.low, " to ", range.high, "\n");
