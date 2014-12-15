@@ -61,7 +61,13 @@ class Bracket {
     fill(255);
     rect(rect_x, rect_y, rect_w, rect_h, 4); 
     //triangle(rect_x + (.25 * rect_w), rect_y + rect_h, rect_x + (.5 * rect_w), rect_y + rect_h + 3, rect_x + (.75 * rect_w), rect_y + rect_h);
+    
+    PFont font;
+    //must be located in data directory in sketchbook
+    font = loadFont("UbuntuMono-Bold-16.vlw");
+    textFont(font, 16);    
     textAlign(CENTER, CENTER);
+     
     fill(200, 0, 0);
     text(val, x, (y - 1.125 * h));
     
@@ -86,13 +92,12 @@ class Bracket {
         rb = r_bound;
       }
             
-      if(mouseX > lb && mouseX < rb) {
+      if(mouseX > lb - 50 && mouseX < rb + 50) {
         float curr, l, r;
         curr = map(val, 0, 93, l_bound, r_bound);
         l    = map(val - 1, 0, 93, l_bound, r_bound);
         r    = map(val + 1, 0, 93, l_bound, r_bound);
                 
-        //while (! (abs(mouseX - l) < abs(mouseX - curr)) || (abs(mouseX - r) < abs(mouseX - curr))) {
           if (abs(mouseX - l) < abs(mouseX - curr)) {
              val--;
              x = l;
@@ -104,7 +109,6 @@ class Bracket {
              int_l = x - w/2;
              int_r = x + w/2;
           }
-        //}
       }
     } 
   }
