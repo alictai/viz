@@ -2,6 +2,7 @@ class UserData {
   final int MAXAGE = 95;
   final int NUM_QS = 19;
   final int NUM_WORDS = 82;
+  final int NUM_STATEMENTS = 6;
   
   AgeGroup[] boys;
   AgeGroup[] girls;
@@ -56,6 +57,11 @@ class UserData {
       
       return toret;
    }
+   
+  MusicPref[] get_pie_stats(Range range, String gender) {
+      MusicPref[] toret = new MusicPref[NUM_STATEMENTS];
+        for (int i = range.low; i < range.high; i++)
+  }
   
   float[][] get_qs_avg(Range range, String gender) {
     float[][] total = new float[NUM_QS][range.high-range.low];

@@ -23,7 +23,7 @@ class WordBar {
     canvas_y2 = y2;
     canvas_w = x2 - x1;
     canvas_h = y2 - y1;
-    interval = canvas_w/(num_ages);
+    interval = canvas_w/(num_ages + 10);
     x_spacing = 2;
     bar_width = interval - 2*x_spacing;
   }

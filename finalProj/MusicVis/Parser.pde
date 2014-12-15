@@ -45,6 +45,9 @@ class Parser {
       for (int i = 0; i < num_words; i++) {
          data.girls[age].word_freqs[i] += int(split_line[word_index + i]);
       }
+      
+      assign_pref(age, gender, split_line);
+      
     } else {
       data.boys[age].contains_data = true;
       
@@ -56,7 +59,34 @@ class Parser {
       for (int i = 0; i < num_words; i++) {
          data.boys[age].word_freqs[i] += int(split_line[word_index + i]);
       }
+      
+      assign_pref(age, gender, split_line);
+      
     }
+  }
+  
+  void assign_pref(int age, String gender, String[] split_line) {
+      int state_index = data.boys[0].find_statement(split_line[5]);
+    
+         if (int(split_line[6]) != -1) {
+           if (gender.equals("Female")) { 
+              data.girls[age].prefs[state_index].listen_own += int(split_line[6]);
+              data.girls[age].prefs[state_index].num_listen_own += 1;
+           } else {
+              data.boys[age].prefs[state_index].listen_own += int(split_line[6]);
+              data.boys[age].prefs[state_index].num_listen_own += 1;      
+           }
+         }
+      
+         if (int(split_line[7]) != -1) {
+           if (gender.equals("Female")) {
+             data.girls[age].prefs[state_index].listen_back += int(split_line[7]);
+             data.girls[age].prefs[state_index].num_listen_back += 1;
+           } else {
+             data.boys[age].prefs[state_index].listen_back += int(split_line[7]);
+             data.boys[age].prefs[state_index].num_listen_back += 1;
+           }
+         }
   }
   
   void printtest() {
