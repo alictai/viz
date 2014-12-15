@@ -10,6 +10,7 @@ class Cloud {
   UserData data;
   int freq_range;
   int prev_freq_range = 0;
+  String gender = "female";
   
   String[] words = {"Uninspired","Sophisticated","Aggressive","Edgy","Sociable","Laid back","Wholesome",
     "Uplifting","Intriguing","Legendary","Free","Thoughtful","Outspoken","Serious","Good lyrics",
@@ -27,8 +28,9 @@ class Cloud {
     data = d;
   }
   
-  int[] get_freqs(Range range, String gender) {
+  int[] get_freqs(Range range, String gen) {
     int[] freqs = data.get_freqs(range, gender);
+    gender = gen;
     
     freq_range = max(freqs) - min(freqs);
     
@@ -93,13 +95,13 @@ class Cloud {
     Word clicked = wc.getWordAt(mouseX, mouseY);
     
     if (clicked == null) {
-      print("no word hovered\n");
+      print("no word clicked\n");
     } else {
       print(clicked, "\n");
       String[] split_line = splitTokens(clicked.toString(), " ");
       String word = split_line[0];
       int index = get_word_index(word);
-      
+      int[] bar_stats = data.get_bar_stats(index, gender);
       
     }
   }
