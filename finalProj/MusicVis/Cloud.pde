@@ -8,6 +8,7 @@ class Cloud {
   
   WordCram wc;
   UserData data;
+  WordBar bar;
   int freq_range;
   int prev_freq_range = 0;
   String gender = "female";
@@ -102,7 +103,7 @@ class Cloud {
       String word = split_line[0];
       int index = get_word_index(word);
       int[] bar_stats = data.get_bar_stats(index, gender);
-      
+      bar = new WordBar(bar_stats, 200, 300, 500, 900);
     }
   }
   
