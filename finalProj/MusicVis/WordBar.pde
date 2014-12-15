@@ -1,6 +1,6 @@
 class WordBar {
   int[] vals;
-  int num_ages = 95;
+  int num_ages = 94;
   int canvas_x1, canvas_x2;
   int canvas_y1, canvas_y2;
   int canvas_w, canvas_h;
@@ -13,6 +13,10 @@ class WordBar {
   
   WordBar(int[] vs, int x1, int y1, int x2, int y2) {
     max_val = 700;
+    vals = new int[num_ages];
+    for (int i = 0; i < num_ages; i++) {
+      vals[i] = vs[i];
+    }
     canvas_x1 = x1;
     canvas_x2 = x2;
     canvas_y1 = y1;
@@ -20,7 +24,7 @@ class WordBar {
     canvas_w = x2 - x1;
     canvas_h = y2 - y1;
     interval = canvas_w/num_ages;
-    x_spacing = 5;
+    x_spacing = 2;
     bar_width = interval - 2*x_spacing;
   }
   

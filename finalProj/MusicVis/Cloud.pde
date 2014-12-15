@@ -12,6 +12,10 @@ class Cloud {
   int freq_range;
   int prev_freq_range = 0;
   String gender = "female";
+  boolean clicked;
+  int clicked_index;
+  int barx1, barx2;
+  int bary1, bary2;
   
   String[] words = {"Uninspired","Sophisticated","Aggressive","Edgy","Sociable","Laid back","Wholesome",
     "Uplifting","Intriguing","Legendary","Free","Thoughtful","Outspoken","Serious","Good lyrics",
@@ -27,6 +31,11 @@ class Cloud {
   Cloud(WordCram w, UserData d) {
     wc = w;
     data = d;
+    clicked = false;
+    barx1 = 20;
+    bary1 = 525;
+    barx2 = 820;
+    bary2 = 595;
   }
   
   int[] get_freqs(Range range, String gen) {
@@ -71,6 +80,7 @@ class Cloud {
   }
   
   void draw_cloud() {
+      print(clicked, "\n");
       if (freq_range != 0) {
           wc.drawAll();
           if (wc.hasMore()) {
@@ -78,6 +88,14 @@ class Cloud {
              wc.drawNext();
           }
           prev_freq_range = freq_range;
+      }
+      
+      if (clicked == true) {
+          fill(255);
+          noStroke();
+          rect(barx1, bary1, barx2 - barx1, bary2 - bary1);
+          print("drawing bars\n");
+          draw_bars();
       }
       
   }
@@ -93,17 +111,17 @@ class Cloud {
   //code below for generating bar graphs
   
   void check_click() {
-    Word clicked = wc.getWordAt(mouseX, mouseY);
+    Word clicked_w = wc.getWordAt(mouseX, mouseY);
     
-    if (clicked == null) {
+    if (clicked_w == null) {
+      clicked = false;
       print("no word clicked\n");
     } else {
-      print(clicked, "\n");
-      String[] split_line = splitTokens(clicked.toString(), " ");
+      clicked = true;
+      print(clicked_w, "\n");
+      String[] split_line = splitTokens(clicked_w.toString(), " ");
       String word = split_line[0];
-      int index = get_word_index(word);
-      int[] bar_stats = data.get_bar_stats(index, gender);
-      bar = new WordBar(bar_stats, 200, 300, 500, 900);
+      clicked_index = get_word_index(word);
     }
   }
   
@@ -113,6 +131,13 @@ class Cloud {
           return i;
         }
       }
+      clicked = false;
       return -1;
+  }
+  
+  void draw_bars() {
+     int[] bar_stats = data.get_bar_stats(clicked_index, gender);
+     bar = new WordBar(bar_stats, barx1, bary1, barx2, bary2);
+     bar.draw_graph();
   }
 }
