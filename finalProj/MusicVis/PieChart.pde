@@ -7,6 +7,7 @@ class PieChart {
   int canvas_x1, canvas_x2;
   int canvas_y1, canvas_y2;
   int canvas_w, canvas_h;
+  int piex, piey;
   int isect;
   float list_own_angle;
   float list_back_angle;
@@ -24,13 +25,24 @@ class PieChart {
     num_slices = 3;
     text_color = color(200, 150, 200);
     total_time = 24;
+    piex = width/5;
+    piey = height/3;
   }
 
   void draw_graph() {
-    make_canvas(); 
+    draw_title(); 
     find_angles();
     find_diameter();
     draw_chart();
+  }
+  
+  void draw_title() {
+    fill(150, 0, 150);
+    stroke(150, 0, 150);
+    textAlign(CENTER);
+    textSize(20);
+    text("Average Time Spent:", piex, 42);
+    
   }
 
   void make_canvas() {
@@ -57,22 +69,22 @@ class PieChart {
          noStroke();
          //float gray = map(i, 0, data.values[0].length, 0, 255);
          fill(200, 100, 200);
-         arc(width/2, height/2, diameter, diameter, 0, 0 + radians(list_own_angle), PIE);
+         arc(piex, piey, diameter, diameter, 0, 0 + radians(list_own_angle), PIE);
          draw_words(lastAngle, radians(list_own_angle), "Listening to own music");
          lastAngle += radians(list_own_angle);
          fill(150, 0, 150);
-         arc(width/2, height/2, diameter, diameter, lastAngle, lastAngle + radians(list_back_angle), PIE);
+         arc(piex, piey, diameter, diameter, lastAngle, lastAngle + radians(list_back_angle), PIE);
          draw_words(lastAngle, radians(list_back_angle), "Listening to background music");
          lastAngle += radians(list_back_angle);
          fill(220, 220, 255);
-         arc(width/2, height/2, diameter, diameter, lastAngle, lastAngle + radians(rem_angle), PIE);
+         arc(piex, piey, diameter, diameter, lastAngle, lastAngle + radians(rem_angle), PIE);
          //draw_words(lastAngle, radians(rem_angle));
           
   }
   
   void draw_words(float lastAngle, float ownAngle, String message) {
       //translate
-      translate(width/2, height/2);
+      translate(piex, piey);
       rotate(lastAngle + ownAngle/2);
       translate(diameter/2 + 10, 0);
 
@@ -84,7 +96,7 @@ class PieChart {
       //un-translate
       translate(-diameter/2 - 10, 0);
       rotate(-lastAngle - ownAngle/2);
-      translate(-width/2, -height/2);
+      translate(-piex, -piey);
   }
 
   
