@@ -28,7 +28,7 @@ void setup() {
   wc = new WordCram(this);
   //wc.withCustomCanvas(this.canvas);
   toShow = new Display(wc, data);
-  slider = new Slider(0, 650, 1200, 50);
+  slider = new Slider(0, 600, 1200, 100);
   prev_range = new Range();
   prev_range.low = 0;
   prev_range.high = 93;
