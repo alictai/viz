@@ -33,7 +33,8 @@ class Display {
   }
   
   void set_click() {
-      cloud.check_click();
+      pies.check_click();
+      //cloud.check_click();
   }
   
  

@@ -60,6 +60,9 @@ class UserData {
    
   MusicPref[] get_pie_stats(Range range, String gender) {
       MusicPref[] toret = new MusicPref[NUM_STATEMENTS];
+      for (int i = 0; i < NUM_STATEMENTS; i++) {
+        toret[i] = new MusicPref();
+      }
       
       for (int i = range.low; i < range.high; i++) {
         for (int j = 0; j < NUM_STATEMENTS; j++) {
