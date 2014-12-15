@@ -34,29 +34,23 @@ class UserData {
     
     return total;
   }
-  /*
-  int[] get_bar_stats(int word, Range range, String gender) {
-     int[] age_intervals = new int[5];
-     int[] toret = new int[5];
-     int freq_range = range.high - range.low;
+  
+  int[] get_bar_stats(int word_index, String gender) {
+     int[] toret = new int[MAXAGE];
      
-     int index = 0;
-     for(int i = 0; j < range.high; i+=freq_range/5) {
-         age_intervals[index] = i;
-         index++;
-     }
-     
-     for (int i = range.low; i < range.high; i++) {
+     for (int i = 0; i < MAXAGE; i++) {
         if (gender.equals("female")) {
-          total[j] += girls[i].word_freqs[j];
+          toret[i] = girls[i].word_freqs[word_index];
         } else if (gender.equals("male")) {
-          total[j] += boys[i].word_freqs[j];
+          toret[i] = boys[i].word_freqs[word_index];
         } else {
-          total[j] += girls[i].word_freqs[j];
-          total[j] += boys[i].word_freqs[j];
+          toret[i] += girls[i].word_freqs[word_index];
+          toret[i] += boys[i].word_freqs[word_index];
         }
       }
+      
+      return toret;
    }
-  */
+  
   
 }
