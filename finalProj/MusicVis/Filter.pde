@@ -2,7 +2,8 @@ class Filter {
   float x, y;
   float wid, hgt;
   
-  Slider slider;
+  Slider    slider;
+  //Gen_Check gencheck;
  
  
  
@@ -16,6 +17,7 @@ class Filter {
     float s_y = y + 75; 
     float s_w = wid - 400;
     slider = new Slider(x + 20, y + 75, w - 400);
+    //gencheck = new Gen_Check();
    
   } 
   
@@ -23,6 +25,7 @@ class Filter {
     fill(100);
     strokeWeight(0);
     rect(x, y, wid, hgt); 
+    
     slider.draw_slider(); 
   }
   
@@ -30,15 +33,17 @@ class Filter {
     return slider.get_range(); 
   }
   
-  void check_brackets() {
+  //rename
+  void pressed() {
     slider.check_brackets(); 
   }
   
+  //rename
   void move_brackets() {
     slider.move_brackets();
   }
   
-  void unactivate() {
+  void released() {
     slider.unactivate(); 
   }
   

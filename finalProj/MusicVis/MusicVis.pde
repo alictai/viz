@@ -88,10 +88,10 @@ void mouseClicked() {
 }
 
 void mousePressed() {
-  filter.check_brackets();
+  filter.pressed();
 }
 
 void mouseReleased() {
-  filter.unactivate();
+  filter.released();
 }
 
