@@ -67,7 +67,7 @@ class PieChart {
   
 
   void draw_chart() {
-      print("drawing pie\n");
+      
       float lastAngle = 0;
          noStroke();
          //float gray = map(i, 0, data.values[0].length, 0, 255);
