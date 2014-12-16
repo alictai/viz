@@ -82,11 +82,11 @@ class Cloud {
   }
   
   void draw_cloud(Range range) {
-      print(clicked, "\n");
+      //print(clicked, "\n");
       if (freq_range != 0) {
           wc.drawAll();
           if (wc.hasMore()) {
-            print("drawing more\n");
+            //print("drawing more\n");
              wc.drawNext();
           }
           prev_freq_range = freq_range;
@@ -96,7 +96,7 @@ class Cloud {
           fill(255);
           noStroke();
           rect(barx1, bary1, barx2 - barx1, bary2 - bary1);
-          print("drawing bars\n");
+          //print("drawing bars\n");
           draw_bars(range);
       }
       
@@ -117,10 +117,10 @@ class Cloud {
     
     if (clicked_w == null) {
       clicked = false;
-      print("no word clicked\n");
+      //print("no word clicked\n");
     } else {
       clicked = true;
-      print(clicked_w, "\n");
+      //print(clicked_w, "\n");
       String[] split_line = splitTokens(clicked_w.toString(), " ");
       String word = split_line[0];
       clicked_index = get_word_index(word);

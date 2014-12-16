@@ -85,14 +85,14 @@ class PieControl {
   }
   
   void check_click() {
-    print("in check click\n");
+    //print("in check click\n");
     int curr_y = statements_y1;
     if((mouseX > statements_x1) && (mouseX < statements_x2)) {
-      print("within statement area\n");
+      //print("within statement area\n");
       for (int i = 0; i < NUM_STATEMENTS; i++) {
-         print("mousey is: ", mouseY, " curry is: ", curr_y, "curry + interval is: ", curr_y + statement_yinterval, "\n");
+         //print("mousey is: ", mouseY, " curry is: ", curr_y, "curry + interval is: ", curr_y + statement_yinterval, "\n");
          if((mouseY >= curr_y) && (mouseY < (curr_y + statement_yinterval))) {
-             print("printing", data.girls[0].music_statements[i], "\n");
+             //print("printing", data.girls[0].music_statements[i], "\n");
              clicked = i;
          }
          curr_y += statement_yinterval;

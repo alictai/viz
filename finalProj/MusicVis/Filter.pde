@@ -21,15 +21,14 @@ class Filter {
     float s_y = y + 75; 
     float s_w = wid - 400;
 
-    slider = new Slider(x + 20, y + 25, w - 400);
+    slider = new Slider(x + 10, y + 25, w - 400);
 
     male   = new Gen_Check(wid - 470,  y + 80, 30, 10, true, "Male");
     female = new Gen_Check(x + 570,    y + 80, 45, 10, true, "Female");   
     
-    cloud = new VisLabel(835, y + 25, 85, 50, "HistoricGoat.jpg", true);
-    par   = new VisLabel(925, y + 25, 85, 50, "SadGoat.jpg", false);
-    pie  = new VisLabel(1015, y + 25, 85, 50, "PattyGoat.jpg", false);
-    tbd2  = new VisLabel(1105, y + 25, 85, 50, "VikingsGoat.jpg", false);
+    cloud = new VisLabel(825, y + 15, 120, 70, "HistoricGoat.jpg", true);
+    par   = new VisLabel(950, y + 15, 120, 70, "SadGoat.jpg", false);
+    pie  = new VisLabel(1075, y + 15, 120, 70, "PattyGoat.jpg", false);
   } 
   
   void draw_filter() {
@@ -44,7 +43,6 @@ class Filter {
     cloud.draw_label();
     par.draw_label();
     pie.draw_label();
-    tbd2.draw_label();
   }
   
   void draw_prompt() {
@@ -90,8 +88,6 @@ class Filter {
       toRet.curVis = "par";
     } else if(pie.active) {
       toRet.curVis = "pie";
-    } else if(tbd2.active) {
-      toRet.curVis = "tbd2";
     } else {
       toRet.curVis = "";
     }
@@ -110,22 +106,14 @@ class Filter {
       cloud.activate();
       par.deactivate();
       pie.deactivate();
-      tbd2.deactivate();
     } else if(visp.equals("par")) {
       cloud.deactivate();
       par.activate();
       pie.deactivate();
-      tbd2.deactivate();
     } else if(visp.equals("pie")) {
       cloud.deactivate();
       par.deactivate();
       pie.activate();
-      tbd2.deactivate();
-    } else if(visp.equals("tbd2")) {
-      cloud.deactivate();
-      par.deactivate();
-      pie.deactivate();
-      tbd2.activate();
     }
   }
   
@@ -136,8 +124,6 @@ class Filter {
       return "par";
     } else if(pie.was_pressed()) {
       return "pie";
-    } else if(tbd2.was_pressed()) {
-      return "tbd2";
     } else {
       return "";
     }
