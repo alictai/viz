@@ -112,7 +112,7 @@ class ParGraph {
 
     draw_axes();
     draw_lines();
-    draw_pts();
+    //draw_pts();
     draw_labels();
     draw_captioning();
 
