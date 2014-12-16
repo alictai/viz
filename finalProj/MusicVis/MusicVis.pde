@@ -58,11 +58,12 @@ void draw() {
   toShow.get_freqs(range);
   
   if(!mousePressed) {
-    if (range_changed() == true) {
+    if ((range_changed() == true) || (toShow.cloud.redraw == true)) {
       wc = new WordCram(this);
       fill(255);
       noStroke();
       rect(0, 0, 1200, 600);
+      toShow.cloud.redraw = false;
     }
   }
 

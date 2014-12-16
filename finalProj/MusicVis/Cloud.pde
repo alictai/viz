@@ -17,6 +17,7 @@ class Cloud {
   int barx1, barx2;
   int bary1, bary2;
   boolean show_cloud;
+  boolean redraw;
   
   String[] words = {"Uninspired","Sophisticated","Aggressive","Edgy","Sociable","Laid back","Wholesome",
     "Uplifting","Intriguing","Legendary","Free","Thoughtful","Outspoken","Serious","Good lyrics",
@@ -39,6 +40,7 @@ class Cloud {
     barx2 = 820;
     bary2 = 595;
     gender = "both";
+    redraw = false;
   }
   
   int[] get_freqs(Range range, String gen) {
@@ -86,8 +88,8 @@ class Cloud {
   void draw_cloud(Range range) {
       //print(clicked, "\n");
     if (show_cloud == true) {
-      
       if (freq_range != 0) {
+        print("drawinggggg\n");
           wc.drawAll();
           if (wc.hasMore()) {
             //print("drawing more\n");
@@ -171,10 +173,15 @@ class Cloud {
   }
     
   void check_click_bar() {
+     print("checking bar ", mouseX, " ", mouseY, "\n");
      check_wordlist();
-     if (mouseX > width/3 && mouseX < width/3 + 100 && mouseY < 570 && mouseY > 585) {
+     if ((mouseX > 380) && (mouseX < 550) && (mouseY > 550) && (mouseY < 590)) {
         print("back to wordcloud\n");
+        fill(255);
+        noStroke();
+        rect(0,0,width, 600);
         show_cloud = true;
+        redraw = true;
      } 
   }
   
