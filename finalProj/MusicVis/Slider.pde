@@ -54,7 +54,6 @@ class Bracket {
     noStroke();
     fill(255);
     rect(rect_x, rect_y, rect_w, rect_h, 4); 
-    //triangle(rect_x + (.25 * rect_w), rect_y + rect_h, rect_x + (.5 * rect_w), rect_y + rect_h + 3, rect_x + (.75 * rect_w), rect_y + rect_h);
     
     PFont font;
     //must be located in data directory in sketchbook
@@ -73,36 +72,39 @@ class Bracket {
     } 
   }
   
-  void move(float oth_x) {
+  void move(float oth_x, int oth_v) {
     if(active) {
       float lb, rb;
+      int lbv, rbv;
       
       //determining bracket's range
       if(isLeft) {
         lb = l_bound;
         rb = oth_x;
+        lbv = 0;
+        rbv = oth_v;
       } else {
         lb = oth_x;
         rb = r_bound;
+        lbv = oth_v;
+        rbv = 93;
       }
             
-      if(mouseX > lb - 50 && mouseX < rb + 50) {
-        float curr, l, r;
-        curr = map(val, 0, 93, l_bound, r_bound);
-        l    = map(val - 1, 0, 93, l_bound, r_bound);
-        r    = map(val + 1, 0, 93, l_bound, r_bound);
-                
-          if ((abs(mouseX - l) < abs(mouseX - curr)) && (val != 0)) {
-             val--;
-             x = l;
-             int_l = x - w/2;
-             int_r = x + w/2;
-          } else if ((abs(mouseX - r) < abs(mouseX - curr)) && (val != 93)) {
-             val++;
-             x = r;
-             int_l = x - w/2;
-             int_r = x + w/2;
-          }
+      float curr, l, r;
+      curr = map(val, 0, 93, l_bound, r_bound);
+      l    = map(val - 1, 0, 93, l_bound, r_bound);
+      r    = map(val + 1, 0, 93, l_bound, r_bound);
+              
+      if ((abs(mouseX - l) < abs(mouseX - curr)) && (val != lbv)) {
+         val--;
+         x = l;
+         int_l = x - w/2;
+         int_r = x + w/2;
+      } else if ((abs(mouseX - r) < abs(mouseX - curr)) && (val != rbv)) {
+         val++;
+         x = r;
+         int_l = x - w/2;
+         int_r = x + w/2;
       }
     } 
   }
@@ -198,8 +200,8 @@ class Slider {
   }
   
   void move_brackets() {
-    left.move(right.x);
-    right.move(left.x);
+    left.move(right.x, right.val);
+    right.move(left.x, left.val);
   }
   
   void unactivate() {

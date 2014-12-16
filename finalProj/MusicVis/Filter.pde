@@ -23,8 +23,8 @@ class Filter {
 
     slider = new Slider(x + 20, y + 25, w - 400);
 
-    male   = new Gen_Check(wid - 470, y + 60, 30, 10, true, "Male");
-    female = new Gen_Check(x + 70,    y + 60, 45, 10, true, "Female");   
+    male   = new Gen_Check(wid - 470, y + 72, 30, 10, true, "Male");
+    female = new Gen_Check(x + 570,    y + 72, 45, 10, true, "Female");   
     
     cloud = new VisLabel(835, y + 25, 85, 50, "HistoricGoat.jpg", true);
     par   = new VisLabel(925, y + 25, 85, 50, "SadGoat.jpg", false);
@@ -56,7 +56,7 @@ class Filter {
     textAlign(CENTER, CENTER);
     textSize(20);
     textLeading(18);
-    text("SELECT AGE AND\nGENDER DEMOGRAPHIC", x + 420, y + 65);
+    text("SELECT AGE AND\nGENDER DEMOGRAPHIC", x + 200, y + 65);
     
   }
   
@@ -216,6 +216,8 @@ class Gen_Check {
     textAlign(CENTER, CENTER);
     textSize(25);
     text(title, x, y);
+    textSize(12);
+    text("Show", x, y - 18);
   }
   
   
