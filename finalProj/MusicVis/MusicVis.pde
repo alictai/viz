@@ -64,9 +64,7 @@ void draw() {
       rect(0, 0, 1200, 600);
     }
   }
-  
-  print("prev: ", prev_range.curVis, " curr: ", range.curVis, "\n");
-  
+    
   toShow.draw_graphs(wc, range);
   
   //print("Range: ", range.low, " to ", range.high, "\n");
@@ -80,6 +78,7 @@ boolean range_changed() {
                 (range.curVis.equals(prev_range.curVis))) {
       return false;
   } else {
+      print("prev: ", prev_range.curVis, " curr: ", range.curVis, "\n");
       prev_range = range;
       return true;
   }
