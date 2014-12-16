@@ -57,10 +57,7 @@ class Display {
 
   void keypress(int keyCode) {
     if (range.curVis.equals("par")) {
-      if (keyCode == LEFT) {
-        //Hitting left arrow shows hacky version of a curved graph
-        par_graph.view_bezier();
-      } else if (keyCode == DOWN) {
+      if (keyCode == DOWN) {
         //Hitting down arrow will flip the dimension being hovered over if it was not already flipped
         par_graph.flip_dim();
       } else if (keyCode == UP) {
@@ -72,9 +69,7 @@ class Display {
 
   void keyrel(int keyCode) {
     if (range.curVis.equals("par")) {
-      if (keyCode == LEFT) {
-        par_graph.view_line();
-      } else if (keyCode == DOWN) {
+      if (keyCode == DOWN) {
         //par_graph.unflip();
       }
     }
