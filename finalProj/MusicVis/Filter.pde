@@ -26,9 +26,9 @@ class Filter {
     male   = new Gen_Check(wid - 470,  y + 80, 30, 10, true, "Male");
     female = new Gen_Check(x + 570,    y + 80, 45, 10, true, "Female");   
     
-    cloud = new VisLabel(825, y + 15, 120, 70, "HistoricGoat.jpg", true);
-    par   = new VisLabel(950, y + 15, 120, 70, "SadGoat.jpg", false);
-    pie  = new VisLabel(1075, y + 15, 120, 70, "PattyGoat.jpg", false);
+    cloud = new VisLabel(825, y + 15, 120, 70, "cloud1.jpg", true);
+    par   = new VisLabel(950, y + 15, 120, 70, "par1.jpg", false);
+    pie  = new VisLabel(1075, y + 15, 120, 70, "pie.jpg", false);
   } 
   
   void draw_filter() {
