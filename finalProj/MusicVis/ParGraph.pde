@@ -175,6 +175,9 @@ class ParGraph {
       for (int k = 0; k < num_rows; k++) {
         if (vals[i][k] != -1) {
           y_coords[i][k] = map(vals[i][k], mins[i], maxes[i], y_bott, y_top);
+          if (y_coords[i][k] < y_top) {
+            y_coords[i][k] = y_top;
+          }
         } else {
           y_coords[i][k] = -1;
         }
