@@ -32,9 +32,9 @@ class Cloud {
     wc = w;
     data = d;
     clicked = false;
-    barx1 = 35;
+    barx1 = 20;
     bary1 = 525;
-    barx2 = 879;
+    barx2 = 820;
     bary2 = 595;
     gender = "both";
   }

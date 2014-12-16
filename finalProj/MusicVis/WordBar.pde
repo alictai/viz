@@ -29,6 +29,9 @@ class WordBar {
   }
   
   void draw_graph(Range range) {
+    fill(255);
+    noStroke();
+    rect(canvas_x1, canvas_y1 - 20, canvas_w - 50, canvas_h + 20);
     get_coords();
     draw_bars(range);
   }
@@ -41,12 +44,15 @@ class WordBar {
     for (int i = 0; i < num_ages; i++) {
        float ratio = vals[i]/max_val;
        y_coords[i] = (float(canvas_h) - float(canvas_h)*ratio) + canvas_y1;
-       x_coords[i] = curr_x;
-       curr_x += interval;
+       x_coords[i] = lerp(canvas_x1, canvas_x2 - 30, (i / 93.0));
+       //curr_x += interval;
     }
+    
   }
   
   void draw_bars(Range range) {
+     float highest = min(y_coords);
+    
      for (int i = 0; i < num_ages; i++) {
         if((i >= range.low) && (i <= range.high)) {
             fill(0);
@@ -54,6 +60,16 @@ class WordBar {
             fill(125);
         }
         rect(x_coords[i]+x_spacing, y_coords[i], bar_width, canvas_y2 - y_coords[i]);
+        
+        if (y_coords[i] == highest) {
+           String msg ="age " + i + " =";
+           fill(0);
+           stroke(0);
+           textAlign(CENTER);
+           text(msg, x_coords[i], y_coords[i] - 12);
+           text(vals[i], x_coords[i], y_coords[i] - 2);
+           noStroke();
+        }
      }
     
   }
