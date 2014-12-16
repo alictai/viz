@@ -47,7 +47,7 @@ void setup() {
 
 void draw() {
   //background(255);
-  filter.draw_filter();
+  filter.draw_filter(range);
   
   range = filter.get_range();
   if (range.low >= range.high) {
@@ -64,7 +64,7 @@ void draw() {
       rect(0, 0, 1200, 600);
     }
   }
-    
+
   toShow.draw_graphs(wc, range);
   
   //print("Range: ", range.low, " to ", range.high, "\n");

@@ -16,6 +16,7 @@ class Cloud {
   int clicked_index;
   int barx1, barx2;
   int bary1, bary2;
+  boolean show_cloud;
   
   String[] words = {"Uninspired","Sophisticated","Aggressive","Edgy","Sociable","Laid back","Wholesome",
     "Uplifting","Intriguing","Legendary","Free","Thoughtful","Outspoken","Serious","Good lyrics",
@@ -29,12 +30,13 @@ class Cloud {
     "Dated","Iconic","Unapproachable","Classic","Playful","Arrogant","Warm","Soulful"};
   
   Cloud(WordCram w, UserData d) {
+    show_cloud = true;
     wc = w;
     data = d;
     clicked = false;
-    barx1 = 35;
+    barx1 = 20;
     bary1 = 525;
-    barx2 = 879;
+    barx2 = 820;
     bary2 = 595;
     gender = "both";
   }
@@ -83,6 +85,8 @@ class Cloud {
   
   void draw_cloud(Range range) {
       //print(clicked, "\n");
+    if (show_cloud == true) {
+      
       if (freq_range != 0) {
           wc.drawAll();
           if (wc.hasMore()) {
@@ -95,10 +99,27 @@ class Cloud {
       if (clicked == true) {
           fill(255);
           noStroke();
-          rect(barx1, bary1, barx2 - barx1, bary2 - bary1);
+          rect(0, bary1, barx2 - barx1, bary2 - bary1);
           //print("drawing bars\n");
-          draw_bars(range);
+          print(clicked_index);
+          draw_bars(range, words[clicked_index], false);
+      } else {
+          textAlign(LEFT);
+          textSize(15);
+          text("Click word to see distribution", barx1, bary2);
       }
+      
+    } else {
+      fill(255);
+      noStroke();
+      rect(0, 0, width, 600);
+      draw_bars(range, words[clicked_index], true);
+      draw_wordlist();
+      
+      textSize(15);
+      textAlign(LEFT, TOP);
+      text("Show Wordcloud", width/3, 570);
+    }
       
   }
   
@@ -113,17 +134,55 @@ class Cloud {
   //code below for generating bar graphs
   
   void check_click() {
-    Word clicked_w = wc.getWordAt(mouseX, mouseY);
-    
-    if (clicked_w == null) {
-      clicked = false;
-      //print("no word clicked\n");
+    if (show_cloud == true) {
+      check_click_wc();
     } else {
-      clicked = true;
-      //print(clicked_w, "\n");
-      String[] split_line = splitTokens(clicked_w.toString(), " ");
-      String word = split_line[0];
-      clicked_index = get_word_index(word);
+      check_click_bar();
+    }
+  }
+  
+  void check_click_wc() {
+    Word clicked_w = wc.getWordAt(mouseX, mouseY);
+    if (clicked_in_bar() == false) {
+      if (clicked_w == null){
+        clicked = false;
+        fill(255);
+        noStroke();
+        rect(0, bary1 - 15, barx2 - barx1, bary2 - bary1 +15);
+        //print("no word clicked\n");
+      } else {
+        clicked = true;
+        //print(clicked_w, "\n");
+        String[] split_line = splitTokens(clicked_w.toString(), " ");
+        String word = split_line[0];
+        clicked_index = get_word_index(word);
+      }
+    }
+    
+    print("\n", clicked, " ", show_cloud, "\n");
+    
+    if ((clicked_in_bar() == true) && (clicked == true)) {
+        print("hiding cloud");
+        show_cloud = false;
+    } else {
+        print("showing cloud");
+        show_cloud = true;
+    }
+  }
+    
+  void check_click_bar() {
+     check_wordlist();
+     if (mouseX > width/3 && mouseX < width/3 + 100 && mouseY < 570 && mouseY > 585) {
+        print("back to wordcloud\n");
+        show_cloud = true;
+     } 
+  }
+  
+  boolean clicked_in_bar() {
+    if (mouseX > barx1 && mouseX < barx2 && mouseY > bary1 && mouseY < bary2) {
+        return true;
+    } else {
+        return false;
     }
   }
   
@@ -137,9 +196,87 @@ class Cloud {
       return -1;
   }
   
-  void draw_bars(Range range) {
+  void draw_bars(Range range, String word, boolean with_axes) {
      int[] bar_stats = data.get_bar_stats(clicked_index, gender);
-     bar = new WordBar(bar_stats, barx1, bary1, barx2, bary2);
-     bar.draw_graph(range);
+     if (with_axes == true) {
+       bar = new WordBar(bar_stats, 0, 20, width*2/3 + 35, 550, with_axes);
+     } else {
+       bar = new WordBar(bar_stats, barx1, bary1, barx2, bary2, with_axes);
+     }
+     bar.draw_graph(range, word);
+  }
+  
+  void draw_wordlist() {
+     int x = 2*width/3;
+     int y_interval = (580/words.length) * 3;
+     int curr_y = 0;
+     int i = 0;
+     textAlign(LEFT, TOP);
+     textSize(12);
+     
+     for (i = 0; i < words.length/3; i++) {
+        text(words[i], x, curr_y);
+        curr_y += y_interval;
+     }
+     
+     x += 100;
+     curr_y = 0;
+     
+     for (i=i; i < 2* words.length/3; i++) {
+        text(words[i], x, curr_y);
+        curr_y += y_interval;
+     }
+     
+     x += 100;
+     curr_y = 0;
+     
+     for (i=i; i < words.length; i++) {
+        text(words[i], x, curr_y);
+        curr_y += y_interval;
+     }
+  }
+  
+  void check_wordlist() {
+     int x = 2*width/3;
+     int y_interval = (580/words.length) * 3;
+     int curr_y = 0;
+     int i = 0;
+     
+     for (i = 0; i < words.length/3; i++) {
+        if (check_word(x, curr_y) == true) {
+            clicked_index = i;
+        }
+        curr_y += y_interval;
+     }
+     
+     x += 100;
+     curr_y = 0;
+     
+     for (i=i; i < 2* words.length/3; i++) {
+        if (check_word(x, curr_y) == true) {
+            clicked_index = i;
+        }
+        curr_y += y_interval;
+     }
+     
+     x += 100;
+     curr_y = 0;
+     
+     for (i=i; i < words.length; i++) {
+        if (check_word(x, curr_y) == true) {
+            clicked_index = i;
+        }
+        curr_y += y_interval;
+     }
+  }
+  
+  boolean check_word(int x, int y) {
+      if (mouseX > x && mouseX < x+100 && mouseY > y && mouseY < y+12) {
+        return true;
+      } else {
+        return false;
+      }
   }
 }
+
+
