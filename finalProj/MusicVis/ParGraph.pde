@@ -33,10 +33,11 @@ class ParGraph {
   boolean flip;
   boolean[] flipped_cols;
   String[] headers;
+  Range prev;
 
   ParGraph (UserData d) {
     //initializations for final project
-    num_cols = d.NUM_QS;
+    num_cols = d.NUM_QS + 1;
     num_rows = 93;
     headers = new String[num_cols];
     data = d;
@@ -51,7 +52,8 @@ class ParGraph {
     for(int i = 0; i < num_cols; i++) {
     	headers[i] = "Q" + str(i);
     }
-    num_labels = 19;
+    headers[headers.length - 1] = "Age";
+    num_labels = headers.length;
     labels = new float[num_cols][num_labels];
     label_coords = new float[num_cols][num_labels];
     pg = null;
@@ -64,6 +66,10 @@ class ParGraph {
       flipped_cols[i] = false;
     }
     generate_colors();
+    prev = new Range();
+    prev.low = 0;
+    prev.high = 0;
+    prev.gender="";
   }
 
   void draw_graph(int x_in, int y_in, int w_in, int h_in, Range r, String g) {
@@ -72,30 +78,40 @@ class ParGraph {
     w = w_in;
     h = h_in;
 
-    calculate_data(r,g);
-    calculate_axes();
-    calc_pts();
-    calc_labels();
-    calc_colors();
+    range = r;
+    gender = g;
 
-    draw_axes();
-    draw_lines();
-    draw_pts();
-    draw_labels();
+    if (range.low != prev.low || range.high != prev.high || range.gender != prev.gender) {
+	    calculate_data(r,g);
+	}
+
+	calculate_axes();
+	calc_pts();
+	calc_labels();
+    calc_colors();
+	 
+	draw_axes();
+	draw_lines();
+	draw_pts();
+	draw_labels();
+
+	prev = r;
   }
 
   void calculate_data(Range r, String g) {
-  	range = r;
-  	gender = g;
   	num_rows = range.high - range.low;
 
     vals = data.get_qs_avg(range, gender);
-
+    float[] ages = new float[num_rows];
+    for(int i = range.low; i < range.high; i++) {
+    	ages[i-range.low] = float(i);
+    }
+    vals = (float[][])append(vals, ages);
+    printArray(vals);
 
 	mins = new float[num_cols];
     maxes = new float[num_cols];
     find_bounds();
-    
     x_coords = new float[num_cols];
     y_coords = new float[num_cols][num_rows];
   }

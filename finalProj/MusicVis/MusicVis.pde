@@ -47,7 +47,6 @@ void setup() {
 
 void draw() {
   background(255);
-  //slider.draw_slider();
   filter.draw_filter();
   
   range = filter.get_range();
