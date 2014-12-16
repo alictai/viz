@@ -34,6 +34,7 @@ Filter   filter;
 WordCram wc;
 Range    range;
 Range    prev_range;
+boolean clicked;
 
 //PGraphics canvas = this.createGraphics(screenWidth - 100, screenHeight - 100, P2D\\);
 PImage image = createImage(1000, 650, RGB);
@@ -54,7 +55,7 @@ public void setup() {
   prev_range = new Range();
   prev_range.low = 0;
   prev_range.high = 93;
-
+  clicked = false;
 
 
   /*
@@ -66,6 +67,7 @@ public void setup() {
 
 
 public void draw() {
+  background(255);
   //slider.draw_slider();
   filter.draw_filter();
   
@@ -86,7 +88,7 @@ public void draw() {
     }
   }
   
-  toShow.draw_graphs(wc);
+  toShow.draw_graphs(wc, range);
   
   
   //print("Range: ", range.low, " to ", range.high, "\n");
@@ -107,7 +109,7 @@ public boolean range_changed() {
 /* events */
 
 public void mouseClicked() {
-  toShow.check_click();
+  toShow.set_click();
 }
 
 public void mousePressed() {
@@ -118,13 +120,35 @@ public void mouseReleased() {
   filter.released();
 }
 
+class MusicPref {
+    float   listen_own;
+    int     num_listen_own;
+    float   listen_own_avg;
+    float   listen_back;
+    int     num_listen_back;
+    float   listen_back_avg;
+}
+
 class AgeGroup {
   final int NUM_QS = 20;
   final int NUM_WORDS = 82;
+  final int NUM_STATEMENTS = 6;
   boolean contains_data;
   int[]   word_freqs;    //size 80, each index = same word
   float[] total_q_score; 
   int[]   num_per_q; //if performance issues, fix this first
+  float   listen_own;
+  int     num_listen_own;
+  float   listen_back;
+  int     num_listen_back;
+  String[]  music_statements = {
+                "Music is no longer as important as it used to be to me",
+                "Music means a lot to me and is a passion of mine",
+                "I like music but it does not feature heavily in my life",
+                "Music has no particular interest for me",
+                "Music is important to me but not necessarily more important than other hobbies or interests",
+                "Display all"};
+  MusicPref[]  prefs; 
   
   AgeGroup() {
      word_freqs    = new int[NUM_WORDS];
@@ -134,6 +158,24 @@ class AgeGroup {
      num_per_q = new int[NUM_QS];
      
      contains_data = false; //handle this differently?
+     
+     prefs = new MusicPref[NUM_STATEMENTS];
+     
+     for (int i = 0; i < NUM_STATEMENTS; i++) {
+       prefs[i] = new MusicPref();
+     }
+     
+  }
+  
+  public int find_statement(String statement) {
+      for (int i = 0; i < NUM_STATEMENTS; i++) {
+          if (statement.equals(music_statements[i])) {
+              return i;
+          }
+      }
+      
+      //last stament has inconsistent spelling, so it is else case
+      return 4;
   }
   
   
@@ -152,6 +194,10 @@ class Cloud {
   int freq_range;
   int prev_freq_range = 0;
   String gender = "female";
+  boolean clicked;
+  int clicked_index;
+  int barx1, barx2;
+  int bary1, bary2;
   
   String[] words = {"Uninspired","Sophisticated","Aggressive","Edgy","Sociable","Laid back","Wholesome",
     "Uplifting","Intriguing","Legendary","Free","Thoughtful","Outspoken","Serious","Good lyrics",
@@ -167,6 +213,11 @@ class Cloud {
   Cloud(WordCram w, UserData d) {
     wc = w;
     data = d;
+    clicked = false;
+    barx1 = 35;
+    bary1 = 525;
+    barx2 = 879;
+    bary2 = 595;
   }
   
   public int[] get_freqs(Range range, String gen) {
@@ -210,7 +261,8 @@ class Cloud {
     });
   }
   
-  public void draw_cloud() {
+  public void draw_cloud(Range range) {
+      print(clicked, "\n");
       if (freq_range != 0) {
           wc.drawAll();
           if (wc.hasMore()) {
@@ -218,6 +270,14 @@ class Cloud {
              wc.drawNext();
           }
           prev_freq_range = freq_range;
+      }
+      
+      if (clicked == true) {
+          fill(255);
+          noStroke();
+          rect(barx1, bary1, barx2 - barx1, bary2 - bary1);
+          print("drawing bars\n");
+          draw_bars(range);
       }
       
   }
@@ -233,17 +293,17 @@ class Cloud {
   //code below for generating bar graphs
   
   public void check_click() {
-    Word clicked = wc.getWordAt(mouseX, mouseY);
+    Word clicked_w = wc.getWordAt(mouseX, mouseY);
     
-    if (clicked == null) {
+    if (clicked_w == null) {
+      clicked = false;
       print("no word clicked\n");
     } else {
-      print(clicked, "\n");
-      String[] split_line = splitTokens(clicked.toString(), " ");
+      clicked = true;
+      print(clicked_w, "\n");
+      String[] split_line = splitTokens(clicked_w.toString(), " ");
       String word = split_line[0];
-      int index = get_word_index(word);
-      int[] bar_stats = data.get_bar_stats(index, gender);
-      bar = new WordBar(bar_stats, 200, 300, 500, 900);
+      clicked_index = get_word_index(word);
     }
   }
   
@@ -253,7 +313,14 @@ class Cloud {
           return i;
         }
       }
+      clicked = false;
       return -1;
+  }
+  
+  public void draw_bars(Range range) {
+     int[] bar_stats = data.get_bar_stats(clicked_index, gender);
+     bar = new WordBar(bar_stats, barx1, bary1, barx2, bary2);
+     bar.draw_graph(range);
   }
 }
 class Display {
@@ -262,7 +329,8 @@ class Display {
   
   //list of visualizations, may be active or nah
   Cloud    cloud; 
-  //ParGraph par_graph;
+  ParGraph par_graph;
+  PieControl pies;
   /* more to be added */
   
   int[] word_freqs;
@@ -270,36 +338,46 @@ class Display {
   Display(WordCram wc, UserData d) {
     data = d;
     cloud = new Cloud(wc, data);
-    //par_graph = new ParGraph(data);
+    pies = new PieControl(data);
+    par_graph = new ParGraph(data);
   }
   
   //returns true if frequencies change
   public void get_freqs(Range range) {
-      word_freqs = cloud.get_freqs(range, "female");
+      //word_freqs = cloud.get_freqs(range, range.gender);
       //return cloud.freq_changed();
+      par_graph.draw_graph(0, 0, width, height-100, range, range.gender);
   }
 
-  public void draw_graphs(WordCram wc) {
-      cloud.set_weights(wc, word_freqs);
-      cloud.draw_cloud();
+  // pass gender from Musicvis
+  public void draw_graphs(WordCram wc, Range range) {
+      String gender = "both";
+      //cloud.set_weights(wc, word_freqs);
+      //cloud.draw_cloud(range);
+      //pies.draw_pies(range, gender);
+      par_graph.draw_graph(0, 0, width, height-100, range, range.gender);
+      
   }
   
-  public void check_click() {
-      cloud.check_click();
+  public void set_click() {
+      pies.check_click();
+      //cloud.check_click();
   }
   
-  
-  
-  
+ 
 }
 class Filter {
   float x, y;
   float wid, hgt;
   
   Slider    slider;
-  //Gen_Check gencheck;
- 
- 
+  Gen_Check male;
+  Gen_Check female;
+  
+  VisLabel cloud;
+  VisLabel par;
+  VisLabel pie;
+  VisLabel tbd2;
  
   Filter(float _x, float _y, float w, float h) {
     x = _x;
@@ -310,9 +388,16 @@ class Filter {
     float s_x = x + 20;
     float s_y = y + 75; 
     float s_w = wid - 400;
+
     slider = new Slider(x + 20, y + 25, w - 400);
-    //gencheck = new Gen_Check();
-   
+
+    male   = new Gen_Check(wid - 470, y + 60, 30, 10, true, "Male");
+    female = new Gen_Check(x + 70,    y + 60, 45, 10, true, "Female");   
+    
+    cloud = new VisLabel(835, y + 25, 85, 50, "HistoricGoat.jpg", true);
+    par   = new VisLabel(925, y + 25, 85, 50, "SadGoat.jpg", false);
+    pie  = new VisLabel(1015, y + 25, 85, 50, "PattyGoat.jpg", false);
+    tbd2  = new VisLabel(1105, y + 25, 85, 50, "VikingsGoat.jpg", false);
   } 
   
   public void draw_filter() {
@@ -320,28 +405,296 @@ class Filter {
     strokeWeight(0);
     rect(x, y, wid, hgt); 
     
+    draw_prompt();
     slider.draw_slider(); 
+    male.draw_gen();
+    female.draw_gen();
+    cloud.draw_label();
+    par.draw_label();
+    pie.draw_label();
+    tbd2.draw_label();
   }
+  
+  public void draw_prompt() {
+    PFont font;
+    font = loadFont("DejaVuSans-20.vlw");
+    textFont(font, 20);
+    
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textSize(20);
+    textLeading(18);
+    text("SELECT AGE AND\nGENDER DEMOGRAPHIC", x + 420, y + 65);
+    
+  }
+  
   
   public Range get_range() {
-    return slider.get_range(); 
+    Range toRet = new Range();;
+    boolean m, f;
+    
+    m = male.active;
+    f = female.active;
+    
+    toRet = slider.get_range(toRet); 
+    
+    if(m) {
+      if(f) {
+        toRet.gender = "both";
+      } else {
+        toRet.gender = "male";
+      }
+    } else {
+      if(f) {
+        toRet.gender = "female";
+      } else {
+        toRet.gender = "neither";
+      }
+    }
+    
+    if(cloud.active) {
+      toRet.curVis = "cloud";
+    } else if(par.active) {
+      toRet.curVis = "par";
+    } else if(pie.active) {
+      toRet.curVis = "pie";
+    } else if(tbd2.active) {
+      toRet.curVis = "tbd2";
+    } else {
+      toRet.curVis = "";
+    }
+    
+    return toRet;
   }
   
-  //rename
   public void pressed() {
     slider.check_brackets(); 
+    male.check_activate();
+    female.check_activate();
+    
+    String visp = which();
+    
+    if(visp.equals("cloud")) {
+      cloud.activate();
+      par.deactivate();
+      pie.deactivate();
+      tbd2.deactivate();
+    } else if(visp.equals("par")) {
+      cloud.deactivate();
+      par.activate();
+      pie.deactivate();
+      tbd2.deactivate();
+    } else if(visp.equals("pie")) {
+      cloud.deactivate();
+      par.deactivate();
+      pie.activate();
+      tbd2.deactivate();
+    } else if(visp.equals("tbd2")) {
+      cloud.deactivate();
+      par.deactivate();
+      pie.deactivate();
+      tbd2.activate();
+    }
   }
-  /*
-  //rename
-  void move_brackets() {
-    slider.move_brackets();
+  
+  public String which() {
+    if(cloud.was_pressed()) {
+      return "cloud";
+    } else if(par.was_pressed()) {
+      return "par";
+    } else if(pie.was_pressed()) {
+      return "pie";
+    } else if(tbd2.was_pressed()) {
+      return "tbd2";
+    } else {
+      return "";
+    }
   }
-  */
+
   public void released() {
     slider.unactivate(); 
   }
   
 }
+
+class Range {
+  int low;
+  int high;
+  String gender; //can be male, female, or both
+  String curVis; //can be cloud, par, pie, or tbd2
+}
+
+class Gen_Check {
+  float x, y;
+  float wid, hgt;
+  
+  String title;
+  
+  boolean active;
+  boolean deac;
+  boolean reac;
+  
+  int transNum;
+ 
+  Gen_Check(float _x, float _y, float w, float h, boolean act, String t) {
+    x = _x;
+    y = _y;
+    wid = w;
+    hgt = h;
+    active = act;
+    title = t;
+    deac = false;
+    reac = false;
+    transNum = 0;
+  } 
+  
+  public void draw_gen() {
+    if(active) {
+      if(reac) {
+        float col = map(transNum, 0, 30, 70, 200);
+        fill(col);
+        transNum++;
+        
+        if(transNum == 30) {
+          reac = false;
+          transNum = 0;
+        }
+      } else {
+        fill(200);
+      }
+    } else {
+      if(deac) {
+        float col = map(transNum, 0, 30, 200, 70);
+        fill(col);
+        transNum++;
+        
+        if(transNum == 30) {
+          deac = false;
+          transNum = 0;
+        }
+      } else {
+        fill(70);
+      }
+    }
+   
+    
+    PFont font;
+    font = loadFont("DejaVuSans-20.vlw");
+    textFont(font, 20);
+    textAlign(CENTER, CENTER);
+    textSize(25);
+    text(title, x, y);
+  }
+  
+  
+  public void check_activate() {
+    if(mouseX > x - wid && mouseX < x + wid) {
+      if (mouseY > y - hgt && mouseY < y + hgt) {
+        if(active) {
+          active = false;
+          deac = true;
+        } else {
+          active = true;
+          reac = true;
+        }
+      }
+    }
+  }
+}
+
+class VisLabel {
+  float x, y;
+  float wid, hgt;
+  PImage img;
+  boolean active;
+  boolean deac;
+  boolean reac;
+  int transNum;
+ 
+  VisLabel(float _x, float _y, float w, float h, String path, boolean act) {
+    x = _x;
+    y = _y;
+    wid = w;
+    hgt = h;
+    img = loadImage(path);
+    active = act;
+    reac = false;
+    deac = false;
+    transNum = 0;
+  }
+  
+  public void draw_label() {
+    if (!active) {
+      if(deac) {
+        float col = map(transNum, 0, 20, 255, 100);
+        tint(col);
+        
+        transNum++;
+        if(transNum == 20) {
+          transNum = 0;
+          deac = false; 
+        }
+      } else {
+        tint(100);
+      } 
+    } else {
+      if(reac) {
+        float col = map(transNum, 0, 20, 100, 255);
+        tint(col);
+        
+        transNum++;
+        if(transNum == 20) {
+          transNum = 0;
+          reac = false; 
+        }
+      } else {
+        tint(255);
+      }
+    }
+
+    image(img, x, y, wid, hgt);
+  }
+  
+  public void activate() {
+    if(!active) {
+      active = true;
+      reac = true; 
+    }
+  }
+  
+  public void deactivate() {
+    if(active) {
+      active = false;
+      deac = true;
+    }
+  }
+  
+  public void check_activate() {
+    if(mouseX > x && mouseX < x + wid) {
+      if(mouseY > y && mouseY < y + hgt) {
+        if(active) {
+          active = false;
+          deac = true;
+        } else {
+          active = true;
+          reac = true;
+        }
+      }
+    }
+  }
+  
+  public boolean was_pressed() {
+    if (mouseX > x && mouseX < x + wid) {
+      if(mouseY > y && mouseY < y + hgt) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+}
+
+
 //Needs UserData to have:
 //  int get_num_rows() { return vals[0].length; }
 //  String get_header(int index) { return header[index]; };
@@ -700,6 +1053,9 @@ class Parser {
       for (int i = 0; i < num_words; i++) {
          data.girls[age].word_freqs[i] += PApplet.parseInt(split_line[word_index + i]);
       }
+      
+      assign_pref(age, gender, split_line);
+      
     } else {
       data.boys[age].contains_data = true;
       
@@ -711,7 +1067,34 @@ class Parser {
       for (int i = 0; i < num_words; i++) {
          data.boys[age].word_freqs[i] += PApplet.parseInt(split_line[word_index + i]);
       }
+      
+      assign_pref(age, gender, split_line);
+      
     }
+  }
+  
+  public void assign_pref(int age, String gender, String[] split_line) {
+      int state_index = data.boys[0].find_statement(split_line[5]);
+    
+         if (PApplet.parseInt(split_line[6]) != -1) {
+           if (gender.equals("Female")) { 
+              data.girls[age].prefs[state_index].listen_own += PApplet.parseInt(split_line[6]);
+              data.girls[age].prefs[state_index].num_listen_own += 1;
+           } else {
+              data.boys[age].prefs[state_index].listen_own += PApplet.parseInt(split_line[6]);
+              data.boys[age].prefs[state_index].num_listen_own += 1;      
+           }
+         }
+      
+         if (PApplet.parseInt(split_line[7]) != -1) {
+           if (gender.equals("Female")) {
+             data.girls[age].prefs[state_index].listen_back += PApplet.parseInt(split_line[7]);
+             data.girls[age].prefs[state_index].num_listen_back += 1;
+           } else {
+             data.boys[age].prefs[state_index].listen_back += PApplet.parseInt(split_line[7]);
+             data.boys[age].prefs[state_index].num_listen_back += 1;
+           }
+         }
   }
   
   public void printtest() {
@@ -721,12 +1104,223 @@ class Parser {
   }
   
 }
-class Range {
-  int low;
-  int high;
-  String gender; //can be male, female, or both
+class PieChart {
+  String x_axis;
+  String y_axis;
+  float y_max;
+  int num_slices;
+  float total_time;
+  int canvas_x1, canvas_x2;
+  int canvas_y1, canvas_y2;
+  int canvas_w, canvas_h;
+  int piex, piey;
+  int isect;
+  float list_own_angle;
+  float list_back_angle;
+  float rem_angle;
+  MusicPref data;
+  
+  //variables matt made global
+  float diameter; //set during draw function
+  int text_color;  //(200, 150, 200)
+  float avg_ang;
+  
+
+  PieChart(MusicPref d) {
+    data = d;
+    num_slices = 3;
+    text_color = color(200, 150, 200);
+    total_time = 24;
+    piex = width/5;
+    piey = height/3;
+  }
+
+  public void draw_graph() {
+    draw_title(); 
+    find_angles();
+    find_diameter();
+    draw_chart();
+  }
+  
+  public void draw_title() {
+    fill(150, 0, 150);
+    stroke(150, 0, 150);
+    textAlign(CENTER);
+    textSize(20);
+    text("Average Time Spent:", piex, 42);
+    
+  }
+
+  public void make_canvas() {
+    canvas_y1 = 40;
+    canvas_y2 = height - 90;
+    canvas_x1 = 60;
+    canvas_x2 = width - 60;
+
+    canvas_w = canvas_x2 - canvas_x1;
+    canvas_h = canvas_y2 - canvas_y1;
+  }
+
+  public void find_angles() {
+    list_own_angle = PApplet.parseFloat(360) * data.listen_own_avg / total_time;
+    list_back_angle = PApplet.parseFloat(360) * data.listen_back_avg / total_time;
+    rem_angle = PApplet.parseFloat(360) - list_own_angle - list_back_angle;
+  }
+
+  
+
+  public void draw_chart() {
+      print("drawing pie\n");
+      float lastAngle = 0;
+         noStroke();
+         //float gray = map(i, 0, data.values[0].length, 0, 255);
+         fill(200, 100, 200);
+         arc(piex, piey, diameter, diameter, 0, 0 + radians(list_own_angle), PIE);
+         draw_words(lastAngle, radians(list_own_angle), "Listening to own music");
+         lastAngle += radians(list_own_angle);
+         fill(150, 0, 150);
+         arc(piex, piey, diameter, diameter, lastAngle, lastAngle + radians(list_back_angle), PIE);
+         draw_words(lastAngle, radians(list_back_angle), "Listening to background music");
+         lastAngle += radians(list_back_angle);
+         fill(220, 220, 255);
+         arc(piex, piey, diameter, diameter, lastAngle, lastAngle + radians(rem_angle), PIE);
+         //draw_words(lastAngle, radians(rem_angle));
+          
+  }
+  
+  public void draw_words(float lastAngle, float ownAngle, String message) {
+      //translate
+      translate(piex, piey);
+      rotate(lastAngle + ownAngle/2);
+      translate(diameter/2 + 10, 0);
+
+      //print words
+      textSize(15);
+      textAlign(BASELINE);
+      text(message, 0, 0); 
+
+      //un-translate
+      translate(-diameter/2 - 10, 0);
+      rotate(-lastAngle - ownAngle/2);
+      translate(-piex, -piey);
+  }
+
+  
+  public void find_diameter() {
+    if (width > height) {
+      diameter = height/2;
+    } else {
+      diameter = width/2;
+    }
+  }
 }
 
+
+
+class PieControl {
+  final int NUM_STATEMENTS = 6;
+  UserData   data;
+  MusicPref[]  pie_stats;
+  PieChart pie;
+  int statements_x1, statements_x2;
+  int statements_y1, statements_y2;
+  int statement_yinterval;
+  int piex1, piex2;
+  int piey1, piey2;
+  int clicked;
+  
+  PieControl(UserData d) {
+    data = d;
+    statements_x1 = 20;
+    statements_y1 = 475;
+    statements_x2 = 500;
+    statements_y2 = 600;
+    statement_yinterval = 20;
+    clicked = 5;
+    
+    piex1 = 0;
+    piey1 = 0;
+    piex2 = width;
+    piey2 = height - 100;
+  }
+  
+  public void draw_pies(Range range, String gender) {
+     fill(255);
+     noStroke();
+     rect(piex1, piey1, piex2 - piex1, piey2 - piey1);
+     pie_stats = data.get_pie_stats(range, gender);
+     print_header();
+     print_statements();
+     MusicPref todraw;
+     if (clicked == 5) {
+       todraw = new MusicPref();
+       for (int i = 0; i < NUM_STATEMENTS - 1; i++) {
+          todraw.listen_own_avg += pie_stats[i].listen_own_avg;
+          todraw.listen_back_avg += pie_stats[i].listen_back_avg;
+       } 
+       
+       todraw.listen_own_avg = todraw.listen_own_avg/5;
+       todraw.listen_back_avg = todraw.listen_back_avg/5;
+       
+     } else {
+       todraw = pie_stats[clicked];
+       print(todraw.num_listen_own, "\n");
+     }
+     
+     
+     pie = new PieChart(todraw);
+     pie.draw_graph();
+  }
+  
+  public void print_header() {
+     fill(0);
+     stroke(0);
+     textAlign(LEFT, TOP);
+     textSize(17);
+     text("Filter based on respondents' statements:", statements_x1, statements_y1 - 30);
+     line(statements_x1, statements_y1 - 12, statements_x2 - 135, statements_y1 - 12 );
+  }
+  
+  public void print_statements() {
+     fill(255);
+     noStroke();
+     //rect(statements_x1, statements_y1, statements_x2-statements_x1, statements_y2-statements_y1);
+     int curr_y = statements_y1;
+     stroke(0);
+     textSize(10);
+     textAlign(LEFT, TOP);
+     for (int i = 0; i < NUM_STATEMENTS; i++) {
+       if(i == clicked) {
+           fill(0, 100, 255);
+       } else {
+           fill(0);
+       }
+       
+       text(data.girls[0].music_statements[i], statements_x1, curr_y);
+       curr_y += statement_yinterval;
+     }
+    
+  }
+  
+  public void check_click() {
+    print("in check click\n");
+    int curr_y = statements_y1;
+    if((mouseX > statements_x1) && (mouseX < statements_x2)) {
+      print("within statement area\n");
+      for (int i = 0; i < NUM_STATEMENTS; i++) {
+         print("mousey is: ", mouseY, " curry is: ", curr_y, "curry + interval is: ", curr_y + statement_yinterval, "\n");
+         if((mouseY >= curr_y) && (mouseY < (curr_y + statement_yinterval))) {
+             print("printing", data.girls[0].music_statements[i], "\n");
+             clicked = i;
+         }
+         curr_y += statement_yinterval;
+
+      }
+    }
+  }
+  
+  
+}
 /*************************************************************************/
 /*                            BRACKET CLASS                              */
 /*************************************************************************/
@@ -784,7 +1378,13 @@ class Bracket {
     fill(255);
     rect(rect_x, rect_y, rect_w, rect_h, 4); 
     //triangle(rect_x + (.25 * rect_w), rect_y + rect_h, rect_x + (.5 * rect_w), rect_y + rect_h + 3, rect_x + (.75 * rect_w), rect_y + rect_h);
+    
+    PFont font;
+    //must be located in data directory in sketchbook
+    font = loadFont("UbuntuMono-Bold-16.vlw");
+    textFont(font, 16);    
     textAlign(CENTER, CENTER);
+     
     fill(200, 0, 0);
     text(val, x, (y - 1.125f * h));
     
@@ -809,13 +1409,12 @@ class Bracket {
         rb = r_bound;
       }
             
-      if(mouseX > lb && mouseX < rb) {
+      if(mouseX > lb - 50 && mouseX < rb + 50) {
         float curr, l, r;
         curr = map(val, 0, 93, l_bound, r_bound);
         l    = map(val - 1, 0, 93, l_bound, r_bound);
         r    = map(val + 1, 0, 93, l_bound, r_bound);
                 
-        //while (! (abs(mouseX - l) < abs(mouseX - curr)) || (abs(mouseX - r) < abs(mouseX - curr))) {
           if (abs(mouseX - l) < abs(mouseX - curr)) {
              val--;
              x = l;
@@ -827,7 +1426,6 @@ class Bracket {
              int_l = x - w/2;
              int_r = x + w/2;
           }
-        //}
       }
     } 
   }
@@ -902,12 +1500,10 @@ class Slider {
     }
   }
   
-  public Range get_range() {
-    Range toRet = new Range();
+  public Range get_range(Range toRet) {
     toRet.low = left.val;
     toRet.high = right.val;
-    toRet.gender = "both";
-    
+
     return toRet;
   } 
   
@@ -940,6 +1536,7 @@ class UserData {
   final int MAXAGE = 95;
   final int NUM_QS = 19;
   final int NUM_WORDS = 82;
+  final int NUM_STATEMENTS = 5;
   
   AgeGroup[] boys;
   AgeGroup[] girls;
@@ -958,6 +1555,7 @@ class UserData {
   public int[] get_freqs(Range range, String gender) {
     int[] total = new int[NUM_WORDS];
     for (int i = range.low; i < range.high; i++) {
+      if (i < 0) {i = 0;}
       for (int j = 0; j < NUM_WORDS; j++) {
         if (gender.equals("female")) {
           total[j] += girls[i].word_freqs[j];
@@ -988,41 +1586,81 @@ class UserData {
           toret[i] += girls[i].word_freqs[word_index];
           toret[i] += boys[i].word_freqs[word_index];
         }
-        print(toret[i], "\n");
+        //print(toret[i], "\n");
       }
       
       return toret;
    }
+   
+  public MusicPref[] get_pie_stats(Range range, String gender) {
+      MusicPref[] toret = new MusicPref[NUM_STATEMENTS];
+      for (int i = 0; i < NUM_STATEMENTS; i++) {
+        toret[i] = new MusicPref();
+      }
+      
+      for (int i = range.low; i < range.high; i++) {
+        for (int j = 0; j < NUM_STATEMENTS; j++) {
+           if(gender.equals("female")) {
+              toret[j].listen_own += girls[i].prefs[j].listen_own;
+              toret[j].num_listen_own += girls[i].prefs[j].num_listen_own;
+              toret[j].listen_back += girls[i].prefs[j].listen_back;
+              toret[j].num_listen_back += girls[i].prefs[j].num_listen_back;
+           } else if(gender.equals("male")) {
+              toret[j].listen_own += boys[i].prefs[j].listen_own;
+              toret[j].num_listen_own += boys[i].prefs[j].num_listen_own;
+              toret[j].listen_back += boys[i].prefs[j].listen_back;
+              toret[j].num_listen_back += boys[i].prefs[j].num_listen_back;
+           } else {
+              toret[j].listen_own += girls[i].prefs[j].listen_own;
+              toret[j].num_listen_own += girls[i].prefs[j].num_listen_own;
+              toret[j].listen_back += girls[i].prefs[j].listen_back;
+              toret[j].num_listen_back += girls[i].prefs[j].num_listen_back;
+              toret[j].listen_own += boys[i].prefs[j].listen_own;
+              toret[j].num_listen_own += boys[i].prefs[j].num_listen_own;
+              toret[j].listen_back += boys[i].prefs[j].listen_back;
+              toret[j].num_listen_back += boys[i].prefs[j].num_listen_back;
+           }
+        } 
+      }
+      
+      for (int j = 0; j < NUM_STATEMENTS; j++) {
+          toret[j].listen_own_avg = toret[j].listen_own / toret[j].num_listen_own;
+          toret[j].listen_back_avg = toret[j].listen_back / toret[j].num_listen_back;
+      }
+      
+      return toret;
+  }
   
   public float[][] get_qs_avg(Range range, String gender) {
     float[][] total = new float[NUM_QS][range.high-range.low];
     for (int i = range.low; i < range.high; i++) {
       for (int j = 0; j < NUM_QS; j++) {
+        int index = i - range.low;
         if (gender.equals("female")) {
-          if(girls[i].num_per_q[j] == 0) {
-            total[j][i] = 0;
+          if(girls[index].num_per_q[j] == 0) {
+            total[j][index] = 0;
           } else {
-            total[j][i] = girls[i].total_q_score[j]/girls[i].num_per_q[j];
+            total[j][index] = girls[index].total_q_score[j]/girls[index].num_per_q[j];
           }
         } else if (gender.equals("male")) {
-          if(boys[i].num_per_q[j] == 0) {
-            total[j][i] = 0;
+          if(boys[index].num_per_q[j] == 0) {
+            total[j][index] = 0;
           } else {
-            total[j][i] = boys[i].total_q_score[j]/boys[i].num_per_q[j];
+            total[j][index] = boys[index].total_q_score[j]/boys[index].num_per_q[j];
           }
         } else {
-          if(girls[i].num_per_q[j] == 0) {
-            total[j][i] = 0;
+          if(girls[index].num_per_q[j] == 0) {
+            total[j][index] = 0;
           } else {
-            total[j][i] = girls[i].total_q_score[j]/girls[i].num_per_q[j];
+            total[j][index] = girls[index].total_q_score[j]/girls[index].num_per_q[j];
           }
 
-          if(boys[i].num_per_q[j] == 0) {
-            total[j][i] += 0;
+          if(boys[index].num_per_q[j] == 0) {
+            total[j][index] += 0;
           } else {
-            total[j][i] += boys[i].total_q_score[j]/boys[i].num_per_q[j];
+            total[j][index] += boys[index].total_q_score[j]/boys[index].num_per_q[j];
           }
-          total[j][i] = total[j][i]/2;
+          total[j][index] = total[j][index]/2;
         }
         //printArray(girls[i].num_per_q);
       }
@@ -1033,7 +1671,7 @@ class UserData {
 }
 class WordBar {
   int[] vals;
-  int num_ages = 95;
+  int num_ages = 94;
   int canvas_x1, canvas_x2;
   int canvas_y1, canvas_y2;
   int canvas_w, canvas_h;
@@ -1046,20 +1684,24 @@ class WordBar {
   
   WordBar(int[] vs, int x1, int y1, int x2, int y2) {
     max_val = 700;
+    vals = new int[num_ages];
+    for (int i = 0; i < num_ages; i++) {
+      vals[i] = vs[i];
+    }
     canvas_x1 = x1;
     canvas_x2 = x2;
     canvas_y1 = y1;
     canvas_y2 = y2;
     canvas_w = x2 - x1;
     canvas_h = y2 - y1;
-    interval = canvas_w/num_ages;
-    x_spacing = 5;
+    interval = canvas_w/(num_ages + 10);
+    x_spacing = 2;
     bar_width = interval - 2*x_spacing;
   }
   
-  public void draw_graph() {
+  public void draw_graph(Range range) {
     get_coords();
-    draw_bars();
+    draw_bars(range);
   }
   
   public void get_coords() {
@@ -1075,17 +1717,217 @@ class WordBar {
     }
   }
   
-  public void draw_bars() {
+  public void draw_bars(Range range) {
      for (int i = 0; i < num_ages; i++) {
-         float gray = map(i, 0, num_ages, 0, 255);
-         fill(150, gray, 150);
-         rect(x_coords[i]+x_spacing, y_coords[i], bar_width, canvas_y2 - y_coords[i]);
+        if((i >= range.low) && (i <= range.high)) {
+            fill(0);
+        } else {
+            fill(125);
+        }
+        rect(x_coords[i]+x_spacing, y_coords[i], bar_width, canvas_y2 - y_coords[i]);
      }
     
   }
   
   
 }
+/*class Display {
+  //data for visualizations
+  UserData data;      //contains an array of AgeGroups for m & f
+  
+  //list of visualizations, may be active or nah
+  Cloud    cloud; 
+  //ParGraph par_graph;
+   more to be added 
+  
+  int[] word_freqs;
+
+  Display(WordCram wc, UserData d) {
+    data = d;
+    cloud = new Cloud(wc, data);
+    //par_graph = new ParGraph(data);
+  }
+  
+  //returns true if frequencies change
+  void get_freqs(Range range) {
+      word_freqs = cloud.get_freqs(range, "female");
+      //return cloud.freq_changed();
+  }
+
+  void draw_graphs(WordCram wc) {
+      cloud.set_weights(wc, word_freqs);
+      cloud.draw_cloud();
+      
+  }
+  
+  void set_click() {
+      cloud.check_click();
+  }
+  
+}
+
+import java.awt.geom.Area;
+import java.awt.geom.Rectangle2D;
+import java.awt.Shape;
+import wordcram.*;
+
+int screenWidth = 1200;
+int screenHeight = 700;
+
+Parser   parser;
+Display  toShow;
+Slider   slider;
+Filter   filter;
+WordCram wc;
+Range    range;
+Range    prev_range;
+boolean clicked;
+
+//PGraphics canvas = this.createGraphics(screenWidth - 100, screenHeight - 100, P2D\\);
+PImage image = createImage(1000, 650, RGB);
+Shape imageShape = new ImageShaper().shape(image, #000000);
+ShapeBasedPlacer placer = new ShapeBasedPlacer(imageShape);
+
+void setup() {
+  size(screenWidth, screenHeight);
+  background(255);
+  frameRate(60);
+
+  parser = new Parser();
+  UserData data = parser.parse("../merged.csv");
+  wc = new WordCram(this);
+  //wc.withCustomCanvas(this.canvas);
+  toShow = new Display(wc, data);
+  filter = new Filter(0, 600, 1200, 100);
+  prev_range = new Range();
+  prev_range.low = 0;
+  prev_range.high = 93;
+  clicked = false;
+
+
+  /*
+  if (frame != null) {
+   frame.setResizable(true);
+   }
+   
+}
+
+
+void draw() {
+  //slider.draw_slider();
+  filter.draw_filter();
+  
+  range = filter.get_range();
+  if (range.low >= range.high) {
+    range.high = range.low + 1;
+  }
+  
+  toShow.get_freqs(range);
+  
+  if(!mousePressed) {
+    if (range_changed() == true) {
+      if(range_changed() == true) {print("changed\n");}
+      wc = new WordCram(this);
+      fill(255);
+      noStroke();
+      rect(0, 0, 1200, 600);
+    }
+  }
+  
+  toShow.draw_graphs(wc);
+  
+  
+  //print("Range: ", range.low, " to ", range.high, "\n");
+  //find range from slider
+  //pass range into Display's draw
+  //display has range, pulls data, updates vizs
+}
+
+boolean range_changed() {
+  if((range.low == prev_range.low) && (range.high == prev_range.high)) {
+      return false;
+  } else {
+      prev_range = range;
+      return true;
+  }
+}
+
+
+void mouseClicked() {
+  toShow.set_click();
+}
+
+void mousePressed() {
+  filter.pressed();
+}
+
+void mouseReleased() {
+  filter.released();
+}
+
+
+class UserData {
+  final int MAXAGE = 95;
+  final int NUM_QS = 20;
+  final int NUM_WORDS = 82;
+  
+  AgeGroup[] boys;
+  AgeGroup[] girls;
+  
+  
+  UserData() {
+    boys = new AgeGroup[MAXAGE];
+    girls = new AgeGroup[MAXAGE];
+    
+    for (int i = 0; i < MAXAGE; i++) {
+      girls[i] = new AgeGroup();
+      boys[i] = new AgeGroup();
+    }
+  }
+  
+  int[] get_freqs(Range range, String gender) {
+    int[] total = new int[NUM_WORDS];
+    for (int i = range.low; i < range.high; i++) {
+      for (int j = 0; j < NUM_WORDS; j++) {
+        if (gender.equals("female")) {
+          total[j] += girls[i].word_freqs[j];
+        } else if (gender.equals("male")) {
+          total[j] += boys[i].word_freqs[j];
+        } else {
+          total[j] += girls[i].word_freqs[j];
+          total[j] += boys[i].word_freqs[j];
+        }
+      }
+    }
+    
+    return total;
+  }
+  
+  int[] get_bar_stats(int word_index, String gender) {
+     int[] toret = new int[MAXAGE];
+     
+     //just for testing
+     gender = "both";
+     
+     for (int i = 0; i < MAXAGE; i++) {
+        if (gender.equals("female")) {
+          toret[i] = girls[i].word_freqs[word_index];
+        } else if (gender.equals("male")) {
+          toret[i] = boys[i].word_freqs[word_index];
+        } else {
+          toret[i] += girls[i].word_freqs[word_index];
+          toret[i] += boys[i].word_freqs[word_index];
+        }
+        //print(toret[i], "\n");
+      }
+      
+      return toret;
+   }
+  
+  
+}
+
+*/
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "MusicVis" };
     if (passedArgs != null) {

@@ -91,6 +91,7 @@ class ParGraph {
 
     vals = data.get_qs_avg(range, gender);
 
+
 	mins = new float[num_cols];
     maxes = new float[num_cols];
     find_bounds();
