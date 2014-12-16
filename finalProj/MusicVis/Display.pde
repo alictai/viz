@@ -38,11 +38,6 @@ class Display {
       } else if(range.curVis.equals("tbd2")) {
         
       }
-      //cloud.set_weights(wc, word_freqs);
-      //cloud.draw_cloud(range);
-      //pies.draw_pies(range, gender);
-      
-      
   }
   
   void set_click() {

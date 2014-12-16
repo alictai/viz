@@ -8,6 +8,7 @@ class PieChart {
   int canvas_y1, canvas_y2;
   int canvas_w, canvas_h;
   int piex, piey;
+  int slicex, slicey;
   int isect;
   float list_own_angle;
   float list_back_angle;
@@ -27,6 +28,8 @@ class PieChart {
     total_time = 24;
     piex = width/5;
     piey = height/3;
+    slicex = width/2 - 100;
+    slicey = height/2 - 70;
   }
 
   void draw_graph() {
@@ -70,11 +73,16 @@ class PieChart {
          //float gray = map(i, 0, data.values[0].length, 0, 255);
          fill(200, 100, 200);
          arc(piex, piey, diameter, diameter, 0, 0 + radians(list_own_angle), PIE);
-         draw_words(lastAngle, radians(list_own_angle), "Listening to own music");
+         textSize(13);
+         text("Listening to own music", slicex + diameter/2, slicey - 10);
+         arc(slicex, slicey, diameter*3, diameter*3, 0, 0 + radians(list_own_angle), PIE);
+         draw_vals(lastAngle, radians(list_own_angle), data.listen_own_avg);
          lastAngle += radians(list_own_angle);
          fill(150, 0, 150);
          arc(piex, piey, diameter, diameter, lastAngle, lastAngle + radians(list_back_angle), PIE);
+         arc(slicex, slicey, diameter*3, diameter*3, lastAngle, lastAngle + radians(list_back_angle), PIE);
          draw_words(lastAngle, radians(list_back_angle), "Listening to background music");
+         draw_vals(lastAngle, radians(list_back_angle), data.listen_back_avg);
          lastAngle += radians(list_back_angle);
          fill(220, 220, 255);
          arc(piex, piey, diameter, diameter, lastAngle, lastAngle + radians(rem_angle), PIE);
@@ -84,19 +92,39 @@ class PieChart {
   
   void draw_words(float lastAngle, float ownAngle, String message) {
       //translate
-      translate(piex, piey);
-      rotate(lastAngle + ownAngle/2);
-      translate(diameter/2 + 10, 0);
+      translate(slicex, slicey);
+      rotate(lastAngle + ownAngle);
+      translate(diameter/3 - 17, 0);
 
       //print words
-      textSize(15);
+      textSize(13);
       textAlign(BASELINE);
-      text(message, 0, 0); 
+      text(message, 0, 20); 
 
       //un-translate
-      translate(-diameter/2 - 10, 0);
-      rotate(-lastAngle - ownAngle/2);
-      translate(-piex, -piey);
+      translate(-diameter/3 + 17, 0);
+      rotate(-lastAngle -ownAngle);
+      translate(-slicex, -slicey);
+  }
+  
+  void draw_vals(float lastAngle, float ownAngle, float val) {
+      //translate
+      translate(slicex, slicey);
+      rotate(lastAngle + ownAngle);
+      translate(diameter*3/2 + 10, 0);
+
+      //print words
+      String v = nf(val, 1, 2);
+      String message = v + " hours";
+      
+      textSize(12);
+      textAlign(BASELINE);
+      text(message, 0, 0);
+
+      //un-translate
+      translate(-diameter*3/2 - 10, 0);
+      rotate(-lastAngle - ownAngle);
+      translate(-slicex, -slicey);
   }
 
   
