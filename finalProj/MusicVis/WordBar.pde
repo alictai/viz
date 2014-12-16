@@ -28,12 +28,12 @@ class WordBar {
     bar_width = interval - 2*x_spacing;
   }
   
-  void draw_graph(Range range) {
+  void draw_graph(Range range, String word) {
     fill(255);
     noStroke();
-    rect(canvas_x1, canvas_y1 - 20, canvas_w - 50, canvas_h + 20);
+    rect(0, canvas_y1 - 20, canvas_w - 50, canvas_h + 20);
     get_coords();
-    draw_bars(range);
+    draw_bars(range, word);
   }
   
   void get_coords() {
@@ -50,8 +50,9 @@ class WordBar {
     
   }
   
-  void draw_bars(Range range) {
+  void draw_bars(Range range, String word) {
      float highest = min(y_coords);
+     boolean drawn = false;
     
      for (int i = 0; i < num_ages; i++) {
         if((i >= range.low) && (i <= range.high)) {
@@ -61,16 +62,18 @@ class WordBar {
         }
         rect(x_coords[i]+x_spacing, y_coords[i], bar_width, canvas_y2 - y_coords[i]);
         
-        if (y_coords[i] == highest) {
+        if (y_coords[i] == highest && drawn == false) {
            String msg ="age " + i + " =";
-           fill(0);
-           stroke(0);
            textAlign(CENTER);
            text(msg, x_coords[i], y_coords[i] - 12);
            text(vals[i], x_coords[i], y_coords[i] - 2);
            noStroke();
+           drawn = true;
         }
      }
+     
+     textSize(15);
+     text(word, canvas_x1 + 50, canvas_y2 - 10);
     
   }
   

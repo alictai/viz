@@ -95,9 +95,14 @@ class Cloud {
       if (clicked == true) {
           fill(255);
           noStroke();
-          rect(barx1, bary1, barx2 - barx1, bary2 - bary1);
+          rect(0, bary1, barx2 - barx1 - 100, bary2 - bary1);
           //print("drawing bars\n");
-          draw_bars(range);
+          print(clicked_index);
+          draw_bars(range, words[clicked_index]);
+      } else {
+          textAlign(LEFT);
+          textSize(15);
+          text("Click word to see distribution", barx1, bary2);
       }
       
   }
@@ -117,6 +122,9 @@ class Cloud {
     
     if (clicked_w == null) {
       clicked = false;
+      fill(255);
+      noStroke();
+      rect(0, bary1 - 15, barx2 - barx1 - 100, bary2 - bary1 +15);
       //print("no word clicked\n");
     } else {
       clicked = true;
@@ -137,9 +145,9 @@ class Cloud {
       return -1;
   }
   
-  void draw_bars(Range range) {
+  void draw_bars(Range range, String word) {
      int[] bar_stats = data.get_bar_stats(clicked_index, gender);
      bar = new WordBar(bar_stats, barx1, bary1, barx2, bary2);
-     bar.draw_graph(range);
+     bar.draw_graph(range, word);
   }
 }
