@@ -56,4 +56,13 @@ class Display {
      } 
   }
  
+  void keypress(int keyCode) {
+    print(keyCode);
+    print ("press\n");
+  }
+  
+  void keyrel(int keyCode) {
+    print(keyCode);
+    print("release\n");
+  }
 }

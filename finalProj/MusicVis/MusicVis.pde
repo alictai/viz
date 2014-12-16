@@ -35,10 +35,18 @@ void setup() {
   prev_range.low = 0;
   prev_range.high = 93;
   clicked = false;
+
+
+  /*
+  if (frame != null) {
+   frame.setResizable(true);
+   }
+   */
 }
 
 
 void draw() {
+  //background(255);
   filter.draw_filter();
   
   range = filter.get_range();
@@ -56,7 +64,9 @@ void draw() {
       rect(0, 0, 1200, 600);
     }
   }
-    
+  
+  print("prev: ", prev_range.curVis, " curr: ", range.curVis, "\n");
+  
   toShow.draw_graphs(wc, range);
   
   //print("Range: ", range.low, " to ", range.high, "\n");
@@ -70,7 +80,6 @@ boolean range_changed() {
                 (range.curVis.equals(prev_range.curVis))) {
       return false;
   } else {
-      print("prev: ", prev_range.curVis, " curr: ", range.curVis, "\n");
       prev_range = range;
       return true;
   }
@@ -90,3 +99,18 @@ void mouseReleased() {
   filter.released();
 }
 
+void mouseMoved() {
+  toShow.mousemove(); 
+}
+
+void keyPressed() {
+  if (key == CODED) {
+    toShow.keypress(keyCode); 
+  }
+}
+
+void keyReleased() {
+  if (key == CODED) {
+    toShow.keyrel(keyCode); 
+  }
+}
