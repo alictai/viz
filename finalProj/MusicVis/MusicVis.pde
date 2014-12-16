@@ -65,7 +65,7 @@ void draw() {
     }
   }
   
-  print("prev: ", prev_range.curVis, " curr: ", range.curVis, "\n");
+  //print("prev: ", prev_range.curVis, " curr: ", range.curVis, "\n");
   
   toShow.draw_graphs(wc, range);
   
