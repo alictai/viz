@@ -29,8 +29,8 @@ class Display {
       String gender = "both";
       //cloud.set_weights(wc, word_freqs);
       //cloud.draw_cloud(range);
-      //pies.draw_pies(range, gender);
-      par_graph.draw_graph(0, 0, width, height-100, range, range.gender);
+      pies.draw_pies(range, gender);
+      //par_graph.draw_graph(0, 0, width, height-100, range, range.gender);
       
   }
   
