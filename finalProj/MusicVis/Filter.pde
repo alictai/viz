@@ -3,7 +3,6 @@ class Filter {
   float wid, hgt;
   
   String mes;
-  String alt;
   
   boolean needHelp;
   int helpTimer;
@@ -15,16 +14,12 @@ class Filter {
   VisLabel cloud;
   VisLabel par;
   VisLabel pie;
-  VisLabel tbd2;
  
   Filter(float _x, float _y, float w, float h) {
     x = _x;
     y = _y;
     wid = w;
     hgt = h;
-    
-    needHelp = false;
-    helpTimer = 0;
     
     float s_x = x + 20;
     float s_y = y + 75; 
@@ -35,9 +30,9 @@ class Filter {
     male   = new Gen_Check(wid - 420,  y + 70, 30, 10, true, "Male");
     female = new Gen_Check(x + 630,    y + 70, 45, 10, true, "Female");   
     
-    cloud = new VisLabel(825, y + 15, 120, 70, "cloud1.jpg", true);
-    par   = new VisLabel(950, y + 15, 120, 70, "par1.jpg", false);
-    pie  = new VisLabel(1075, y + 15, 120, 70, "pie.jpg", false);
+    cloud = new VisLabel(825, y + 15, 120, 70, "cloud1.jpg", true, "A wordcloud, showing the most common words used to describe music samples shown to the user base. Click a word to see a bar graph breakdown of how often each age used that word.");
+    par   = new VisLabel(950, y + 15, 120, 70, "par1.jpg", false, "The user base was asked nineteen questions about their opinions on music and technology. Each answer was on a scale of 0 - 100. Each line on the graph corresponds to a single age.");
+    pie  = new VisLabel(1075, y + 15, 120, 70, "pie.jpg", false, "The wedges in the chart represent how long, on average, the age range both actively and passively listen to music per 24 hours. An enlarged view is shown to the right.");
   } 
   
   void draw_filter(Range range) {
@@ -52,26 +47,9 @@ class Filter {
     cloud.draw_label();
     par.draw_label();
     pie.draw_label();
-    draw_helper();
   }
   
   void draw_prompt(Range range) {
-    if(mouseX > (x + 50) && mouseX < (x + 600)) {
-      if(mouseY > (y + 50) && mouseY < (y + 100)) {
-        if(helpTimer < 50) {
-          helpTimer++;
-        } else {
-          needHelp = true;
-        }
-      } else {
-        needHelp = false;
-        helpTimer = 0;
-      }
-    } else {
-      needHelp = false;
-      helpTimer = 0;
-    }  
-    
     PFont font;
     font = loadFont("DejaVuSans-12.vlw");
     textFont(font, 12);
@@ -93,16 +71,12 @@ class Filter {
    
     if(range.curVis.equals("cloud")) {
       mes = "WordCloud";
-      alt = "A wordcloud, showing the most common words used to describe music samples shown to the user base. Click a word to see a bar graph breakdown of how often each age used that word.";
     } else if(range.curVis.equals("par")) {
       mes = "Parallel Coordinate Graph";
-      alt = "The user base was asked nineteen questions about their opinions on music and technology. Each answer was on a scale of 0 - 100. Each line on the graph corresponds to a single age.";
     } else if(range.curVis.equals("pie")) {
       mes = "Time-breakdown Pie Chart";
-      alt = "The wedges in the chart represent how long, on average, the age range both actively and passively listen to music per 24 hours. An enlarged view is shown to the right.";
     } else {
       mes = "Select Vis --->";
-      alt = "Click one of the mini-visualizations on the right to get started!";
     }
     
     text(mes, x + 300, y + 75);
@@ -110,19 +84,17 @@ class Filter {
     
   }
   
-  void draw_helper() {
-    if(needHelp) {
-      PFont font;
-      font = loadFont("DejaVuSans-12.vlw");
-      textFont(font, 12);
-      fill(255);
-      strokeWeight(0);
-      rect(mouseX - 3, mouseY - 3, -200, -200);
-      fill(0);
-      text(alt, mouseX - 3, mouseY - 3, -200, -200); 
-    }
+  void help(Range range) {
+    cloud.help(range);
+    par.help(range);
+    pie.help(range);
   }
   
+  //////////////////////////////////
+  void draw_helper() {
+
+  }
+  //////////////////////////////////
   
   Range get_range() {
     Range toRet = new Range();
@@ -286,8 +258,6 @@ class Gen_Check {
     textAlign(CENTER, CENTER);
     textSize(25);
     text(title, x, y);
-//    textSize(12);
-//    text("Show", x, y - 18);
   }
   
   
@@ -318,8 +288,12 @@ class VisLabel {
   boolean deac;
   boolean reac;
   int transNum;
+  boolean needHelp;
+  int helpTimer;
+  String alt;
+  float boxHeight;
  
-  VisLabel(float _x, float _y, float w, float h, String path, boolean act) {
+  VisLabel(float _x, float _y, float w, float h, String path, boolean act, String a) {
     x = _x;
     y = _y;
     wid = w;
@@ -328,7 +302,11 @@ class VisLabel {
     active = act;
     reac = false;
     deac = false;
-    transNum = 0;
+    transNum = 0;    
+    needHelp = false;
+    helpTimer = 0;
+    alt = a;
+    boxHeight = 0;
   }
   
   void draw_label() {
@@ -361,6 +339,27 @@ class VisLabel {
     }
 
     image(img, x, y, wid, hgt);
+    
+    if(mouseX > x && mouseX < (x + wid)) {
+      if(mouseY > y && mouseY < (y + hgt)) {
+        if(helpTimer < 30) {
+          helpTimer++;
+        } else {
+          needHelp = true;
+          if(boxHeight < 200) {
+            boxHeight += 20;
+          }
+        }
+      } else {
+        needHelp = false;
+        helpTimer = 0;
+        boxHeight = 0;
+      }
+    } else {
+      needHelp = false;
+      helpTimer = 0;
+      boxHeight = 0;
+    }  
   }
   
   void activate() {
@@ -399,6 +398,22 @@ class VisLabel {
     }
     
     return false;
+  }
+
+  void help(Range range) {
+    if(needHelp && !range.curVis.equals("cloud")) {
+      PFont font;
+      font = loadFont("DejaVuSans-12.vlw");
+      textFont(font, 12);
+      textAlign(CENTER, CENTER);
+      fill(200);
+      strokeWeight(0);
+      rect(x, y - 200 + hgt + (200 - boxHeight), wid, boxHeight);
+      if(boxHeight == 200) {
+        fill(0);
+        text(alt, x, y - 200 + hgt, wid, boxHeight);
+      } 
+    }
   }
 }
 

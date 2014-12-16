@@ -68,6 +68,8 @@ void draw() {
 
   toShow.draw_graphs(wc, range);
   
+  filter.help(range);
+  
   //print("Range: ", range.low, " to ", range.high, "\n");
   //find range from slider
   //pass range into Display's draw

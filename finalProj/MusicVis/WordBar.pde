@@ -33,7 +33,7 @@ class WordBar {
   void draw_graph(Range range, String word) {
     fill(255);
     noStroke();
-    rect(0, canvas_y1 - 20, canvas_w - 50, canvas_h + 20);
+    rect(0, canvas_y1 - 5, canvas_w - 50, canvas_h + 5);
     get_coords();
     draw_bars(range, word);
     if (with_axes == true) {
@@ -68,10 +68,14 @@ class WordBar {
         rect(x_coords[i]+x_spacing, y_coords[i], bar_width, canvas_y2 - y_coords[i]);
         
         if ((with_axes == false) && (y_coords[i] == highest && drawn == false)) {
-           String msg ="age " + i + " =";
+           String msg ="age " + i + " = " + vals[i];
+           PFont font;
+           font = loadFont("UbuntuMono-Regular-13.vlw");
+           textFont(font, 13);
            textAlign(CENTER);
-           text(msg, x_coords[i], y_coords[i] - 12);
-           text(vals[i], x_coords[i], y_coords[i] - 2);
+           //text(msg, x_coords[i], y_coords[i] - 12);
+           //text(vals[i], x_coords[i], y_coords[i] - 2);
+           text(msg, x_coords[i], y_coords[i] - 2);
            noStroke();
            drawn = true;
         }

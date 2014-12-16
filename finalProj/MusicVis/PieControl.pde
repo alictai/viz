@@ -28,7 +28,7 @@ class PieControl {
   void draw_pies(Range range, String gender) {
      fill(255);
      noStroke();
-     rect(0, 0, 1200, 581);
+     rect(0, 0, 1200, 600);
 
      pie_stats = data.get_pie_stats(range, gender);
      print_header();
