@@ -67,8 +67,7 @@ public void setup() {
 
 
 public void draw() {
-  background(255);
-  //slider.draw_slider();
+  //background(255);
   filter.draw_filter();
   
   range = filter.get_range();
@@ -80,7 +79,6 @@ public void draw() {
   
   if(!mousePressed) {
     if (range_changed() == true) {
-      if(range_changed() == true) {print("changed\n");}
       wc = new WordCram(this);
       fill(255);
       noStroke();
@@ -98,7 +96,7 @@ public void draw() {
 }
 
 public boolean range_changed() {
-  if((range.low == prev_range.low) && (range.high == prev_range.high)) {
+  if((range.low == prev_range.low) && (range.high == prev_range.high) && (range.curVis.equals(prev_range.curVis))) {
       return false;
   } else {
       prev_range = range;
@@ -343,25 +341,31 @@ class Display {
   }
   
   //returns true if frequencies change
-  public void get_freqs(Range range) {
-      //word_freqs = cloud.get_freqs(range, range.gender);
-      //return cloud.freq_changed();
-      par_graph.draw_graph(0, 0, width, height-100, range, range.gender);
+  public boolean get_freqs(Range range) {
+      word_freqs = cloud.get_freqs(range, range.gender);
+      return cloud.freq_changed();
+//      par_graph.draw_graph(0, 0, width, height-100, range, range.gender);
   }
 
   // pass gender from Musicvis
   public void draw_graphs(WordCram wc, Range range) {
       String gender = "both";
-      //cloud.set_weights(wc, word_freqs);
-      //cloud.draw_cloud(range);
-      //pies.draw_pies(range, gender);
-      par_graph.draw_graph(0, 0, width, height-100, range, range.gender);
       
+      if(range.curVis.equals("cloud")) {
+        cloud.set_weights(wc, word_freqs);
+        cloud.draw_cloud(range);
+      } else if(range.curVis.equals("par")) {
+        par_graph.draw_graph(0, 0, width, height-100, range, range.gender);
+      } else if(range.curVis.equals("pie")) {
+        pies.draw_pies(range, range.gender);
+      } else if(range.curVis.equals("tbd2")) {
+        
+      }
   }
   
   public void set_click() {
       pies.check_click();
-      //cloud.check_click();
+      cloud.check_click();
   }
   
  
@@ -391,8 +395,8 @@ class Filter {
 
     slider = new Slider(x + 20, y + 25, w - 400);
 
-    male   = new Gen_Check(wid - 470, y + 60, 30, 10, true, "Male");
-    female = new Gen_Check(x + 70,    y + 60, 45, 10, true, "Female");   
+    male   = new Gen_Check(wid - 470, y + 72, 30, 10, true, "Male");
+    female = new Gen_Check(x + 570,    y + 72, 45, 10, true, "Female");   
     
     cloud = new VisLabel(835, y + 25, 85, 50, "HistoricGoat.jpg", true);
     par   = new VisLabel(925, y + 25, 85, 50, "SadGoat.jpg", false);
@@ -424,7 +428,7 @@ class Filter {
     textAlign(CENTER, CENTER);
     textSize(20);
     textLeading(18);
-    text("SELECT AGE AND\nGENDER DEMOGRAPHIC", x + 420, y + 65);
+    text("SELECT AGE AND\nGENDER DEMOGRAPHIC", x + 200, y + 65);
     
   }
   
@@ -584,6 +588,8 @@ class Gen_Check {
     textAlign(CENTER, CENTER);
     textSize(25);
     text(title, x, y);
+    textSize(12);
+    text("Show", x, y - 18);
   }
   
   
@@ -775,18 +781,21 @@ class ParGraph {
     w = w_in;
     h = h_in;
 
+    fill(255);
+    noStroke();
+    rect(x, y, w, h);
+
     range = r;
     gender = g;
 
     if (range.low != prev.low || range.high != prev.high || range.gender != prev.gender) {
 	    calculate_data(r,g);
+		calculate_axes();
+		calc_pts();
+		calc_labels();
+    	calc_colors();
 	}
 
-	calculate_axes();
-	calc_pts();
-	calc_labels();
-    calc_colors();
-	 
 	draw_axes();
 	draw_lines();
 	draw_pts();
@@ -799,12 +808,12 @@ class ParGraph {
   	num_rows = range.high - range.low;
 
     vals = data.get_qs_avg(range, gender);
-    float[] ages = new float[num_rows];
-    for(int i = range.low; i < range.high; i++) {
-    	ages[i-range.low] = PApplet.parseFloat(i);
-    }
-    vals = (float[][])append(vals, ages);
-    printArray(vals);
+    printArray(vals[vals.length-1]);
+    // float[] ages = new float[num_rows];
+    // for(int i = range.low; i < range.high; i++) {
+    // 	ages[i-range.low] = float(i);
+    // }
+    // vals = (float[][])append(vals, ages);
 
 	mins = new float[num_cols];
     maxes = new float[num_cols];
@@ -814,7 +823,6 @@ class ParGraph {
   }
 
   public void generate_colors() {
-  	//generating colors
   	colors = new int[num_cols][num_rows];
     color_list = new int[num_labels-1];
     if (num_labels - 1 == 4) {
@@ -831,6 +839,7 @@ class ParGraph {
 
   public void find_bounds() {
     for (int i = 0; i < num_cols; i++) {
+    	printArray(vals[i]);
       mins[i] = min(vals[i]);
       maxes[i] = max(vals[i]);
     }
@@ -897,6 +906,10 @@ class ParGraph {
   }
 
   public void draw_axes() {
+  	strokeWeight(1);
+    stroke(0);
+    fill(0);
+
     for (int i = 0; i < x_coords.length; i++) {
       if (i == colored_col) {
         strokeWeight(2); 
@@ -1131,6 +1144,7 @@ class PieChart {
   int canvas_y1, canvas_y2;
   int canvas_w, canvas_h;
   int piex, piey;
+  int slicex, slicey;
   int isect;
   float list_own_angle;
   float list_back_angle;
@@ -1150,6 +1164,8 @@ class PieChart {
     total_time = 24;
     piex = width/5;
     piey = height/3;
+    slicex = width/2 - 100;
+    slicey = height/2 - 70;
   }
 
   public void draw_graph() {
@@ -1193,11 +1209,16 @@ class PieChart {
          //float gray = map(i, 0, data.values[0].length, 0, 255);
          fill(200, 100, 200);
          arc(piex, piey, diameter, diameter, 0, 0 + radians(list_own_angle), PIE);
-         draw_words(lastAngle, radians(list_own_angle), "Listening to own music");
+         textSize(13);
+         text("Listening to own music", slicex + diameter/2, slicey - 10);
+         arc(slicex, slicey, diameter*3, diameter*3, 0, 0 + radians(list_own_angle), PIE);
+         draw_vals(lastAngle, radians(list_own_angle), data.listen_own_avg);
          lastAngle += radians(list_own_angle);
          fill(150, 0, 150);
          arc(piex, piey, diameter, diameter, lastAngle, lastAngle + radians(list_back_angle), PIE);
+         arc(slicex, slicey, diameter*3, diameter*3, lastAngle, lastAngle + radians(list_back_angle), PIE);
          draw_words(lastAngle, radians(list_back_angle), "Listening to background music");
+         draw_vals(lastAngle, radians(list_back_angle), data.listen_back_avg);
          lastAngle += radians(list_back_angle);
          fill(220, 220, 255);
          arc(piex, piey, diameter, diameter, lastAngle, lastAngle + radians(rem_angle), PIE);
@@ -1207,19 +1228,39 @@ class PieChart {
   
   public void draw_words(float lastAngle, float ownAngle, String message) {
       //translate
-      translate(piex, piey);
-      rotate(lastAngle + ownAngle/2);
-      translate(diameter/2 + 10, 0);
+      translate(slicex, slicey);
+      rotate(lastAngle + ownAngle);
+      translate(diameter/3 - 17, 0);
 
       //print words
-      textSize(15);
+      textSize(13);
       textAlign(BASELINE);
-      text(message, 0, 0); 
+      text(message, 0, 20); 
 
       //un-translate
-      translate(-diameter/2 - 10, 0);
-      rotate(-lastAngle - ownAngle/2);
-      translate(-piex, -piey);
+      translate(-diameter/3 + 17, 0);
+      rotate(-lastAngle -ownAngle);
+      translate(-slicex, -slicey);
+  }
+  
+  public void draw_vals(float lastAngle, float ownAngle, float val) {
+      //translate
+      translate(slicex, slicey);
+      rotate(lastAngle + ownAngle);
+      translate(diameter*3/2 + 10, 0);
+
+      //print words
+      String v = nf(val, 1, 2);
+      String message = v + " hours";
+      
+      textSize(12);
+      textAlign(BASELINE);
+      text(message, 0, 0);
+
+      //un-translate
+      translate(-diameter*3/2 - 10, 0);
+      rotate(-lastAngle - ownAngle);
+      translate(-slicex, -slicey);
   }
 
   
@@ -1264,7 +1305,8 @@ class PieControl {
   public void draw_pies(Range range, String gender) {
      fill(255);
      noStroke();
-     rect(piex1, piey1, piex2 - piex1, piey2 - piey1);
+     rect(0, 0, 1200, 581);
+
      pie_stats = data.get_pie_stats(range, gender);
      print_header();
      print_statements();
@@ -1386,15 +1428,17 @@ class Bracket {
   }
   
   public void draw_val() {
+    fill(255);
+    strokeWeight(0);
+    rect(0, 580, 1200, 20);
     float rect_x = x - (2 * w);
     float rect_y = y - (1.5f * h);
     float rect_w = 4 * w;
     float rect_h = .75f * h;
-    strokeWeight(0);
-    noStroke();
+    strokeWeight(1);
+    //noStroke();
     fill(255);
     rect(rect_x, rect_y, rect_w, rect_h, 4); 
-    //triangle(rect_x + (.25 * rect_w), rect_y + rect_h, rect_x + (.5 * rect_w), rect_y + rect_h + 3, rect_x + (.75 * rect_w), rect_y + rect_h);
     
     PFont font;
     //must be located in data directory in sketchbook
@@ -1413,36 +1457,39 @@ class Bracket {
     } 
   }
   
-  public void move(float oth_x) {
+  public void move(float oth_x, int oth_v) {
     if(active) {
       float lb, rb;
+      int lbv, rbv;
       
       //determining bracket's range
       if(isLeft) {
         lb = l_bound;
         rb = oth_x;
+        lbv = 0;
+        rbv = oth_v;
       } else {
         lb = oth_x;
         rb = r_bound;
+        lbv = oth_v;
+        rbv = 93;
       }
             
-      if(mouseX > lb - 50 && mouseX < rb + 50) {
-        float curr, l, r;
-        curr = map(val, 0, 93, l_bound, r_bound);
-        l    = map(val - 1, 0, 93, l_bound, r_bound);
-        r    = map(val + 1, 0, 93, l_bound, r_bound);
-                
-          if ((abs(mouseX - l) < abs(mouseX - curr)) && (val != 0)) {
-             val--;
-             x = l;
-             int_l = x - w/2;
-             int_r = x + w/2;
-          } else if ((abs(mouseX - r) < abs(mouseX - curr)) && (val != 93)) {
-             val++;
-             x = r;
-             int_l = x - w/2;
-             int_r = x + w/2;
-          }
+      float curr, l, r;
+      curr = map(val, 0, 93, l_bound, r_bound);
+      l    = map(val - 1, 0, 93, l_bound, r_bound);
+      r    = map(val + 1, 0, 93, l_bound, r_bound);
+              
+      if ((abs(mouseX - l) < abs(mouseX - curr)) && (val != lbv)) {
+         val--;
+         x = l;
+         int_l = x - w/2;
+         int_r = x + w/2;
+      } else if ((abs(mouseX - r) < abs(mouseX - curr)) && (val != rbv)) {
+         val++;
+         x = r;
+         int_l = x - w/2;
+         int_r = x + w/2;
       }
     } 
   }
@@ -1538,8 +1585,8 @@ class Slider {
   }
   
   public void move_brackets() {
-    left.move(right.x);
-    right.move(left.x);
+    left.move(right.x, right.val);
+    right.move(left.x, left.val);
   }
   
   public void unactivate() {
@@ -1649,40 +1696,43 @@ class UserData {
   }
   
   public float[][] get_qs_avg(Range range, String gender) {
-    float[][] total = new float[NUM_QS][range.high-range.low];
+    float[][] total = new float[NUM_QS+1][0];
     for (int i = range.low; i < range.high; i++) {
+      float[] row = new float[NUM_QS+1];
+      int index = i - range.low;
+      print(index);
+      row[NUM_QS] = i;
       for (int j = 0; j < NUM_QS; j++) {
-        int index = i - range.low;
         if (gender.equals("female")) {
           if(girls[index].num_per_q[j] == 0) {
-            total[j][index] = 0;
+            row[j] = 0;
           } else {
-            total[j][index] = girls[index].total_q_score[j]/girls[index].num_per_q[j];
+            row[j] = girls[index].total_q_score[j]/girls[index].num_per_q[j];
           }
         } else if (gender.equals("male")) {
           if(boys[index].num_per_q[j] == 0) {
-            total[j][index] = 0;
+            row[j] = 0;
           } else {
-            total[j][index] = boys[index].total_q_score[j]/boys[index].num_per_q[j];
+            row[j] = boys[index].total_q_score[j]/boys[index].num_per_q[j];
           }
         } else {
           if(girls[index].num_per_q[j] == 0) {
-            total[j][index] = 0;
+            row[j] = 0;
           } else {
-            total[j][index] = girls[index].total_q_score[j]/girls[index].num_per_q[j];
+            row[j] = girls[index].total_q_score[j]/girls[index].num_per_q[j];
           }
 
           if(boys[index].num_per_q[j] == 0) {
-            total[j][index] += 0;
+            row[j] += 0;
           } else {
-            total[j][index] += boys[index].total_q_score[j]/boys[index].num_per_q[j];
+            row[j] += boys[index].total_q_score[j]/boys[index].num_per_q[j];
           }
-          total[j][index] = total[j][index]/2;
+          row[j] = row[j]/2;
         }
-        //printArray(girls[i].num_per_q);
       }
+      total = (float[][])append(total, row);
+      //printArray(total[total.length-1]);
     }
-    
     return total;
   }
 }

@@ -41,8 +41,13 @@ class Display {
   }
   
   void set_click() {
-      pies.check_click();
-      cloud.check_click();
+      if(range.curVis.equals("pie")) {
+        pies.check_click();
+      } else if (range.curVis.equals("cloud")) {
+        cloud.check_click();
+      } else if (range.curVis.equals("par")) {
+        par_graph.col_change(mousex); 
+      }
   }
   
  

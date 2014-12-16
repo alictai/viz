@@ -41,16 +41,8 @@ class ParGraph {
     num_rows = 93;
     headers = new String[num_cols];
     data = d;
-
-    //default initializations
-    // data = d;
-    // mins = new float[num_cols];
-    // maxes = new float[num_cols];
-    // find_bounds();
-    // x_coords = new float[num_cols];
-    // y_coords = new float[num_cols][num_rows];
-    for(int i = 0; i < num_cols; i++) {
-    	headers[i] = "Q" + str(i);
+    for (int i = 0; i < num_cols; i++) {
+      headers[i] = "Q" + str(i);
     }
     headers[headers.length - 1] = "Age";
     num_labels = headers.length;
@@ -73,36 +65,37 @@ class ParGraph {
   }
 
   void draw_graph(int x_in, int y_in, int w_in, int h_in, Range r, String g) {
-    fill(255);
-    noStroke();
-    rect(0, 0, 1200, 580);
+    print("DRAWING PARGRAPH\n");
     x = x_in;
     y = y_in;
     w = w_in;
     h = h_in;
 
+    fill(255);
+    noStroke();
+    rect(x, y, w, h);
+
     range = r;
     gender = g;
 
     if (range.low != prev.low || range.high != prev.high || range.gender != prev.gender) {
-	    calculate_data(r,g);
-	}
+      calculate_data(r, g);
+      calculate_axes();
+      calc_pts();
+      calc_labels();
+      calc_colors();
+    }
 
-	calculate_axes();
-	calc_pts();
-	calc_labels();
-    calc_colors();
-	 
-	draw_axes();
-	draw_lines();
-	draw_pts();
-	draw_labels();
+    draw_axes();
+    draw_lines();
+    draw_pts();
+    draw_labels();
 
-	prev = r;
+    prev = r;
   }
 
   void calculate_data(Range r, String g) {
-  	num_rows = range.high - range.low;
+    num_rows = range.high - range.low;
 
     vals = data.get_qs_avg(range, gender);
     float[] ages = new float[num_rows];
@@ -110,9 +103,8 @@ class ParGraph {
     	ages[i-range.low] = float(i);
     }
     vals = (float[][])append(vals, ages);
-    printArray(vals);
 
-	mins = new float[num_cols];
+    mins = new float[num_cols];
     maxes = new float[num_cols];
     find_bounds();
     x_coords = new float[num_cols];
@@ -120,8 +112,7 @@ class ParGraph {
   }
 
   void generate_colors() {
-  	//generating colors
-  	colors = new color[num_cols][num_rows];
+    colors = new color[num_cols][num_rows];
     color_list = new color[num_labels-1];
     if (num_labels - 1 == 4) {
       color_list[0] = color(255, 0, 146);
@@ -137,8 +128,14 @@ class ParGraph {
 
   void find_bounds() {
     for (int i = 0; i < num_cols; i++) {
-      mins[i] = min(vals[i]);
+      //print(vals[i].length);
+      mins[i] = 100;
       maxes[i] = max(vals[i]);
+      for(int k = 0; k < vals[i].length; k++) {
+        if(vals[i][k] != -1 && vals[i][k] < mins[i]) {
+          mins[i] = vals[i][k];
+        } 
+      }
     }
   }
 
@@ -155,7 +152,11 @@ class ParGraph {
   void calc_pts() {
     for (int i = 0; i < num_cols; i++) {
       for (int k = 0; k < num_rows; k++) {
-        y_coords[i][k] = map(vals[i][k], mins[i], maxes[i], y_bott, y_top);
+        if(vals[i][k] != -1) {
+          y_coords[i][k] = map(vals[i][k], mins[i], maxes[i], y_bott, y_top);
+        } else {
+          y_coords[i][k] = -1;
+        }
       }
     }
     for (int i = 0; i < flipped_cols.length; i++) {
@@ -203,6 +204,10 @@ class ParGraph {
   }
 
   void draw_axes() {
+    strokeWeight(1);
+    stroke(0);
+    fill(0);
+
     for (int i = 0; i < x_coords.length; i++) {
       if (i == colored_col) {
         strokeWeight(2); 
@@ -228,8 +233,10 @@ class ParGraph {
   void draw_pts() {
     for (int i = 0; i < num_cols; i++) {
       for (int k = 0; k < num_rows; k++) {
-        fill(0, 0, 0);
-        ellipse(x_coords[i], y_coords[i][k], 5, 5);
+        if(y_coords[i][k] >= 0) {
+          fill(0, 0, 0);
+          ellipse(x_coords[i], y_coords[i][k], 5, 5);
+        }
       }
     }
   }
@@ -259,9 +266,11 @@ class ParGraph {
     } else {
       for (int i = 0; i < num_rows; i++) {
         for (int k = 0; k < num_cols - 1; k++) {
-          stroke(colors[k][i]);
-          line(x_coords[k], y_coords[k][i], x_coords[k+1], y_coords[k+1][i]);
-          stroke(0, 0, 0);
+          if(y_coords[k][i] != -1 && y_coords[k+1][i] != -1) {
+            stroke(colors[k][i]);
+            line(x_coords[k], y_coords[k][i], x_coords[k+1], y_coords[k+1][i]);
+            stroke(0, 0, 0);
+          }
         }
       }
     }
@@ -329,3 +338,4 @@ class ParGraph {
     curve = false;
   }
 }
+
