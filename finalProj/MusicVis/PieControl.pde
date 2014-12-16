@@ -59,7 +59,7 @@ class PieControl {
      stroke(0);
      textAlign(LEFT, TOP);
      textSize(17);
-     text("Filter based on respondents' statements:", statements_x1, statements_y1 - 30);
+     text("Click to filter by respondents' opinions towards music:", statements_x1, statements_y1 - 30);
      line(statements_x1, statements_y1 - 12, statements_x2 - 135, statements_y1 - 12 );
   }
   

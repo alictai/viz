@@ -44,7 +44,7 @@ class PieChart {
     stroke(150, 0, 150);
     textAlign(CENTER);
     textSize(20);
-    text("Average Time Spent:", piex, 42);
+    text("Average Time Per Day Spent Listening to Music", piex, 42);
     
   }
 
