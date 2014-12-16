@@ -31,6 +31,7 @@ void setup() {
   //wc.withCustomCanvas(this.canvas);
   toShow = new Display(wc, data);
   filter = new Filter(0, 600, 1200, 100);
+  range = new Range();
   prev_range = new Range();
   prev_range.low = 0;
   prev_range.high = 93;
