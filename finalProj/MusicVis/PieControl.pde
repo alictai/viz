@@ -46,7 +46,7 @@ class PieControl {
        
      } else {
        todraw = pie_stats[clicked];
-       print(todraw.num_listen_own, "\n");
+       
      }
      
      

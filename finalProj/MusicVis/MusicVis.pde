@@ -65,8 +65,9 @@ void draw() {
     }
   }
   
-  toShow.draw_graphs(wc, range);
+  print("prev: ", prev_range.curVis, " curr: ", range.curVis, "\n");
   
+  toShow.draw_graphs(wc, range);
   
   //print("Range: ", range.low, " to ", range.high, "\n");
   //find range from slider
@@ -75,7 +76,8 @@ void draw() {
 }
 
 boolean range_changed() {
-  if((range.low == prev_range.low) && (range.high == prev_range.high) && (range.curVis.equals(prev_range.curVis))) {
+  if((range.low == prev_range.low) && (range.high == prev_range.high) && (range.gender.equals(prev_range.gender)) &&
+                (range.curVis.equals(prev_range.curVis))) {
       return false;
   } else {
       prev_range = range;

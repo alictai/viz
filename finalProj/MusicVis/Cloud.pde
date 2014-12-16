@@ -11,7 +11,7 @@ class Cloud {
   WordBar bar;
   int freq_range;
   int prev_freq_range = 0;
-  String gender = "female";
+  String gender;
   boolean clicked;
   int clicked_index;
   int barx1, barx2;
@@ -36,11 +36,13 @@ class Cloud {
     bary1 = 525;
     barx2 = 879;
     bary2 = 595;
+    gender = "both";
   }
   
   int[] get_freqs(Range range, String gen) {
-    int[] freqs = data.get_freqs(range, gender);
     gender = gen;
+    int[] freqs = data.get_freqs(range, gender);
+    
     
     freq_range = max(freqs) - min(freqs);
     
