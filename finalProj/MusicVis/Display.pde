@@ -46,9 +46,14 @@ class Display {
       } else if (range.curVis.equals("cloud")) {
         cloud.check_click();
       } else if (range.curVis.equals("par")) {
-        par_graph.col_change(mousex); 
+        par_graph.col_change(mouseX); 
       }
   }
   
+  void mousemove() {
+     if(range.curVis.equals("par")) {
+        par_graph.hover(mouseX);
+     } 
+  }
  
 }

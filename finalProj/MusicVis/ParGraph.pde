@@ -78,13 +78,13 @@ class ParGraph {
     range = r;
     gender = g;
 
-    if (range.low != prev.low || range.high != prev.high || range.gender != prev.gender) {
+    //if (range.low != prev.low || range.high != prev.high || range.gender != prev.gender) {
       calculate_data(r, g);
       calculate_axes();
       calc_pts();
       calc_labels();
       calc_colors();
-    }
+    //}
 
     draw_axes();
     draw_lines();
