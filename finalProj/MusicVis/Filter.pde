@@ -23,8 +23,8 @@ class Filter {
 
     slider = new Slider(x + 20, y + 25, w - 400);
 
-    male   = new Gen_Check(wid - 470, y + 72, 30, 10, true, "Male");
-    female = new Gen_Check(x + 570,    y + 72, 45, 10, true, "Female");   
+    male   = new Gen_Check(wid - 470,  y + 80, 30, 10, true, "Male");
+    female = new Gen_Check(x + 570,    y + 80, 45, 10, true, "Female");   
     
     cloud = new VisLabel(835, y + 25, 85, 50, "HistoricGoat.jpg", true);
     par   = new VisLabel(925, y + 25, 85, 50, "SadGoat.jpg", false);
@@ -56,13 +56,13 @@ class Filter {
     textAlign(CENTER, CENTER);
     textSize(20);
     textLeading(18);
-    text("SELECT AGE AND\nGENDER DEMOGRAPHIC", x + 200, y + 65);
+    text("SELECT AGE AND GENDER DEMOGRAPHIC", x + 250, y + 75);
     
   }
   
   
   Range get_range() {
-    Range toRet = new Range();;
+    Range toRet = new Range();
     boolean m, f;
     
     m = male.active;
@@ -101,8 +101,8 @@ class Filter {
   
   void pressed() {
     slider.check_brackets(); 
-    male.check_activate();
-    female.check_activate();
+    male.check_activate(female.active);
+    female.check_activate(male.active);
     
     String visp = which();
     
@@ -166,6 +166,9 @@ class Gen_Check {
   boolean deac;
   boolean reac;
   
+  boolean err;
+  int err_ct;
+  
   int transNum;
  
   Gen_Check(float _x, float _y, float w, float h, boolean act, String t) {
@@ -177,6 +180,8 @@ class Gen_Check {
     title = t;
     deac = false;
     reac = false;
+    err  = false;
+    err_ct = 0;
     transNum = 0;
   } 
   
@@ -190,6 +195,13 @@ class Gen_Check {
         if(transNum == 30) {
           reac = false;
           transNum = 0;
+        }
+      } else if (err) {
+        fill(200, 0, 0);
+        err_ct++;
+        if(err_ct == 5) {
+          err_ct = 0;
+          err = false;
         }
       } else {
         fill(200);
@@ -221,10 +233,14 @@ class Gen_Check {
   }
   
   
-  void check_activate() {
+  void check_activate(boolean otherAct) {
     if(mouseX > x - wid && mouseX < x + wid) {
       if (mouseY > y - hgt && mouseY < y + hgt) {
         if(active) {
+          if(!otherAct) {
+            err = true;        
+            return;
+          }
           active = false;
           deac = true;
         } else {

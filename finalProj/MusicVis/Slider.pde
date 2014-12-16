@@ -46,13 +46,11 @@ class Bracket {
   }
   
   void draw_val() {
-    fill(255);
-    strokeWeight(0);
-    rect(0, 580, 1200, 20);
-    float rect_x = x - (2 * w);
-    float rect_y = y - (1.5 * h);
-    float rect_w = 4 * w;
-    float rect_h = .75 * h;
+    float rect_x = x - (1.5 * w);
+    float rect_y = y + .5 * h;
+    float rect_w = 3 * w;
+    float rect_h = .5 * h;
+    stroke(200, 0, 0);
     strokeWeight(1);
     //noStroke();
     fill(255);
@@ -60,12 +58,12 @@ class Bracket {
     
     PFont font;
     //must be located in data directory in sketchbook
-    font = loadFont("UbuntuMono-Bold-16.vlw");
-    textFont(font, 16);    
+    font = loadFont("UbuntuMono-Bold-13.vlw");
+    textFont(font, 13);    
     textAlign(CENTER, CENTER);
      
     fill(200, 0, 0);
-    text(val, x, (y - 1.125 * h));
+    text(val, x, (y +.75 * h));
     
   }
   
@@ -178,6 +176,20 @@ class Slider {
         }
         stroke(70);
         strokeWeight(4);
+      }
+      
+      if(i % 10 == 0) { 
+        if (i < l_id || i > r_id) {
+          fill(70);
+        } else {
+          fill(200);
+        }
+        
+        PFont font;
+        font = loadFont("UbuntuMono-Regular-13.vlw");
+        textFont(font, 13);    
+        textAlign(CENTER, CENTER);
+        text(i, xloc, y - 18); 
       }
     }
   }
