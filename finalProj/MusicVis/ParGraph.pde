@@ -109,7 +109,7 @@ class ParGraph {
     calc_pts();
     calc_labels();
     calc_colors();
-    
+
     draw_axes();
     draw_lines();
     draw_pts();
@@ -123,11 +123,6 @@ class ParGraph {
     num_rows = range.high - range.low;
 
     vals = data.get_qs_avg(range, gender);
-    float[] ages = new float[num_rows];
-    for (int i = range.low; i < range.high; i++) {
-      ages[i-range.low] = float(i);
-    }
-    vals = (float[][])append(vals, ages);
 
     mins = new float[num_cols];
     maxes = new float[num_cols];
@@ -147,7 +142,7 @@ class ParGraph {
     } else {
       for (int i = 0; i < color_list.length; i++) {
         //color_list[i] = color(random(0, 255), random(0, 255), random(0, 255));
-        color_list[i] = color(random(0,200), map(i, 0, color_list.length, 255, 150), map(i, 0, color_list.length, 150, 255));
+        color_list[i] = color(random(0, 200), map(i, 0, color_list.length, 255, 150), map(i, 0, color_list.length, 150, 255));
       }
     }
   }
@@ -244,7 +239,7 @@ class ParGraph {
         stroke(0, 255, 173);
         fill(0, 255, 173);
       }
-      
+
       if (flipped_cols[i]) {
         text("Flipped", x_coords[i], y_bott + 30);
       }
@@ -262,8 +257,9 @@ class ParGraph {
 
   void draw_pts() {
     for (int i = 0; i < num_cols; i++) {
+      //printArray(y_coords[i]);
       for (int k = 0; k < num_rows; k++) {
-        if (y_coords[i][k] >= 0) {
+        if (y_coords[i][k] != -1) {
           fill(0, 0, 0);
           ellipse(x_coords[i], y_coords[i][k], 5, 5);
         }
@@ -273,7 +269,7 @@ class ParGraph {
 
   void draw_lines() {
     for (int i = 0; i < num_rows; i++) {
-      for (int k = 0; k < num_cols - 1; k++) {
+      for (int k = 0; k < num_cols-1; k++) {
         if (y_coords[k][i] != -1 && y_coords[k+1][i] != -1) {
           stroke(colors[k][i]);
           line(x_coords[k], y_coords[k][i], x_coords[k+1], y_coords[k+1][i]);
@@ -351,6 +347,5 @@ class ParGraph {
       label_coords[i][k] = y_bott - (y_spacing*k);
     }
   }
- 
 }
 

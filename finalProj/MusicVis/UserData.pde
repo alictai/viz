@@ -98,37 +98,47 @@ class UserData {
   }
   
   float[][] get_qs_avg(Range range, String gender) {
-    float[][] total = new float[NUM_QS][range.high-range.low];
+    float[][] total = new float[NUM_QS+1][range.high-range.low];
     for (int i = range.low; i < range.high; i++) {
+      boolean no_data = false;
+      int index = i - range.low;
       for (int j = 0; j < NUM_QS; j++) {
-        int index = i - range.low;
         if (gender.equals("female")) {
           if(girls[index].num_per_q[j] == 0) {
             total[j][index] = -1;
+            no_data = true;
           } else {
             total[j][index] = girls[index].total_q_score[j]/girls[index].num_per_q[j];
           }
         } else if (gender.equals("male")) {
           if(boys[index].num_per_q[j] == 0) {
             total[j][index] = -1;
+            no_data = true;
           } else {
             total[j][index] = boys[index].total_q_score[j]/boys[index].num_per_q[j];
           }
         } else {
           if(girls[index].num_per_q[j] == 0) {
             total[j][index] = -1;
+            no_data = true;
           } else {
             total[j][index] = girls[index].total_q_score[j]/girls[index].num_per_q[j];
           }
 
           if(boys[index].num_per_q[j] == 0) {
             total[j][index] += -1;
+            no_data = true;
           } else {
             total[j][index] += boys[index].total_q_score[j]/boys[index].num_per_q[j];
           }
           total[j][index] = total[j][index]/2;
         }
         //printArray(girls[i].num_per_q);
+      }
+      if (no_data) {
+        total[NUM_QS][index] = -1;
+      } else {
+        total[NUM_QS][index] = i;
       }
     }
     
