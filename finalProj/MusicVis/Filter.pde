@@ -30,8 +30,8 @@ class Filter {
     male   = new Gen_Check(wid - 420,  y + 70, 30, 10, true, "Male");
     female = new Gen_Check(x + 630,    y + 70, 45, 10, true, "Female");   
     
-    cloud = new VisLabel(825, y + 15, 120, 70, "cloud1.jpg", true, "A wordcloud, showing the most common words used to describe music samples shown to the user base. Click a word to see a bar graph breakdown of how often each age used that word.");
-    par   = new VisLabel(950, y + 15, 120, 70, "par1.jpg", false, "The user base was asked nineteen questions about their opinions on music and technology. Each answer was on a scale of 0 - 100. Each line on the graph corresponds to a single age.");
+    cloud = new VisLabel(825, y + 15, 120, 70, "cloud1.jpg", false, "A wordcloud, showing the most common words used to describe music samples shown to the user base. Click a word to see a bar graph breakdown of how often each age used that word.");
+    par   = new VisLabel(950, y + 15, 120, 70, "par1.jpg", true, "The user base was asked nineteen questions about their opinions on music and technology. Each answer was on a scale of 0 - 100. Each line on the graph corresponds to a single age.");
     pie  = new VisLabel(1075, y + 15, 120, 70, "pie.jpg", false, "The wedges in the chart represent how long, on average, the age range both actively and passively listen to music per 24 hours. An enlarged view is shown to the right.");
   } 
   
