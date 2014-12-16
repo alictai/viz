@@ -46,12 +46,15 @@ class Bracket {
   }
   
   void draw_val() {
+    fill(255);
+    strokeWeight(0);
+    rect(0, 580, 1200, 20);
     float rect_x = x - (2 * w);
     float rect_y = y - (1.5 * h);
     float rect_w = 4 * w;
     float rect_h = .75 * h;
-    strokeWeight(0);
-    noStroke();
+    strokeWeight(1);
+    //noStroke();
     fill(255);
     rect(rect_x, rect_y, rect_w, rect_h, 4); 
     

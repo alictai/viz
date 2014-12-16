@@ -46,7 +46,7 @@ void setup() {
 
 
 void draw() {
-  background(255);
+  //background(255);
   filter.draw_filter();
   
   range = filter.get_range();
@@ -58,7 +58,6 @@ void draw() {
   
   if(!mousePressed) {
     if (range_changed() == true) {
-      if(range_changed() == true) {print("changed\n");}
       wc = new WordCram(this);
       fill(255);
       noStroke();
@@ -76,7 +75,7 @@ void draw() {
 }
 
 boolean range_changed() {
-  if((range.low == prev_range.low) && (range.high == prev_range.high)) {
+  if((range.low == prev_range.low) && (range.high == prev_range.high) && (range.curVis.equals(prev_range.curVis))) {
       return false;
   } else {
       prev_range = range;

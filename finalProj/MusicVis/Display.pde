@@ -18,25 +18,36 @@ class Display {
   }
   
   //returns true if frequencies change
-  void get_freqs(Range range) {
-      //word_freqs = cloud.get_freqs(range, range.gender);
-      //return cloud.freq_changed();
-      par_graph.draw_graph(0, 0, width, height-100, range, range.gender);
+  boolean get_freqs(Range range) {
+      word_freqs = cloud.get_freqs(range, range.gender);
+      return cloud.freq_changed();
+//      par_graph.draw_graph(0, 0, width, height-100, range, range.gender);
   }
 
   // pass gender from Musicvis
   void draw_graphs(WordCram wc, Range range) {
       String gender = "both";
+      
+      if(range.curVis.equals("cloud")) {
+        cloud.set_weights(wc, word_freqs);
+        cloud.draw_cloud(range);
+      } else if(range.curVis.equals("par")) {
+        par_graph.draw_graph(0, 0, width, height-100, range, range.gender);
+      } else if(range.curVis.equals("pie")) {
+        pies.draw_pies(range, range.gender);
+      } else if(range.curVis.equals("tbd2")) {
+        
+      }
       //cloud.set_weights(wc, word_freqs);
       //cloud.draw_cloud(range);
       //pies.draw_pies(range, gender);
-      par_graph.draw_graph(0, 0, width, height-100, range, range.gender);
+      
       
   }
   
   void set_click() {
       pies.check_click();
-      //cloud.check_click();
+      cloud.check_click();
   }
   
  

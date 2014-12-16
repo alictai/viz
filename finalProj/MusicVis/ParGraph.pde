@@ -73,6 +73,9 @@ class ParGraph {
   }
 
   void draw_graph(int x_in, int y_in, int w_in, int h_in, Range r, String g) {
+    fill(255);
+    noStroke();
+    rect(0, 0, 1200, 580);
     x = x_in;
     y = y_in;
     w = w_in;
