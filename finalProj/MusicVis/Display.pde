@@ -63,6 +63,8 @@ class Display {
       } else if (keyCode == UP) {
         //Hitting the up arrow will unflip the dimension being hovered over if it is flipped
         par_graph.unflip();
+      } else if (keyCode == LEFT) {
+        par_graph.generate_colors(); 
       }
     }
   }

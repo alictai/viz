@@ -104,14 +104,12 @@ class ParGraph {
     range = r;
     gender = g;
 
-    //if (range.low != prev.low || range.high != prev.high || range.gender != prev.gender) {
     calculate_data(r, g);
     calculate_axes();
     calc_pts();
     calc_labels();
     calc_colors();
-    //}
-
+    
     draw_axes();
     draw_lines();
     draw_pts();
@@ -148,7 +146,8 @@ class ParGraph {
       color_list[3] = color(255, 202, 27);
     } else {
       for (int i = 0; i < color_list.length; i++) {
-        color_list[i] = color(random(0, 255), random(0, 255), random(0, 255));
+        //color_list[i] = color(random(0, 255), random(0, 255), random(0, 255));
+        color_list[i] = color(random(0,200), map(i, 0, color_list.length, 255, 150), map(i, 0, color_list.length, 150, 255));
       }
     }
   }
@@ -287,11 +286,13 @@ class ParGraph {
   void draw_labels() {
     for (int i = 0; i < num_cols; i++) {
       for (int k = 0; k < num_labels; k++) {
-        fill(0, 0, 0);
-        textSize(10);
-        textAlign(RIGHT, CENTER);
-        float len = y_bott - y_top;
-        text(labels[i][k], x_coords[i]-5, label_coords[i][k]);
+        if (i == hover_col) {
+          fill(0, 0, 0);
+          textSize(10);
+          textAlign(LEFT, CENTER);
+          float len = y_bott - y_top;
+          text(labels[i][k], x_coords[i]+5, label_coords[i][k]);
+        }
       }
     }
   }
