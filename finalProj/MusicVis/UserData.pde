@@ -104,25 +104,25 @@ class UserData {
         int index = i - range.low;
         if (gender.equals("female")) {
           if(girls[index].num_per_q[j] == 0) {
-            total[j][index] = 0;
+            total[j][index] = -1;
           } else {
             total[j][index] = girls[index].total_q_score[j]/girls[index].num_per_q[j];
           }
         } else if (gender.equals("male")) {
           if(boys[index].num_per_q[j] == 0) {
-            total[j][index] = 0;
+            total[j][index] = -1;
           } else {
             total[j][index] = boys[index].total_q_score[j]/boys[index].num_per_q[j];
           }
         } else {
           if(girls[index].num_per_q[j] == 0) {
-            total[j][index] = 0;
+            total[j][index] = -1;
           } else {
             total[j][index] = girls[index].total_q_score[j]/girls[index].num_per_q[j];
           }
 
           if(boys[index].num_per_q[j] == 0) {
-            total[j][index] += 0;
+            total[j][index] += -1;
           } else {
             total[j][index] += boys[index].total_q_score[j]/boys[index].num_per_q[j];
           }
