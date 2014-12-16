@@ -29,9 +29,9 @@ class Display {
 
     if (range.curVis.equals("cloud")) {
       cloud.set_weights(wc, word_freqs);
-      //cloud.draw_cloud(range);
+      cloud.draw_cloud(range);
     } else if (range.curVis.equals("par")) {
-      //par_graph.draw_graph(0, 0, width, height-100, range, range.gender);
+      par_graph.draw_graph(0, 0, width, height-100, range, range.gender);
     } else if (range.curVis.equals("pie")) {
       pies.draw_pies(range, range.gender);
     } else if (range.curVis.equals("tbd2")) {
